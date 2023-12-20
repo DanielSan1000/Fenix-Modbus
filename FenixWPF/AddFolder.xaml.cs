@@ -12,10 +12,10 @@ namespace FenixWPF
     /// </summary>
     public partial class AddFolder : MetroWindow
     {
-        ProjectContainer PrCon { get; set; }
-        Project Pr { get; set; }
-        String Path { get; set; }
-        ElementKind ElKind { get; set; }
+        private ProjectContainer PrCon { get; set; }
+        private Project Pr { get; set; }
+        private String Path { get; set; }
+        private ElementKind ElKind { get; set; }
 
         //Ctor
         public AddFolder(ProjectContainer pc, Project pr, string path, ElementKind elKind)
@@ -28,7 +28,6 @@ namespace FenixWPF
                 Pr = pr;
                 Path = path;
                 ElKind = elKind;
-
             }
             catch (Exception Ex)
             {
@@ -60,24 +59,22 @@ namespace FenixWPF
         {
             try
             {
-
-                //Nowy          
+                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
                     string s = TbNewFile.Text;
-                    if(string.IsNullOrEmpty(s))
+                    if (string.IsNullOrEmpty(s))
                     {
                         MessageBox.Show("Please fill Directory name!");
                         return;
                     }
-
                     else if (io.Directory.Exists(Path + "\\" + s))
                     {
                         MessageBox.Show(String.Format("Dir: [{0}] already exist in this location!", Path + "\\" + s));
                         return;
                     }
                     else
-                        io.Directory.CreateDirectory(Path + "\\" + s);                   
+                        io.Directory.CreateDirectory(Path + "\\" + s);
 
                     Close();
                 }
@@ -91,17 +88,14 @@ namespace FenixWPF
                         MessageBox.Show("Please fill Directory name!");
                         return;
                     }
-
                     else
                     {
-                        if(MessageBox.Show("Do you want to overwrite similar files?","Attention",MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                        if (MessageBox.Show("Do you want to overwrite similar files?", "Attention", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                             DirectoryCopy(s, Path, true);
                     }
 
-                     Close();
-                    
+                    Close();
                 }
-
             }
             catch (Exception Ex)
             {

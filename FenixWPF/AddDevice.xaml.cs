@@ -1,18 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace FenixWPF
 {
@@ -21,10 +10,10 @@ namespace FenixWPF
     /// </summary>
     public partial class AddDevice : MetroWindow
     {
-        ProjectContainer PrCon;
-        Device Dev;
-        Guid connId = Guid.Empty;
-        Guid projId = Guid.Empty;
+        private ProjectContainer PrCon;
+        private Device Dev;
+        private Guid connId = Guid.Empty;
+        private Guid projId = Guid.Empty;
 
         public AddDevice(ProjectContainer pC, Guid projId, Guid connId)
         {
@@ -52,28 +41,23 @@ namespace FenixWPF
 
                 //Context
                 DataContext = Dev;
-
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
         private void Button_Ok_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 Dev.idrv = PrCon.getConnection(projId, connId).Idrv;
                 PrCon.addDevice(projId, connId, Dev);
                 Close();
-
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -86,7 +70,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }

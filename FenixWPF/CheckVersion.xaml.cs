@@ -1,20 +1,9 @@
 ﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Xml;
 
 namespace FenixWPF
@@ -25,6 +14,7 @@ namespace FenixWPF
     public partial class CheckVersion : MetroWindow, INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -41,19 +31,20 @@ namespace FenixWPF
         /// <summary>
         /// Kontener
         /// </summary>
-        ProjectContainer PrCon;
+        private ProjectContainer PrCon;
 
         /// <summary>
         /// Delegat1
         /// </summary>
-        event EventHandler setProgress;
+        private event EventHandler setProgress;
 
         /// <summary>
         /// Delagat w
         /// </summary>
-        event EventHandler setParam;
+        private event EventHandler setParam;
 
         private string SerVer_;
+
         public string SerVer
         {
             get { return SerVer_; }
@@ -65,6 +56,7 @@ namespace FenixWPF
         }
 
         private string InsVer_;
+
         public string InsVer
         {
             get { return InsVer_; }
@@ -76,6 +68,7 @@ namespace FenixWPF
         }
 
         private string Status_;
+
         public string Status
         {
             get { return Status_; }
@@ -88,6 +81,7 @@ namespace FenixWPF
         }
 
         private Boolean Update_;
+
         public Boolean Update
         {
             get { return Update_; }
@@ -98,7 +92,7 @@ namespace FenixWPF
             }
         }
 
-        string Adress { get; set; }
+        private string Adress { get; set; }
 
         //Ctor
         public CheckVersion(ProjectContainer prcn)
@@ -131,7 +125,6 @@ namespace FenixWPF
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -140,7 +133,7 @@ namespace FenixWPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void frCheckVersion_setParam(object sender, EventArgs e)
+        private void frCheckVersion_setParam(object sender, EventArgs e)
         {
             EventHandler even = delegate (object sen, EventArgs ev)
             {
@@ -160,11 +153,10 @@ namespace FenixWPF
             try
             {
                 //Wywolanie metody
-                    Dispatcher?.Invoke(even, sender, e);
+                Dispatcher?.Invoke(even, sender, e);
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -175,7 +167,7 @@ namespace FenixWPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void frCheckVersion_setProgress(object sender, EventArgs e)
+        private void frCheckVersion_setProgress(object sender, EventArgs e)
         {
             //Anonimowy delegat
             EventHandler evetn = delegate (object sen, EventArgs ev)
@@ -193,18 +185,16 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         /// <summary>
         /// Sprawdzenie Wersji oprogramowania
         /// </summary>
         /// <param name="obj"></param>
-        void updateSoftware(object obj)
+        private void updateSoftware(object obj)
         {
             //Sprawdzenie czy istnieje poloczenie
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -243,16 +233,17 @@ namespace FenixWPF
                             elementName = reader.Name;
                         else
                         {
-                            // for text nodes...  
+                            // for text nodes...
                             if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
                             {
-                                // we check what the name of the node was  
+                                // we check what the name of the node was
                                 switch (elementName)
                                 {
                                     case "version":
                                         newVersion = new Version(reader.Value);
 
                                         break;
+
                                     case "url":
                                         url = reader.Value;
                                         break;
@@ -262,11 +253,10 @@ namespace FenixWPF
                     }
                 }
 
-
                 //Ustalenie progresu 100%
                 setProgress(new Object[2] { 100, "Checking Version..." }, new EventArgs());
 
-                // compare the versions  
+                // compare the versions
                 if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.CompareTo(newVersion) < 0)
                 {
                     Object[] obj1 = new object[3] { newVersion, true, url };
@@ -280,7 +270,6 @@ namespace FenixWPF
 
                 //Zakonczenie
                 setProgress(new Object[2] { 0, "Finished" }, new EventArgs());
-
             }
             catch (Exception Ex)
             {
@@ -290,7 +279,6 @@ namespace FenixWPF
             finally
             {
                 if (reader != null) reader.Close();
-
             }
         }
 

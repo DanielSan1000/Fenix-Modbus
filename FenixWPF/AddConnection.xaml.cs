@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MahApps.Metro.Controls;
+using ProjectDataLib;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ProjectDataLib;
-using MahApps.Metro.Controls;
 
 namespace FenixWPF
 {
@@ -21,10 +11,10 @@ namespace FenixWPF
     /// </summary>
     public partial class AddConnection : MetroWindow
     {
-        ProjectContainer PrCon;
-        GlobalConfiguration gConf;
-        Connection Cn;
-        Guid PrId;
+        private ProjectContainer PrCon;
+        private GlobalConfiguration gConf;
+        private Connection Cn;
+        private Guid PrId;
 
         public AddConnection(ProjectContainer prCon, GlobalConfiguration conf, Guid id)
         {
@@ -41,7 +31,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -51,13 +40,12 @@ namespace FenixWPF
             try
             {
                 IDriverModel idrv = (IDriverModel)((ComboBox)sender).SelectedItem;
-               
+
                 Cn.Parameters = idrv.setDriverParam;
                 Cn.Idrv = idrv;
                 Cn.DriverName = idrv.driverName;
 
                 PgDrvProps.SelectedObject = Cn.Parameters;
-
             }
             catch (Exception Ex)
             {

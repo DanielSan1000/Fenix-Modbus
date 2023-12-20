@@ -6,10 +6,10 @@
         xmlns:Cntrl="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:FenixWPF"
         mc:Ignorable="d"
-        Title="Stop" Height="150" Width="400" 
+        Title="Stop" Height="150" Width="400"
                    ShowMinButton="False"
                    ShowMaxRestoreButton="False"
-                   WindowStartupLocation="CenterScreen" 
+                   WindowStartupLocation="CenterScreen"
                    GlowBrush="{DynamicResource MahApps.Brushes.Accent}">
     <StackPanel>
         <TextBlock FontWeight="Bold" FontSize="20" Margin="10">Comunication Stopping...</TextBlock>
@@ -18,7 +18,7 @@
                 <EventTrigger RoutedEvent="Loaded">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Value" From="0" To="100" Duration="0:0:2" RepeatBehavior="Forever"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Value" From="0" To="100" Duration="0:0:2" RepeatBehavior="Forever" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>

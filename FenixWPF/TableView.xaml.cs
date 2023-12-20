@@ -14,15 +14,15 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace FenixWPF
 {
-
     /// <summary>
     /// Interaction logic for DefTableView.xaml
     /// </summary>
     public partial class TableView : UserControl, INotifyPropertyChanged
     {
-        int index;
+        private int index;
 
         private ProjectContainer PrCon_;
+
         public ProjectContainer PrCon
         {
             get { return PrCon_; }
@@ -34,6 +34,7 @@ namespace FenixWPF
         }
 
         private Project Pr_;
+
         public Project Pr
         {
             get { return Pr_; }
@@ -45,6 +46,7 @@ namespace FenixWPF
         }
 
         private Connection Con_;
+
         public Connection Con
         {
             get { return Con_; }
@@ -52,13 +54,15 @@ namespace FenixWPF
         }
 
         private Device Dev_;
+
         public Device Dev
         {
             get { return Dev_; }
             set { Dev_ = value; }
         }
 
-        PropertyChangedEventHandler propChanged_;
+        private PropertyChangedEventHandler propChanged_;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -72,20 +76,18 @@ namespace FenixWPF
             }
         }
 
-        ObservableCollection<ITag> ITagList;
-        LayoutAnchorable Win;
-        ElementKind elKind;
-        Guid Sel;
+        private ObservableCollection<ITag> ITagList;
+        private LayoutAnchorable Win;
+        private ElementKind elKind;
+        private Guid Sel;
 
         //Konstruktor
         public TableView(ProjectContainer prCon, Guid pr, Guid sel, ElementKind elkind, LayoutAnchorable win)
         {
-
             try
             {
                 InitializeComponent();
 
-                            
                 PrCon = prCon;
                 Pr = PrCon.projectList.First();
                 Sel = sel;
@@ -99,15 +101,12 @@ namespace FenixWPF
                 //dataselection
                 if (elKind == ElementKind.Project)
                 {
-                   
                     //Title
                     Win.Title = Pr.projectName;
 
                     //Dane
                     ITagList = ((ITableView)Pr).Children;
                 }
-
-
                 else if (elKind == ElementKind.Connection)
                 {
                     if (Pr.connectionList.Exists(x => x.objId == Sel))
@@ -119,7 +118,7 @@ namespace FenixWPF
                         //Dane
                         ITagList = ((ITableView)Con).Children;
 
-                        //Zdarzenia                        
+                        //Zdarzenia
                         ((INotifyPropertyChanged)Con).PropertyChanged += Pr_Conn_Dev_PropChanged;
                         ((ITreeViewModel)Con).Children.CollectionChanged += Dev_CollectionChanged;
                     }
@@ -128,7 +127,6 @@ namespace FenixWPF
                         Win.Close();
                     }
                 }
-
                 else if (elKind == ElementKind.Device)
                 {
                     if (Pr.DevicesList.Exists(x => x.objId == Sel))
@@ -143,7 +141,6 @@ namespace FenixWPF
 
                         ((INotifyPropertyChanged)Con).PropertyChanged += Pr_Conn_Dev_PropChanged;
                         ((INotifyPropertyChanged)Dev).PropertyChanged += Pr_Conn_Dev_PropChanged;
-
                     }
                     else
                     {
@@ -158,7 +155,6 @@ namespace FenixWPF
 
                 index = PrCon.winManagment.Count;
                 PrCon.winManagment.Add(new WindowsStatus(index, true, false));
-
 
                 View.ItemsSource = ITagList;
             }
@@ -250,7 +246,6 @@ namespace FenixWPF
                 {
                     Win.Title = Pr.projectName;
                 }
-
                 else if (elKind == ElementKind.Connection)
                 {
                     //Typy
@@ -260,10 +255,8 @@ namespace FenixWPF
                     if (cn != null && Pr != null)
                         Win.Title = Pr.projectName + "." + cn.connectionName;
                 }
-
                 else if (elKind == ElementKind.Device)
                 {
-
                     //Typy bazowe
                     Device dev = PrCon.getDevice(Pr.objId, Sel);
                     Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
@@ -294,7 +287,7 @@ namespace FenixWPF
                 }
                 else if (elKind == ElementKind.Device)
                 {
-                    //Zdarzenie                    
+                    //Zdarzenie
                     if (Con != null)
                         ((INotifyPropertyChanged)Con).PropertyChanged -= Pr_Conn_Dev_PropChanged;
 
@@ -307,7 +300,6 @@ namespace FenixWPF
                 Win.Closing -= Win_Closing;
 
                 PrCon.winManagment.RemoveAll(x => x.index == index);
-
             }
             catch (Exception Ex)
             {
@@ -319,7 +311,6 @@ namespace FenixWPF
         //BitBytes
         private void ComboBox_DropDownOpened(object sender, EventArgs e)
         {
-
             Tag tg = (Tag)((ComboBox)sender).DataContext;
 
             MemoryAreaInfo mArea = (from x in tg.idrv.MemoryAreaInf where x.Name == tg.areaData select x).First();
@@ -387,6 +378,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.SHORT:
                     if (mArea.AdresSize > 16)
                     {
@@ -401,6 +393,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.USHORT:
                     if (mArea.AdresSize > 16)
                     {
@@ -415,6 +408,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.INT:
                     if (mArea.AdresSize > 32)
                     {
@@ -429,6 +423,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.UINT:
                     if (mArea.AdresSize > 32)
                     {
@@ -443,6 +438,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.FLOAT:
                     if (mArea.AdresSize > 32)
                     {
@@ -457,6 +453,7 @@ namespace FenixWPF
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
                     }
                     break;
+
                 case TypeData.DOUBLE:
 
                     if (mArea.AdresSize > 64)
@@ -470,29 +467,26 @@ namespace FenixWPF
                     else
                     {
                         ((ComboBox)sender).ItemsSource = new List<int>() { 0 };
-
-
                     }
                     break;
             }
-            }
+        }
 
         //DataTypes
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(((ComboBox)sender).BindingGroup != null)
-                ((ComboBox)sender).BindingGroup.CommitEdit();           
+            if (((ComboBox)sender).BindingGroup != null)
+                ((ComboBox)sender).BindingGroup.CommitEdit();
         }
 
         //SetValue Binary Switch
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            if(((Button)sender).DataContext is Tag)
+            if (((Button)sender).DataContext is Tag)
             {
                 Tag tg = (Tag)((Button)sender).DataContext;
 
-                if(tg.idrv.isAlive)
+                if (tg.idrv.isAlive)
                 {
                     if ((Boolean)tg.value)
                         tg.setValueMethod(false);
@@ -504,14 +498,12 @@ namespace FenixWPF
             {
                 //InTag
             }
-
-            
         }
 
         //Other fields
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(((TextBox)sender).BindingGroup != null)
+            if (((TextBox)sender).BindingGroup != null)
                 ((TextBox)sender).BindingGroup.CommitEdit();
         }
 
@@ -520,28 +512,26 @@ namespace FenixWPF
         {
             try
             {
-                if(((Xceed.Wpf.Toolkit.ColorPicker)sender).BindingGroup != null)
+                if (((Xceed.Wpf.Toolkit.ColorPicker)sender).BindingGroup != null)
                     ((Xceed.Wpf.Toolkit.ColorPicker)sender).BindingGroup.CommitEdit();
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
-            
         }
 
         //Zmiana nazwy
         private void NameTemp_TextChanged(object sender, TextChangedEventArgs e)
         {
-           
             var tg = ((TextBox)sender).DataContext;
 
-            if(tg is Tag)
+            if (tg is Tag)
             {
                 Project pr = ((Tag)tg).Proj;
                 TextBox tb = ((TextBox)sender);
 
-                if(pr.tagsList.Exists(x=>x.tagName == tb.Text) || pr.InTagsList.Exists(x=>x.tagName == tb.Text))
+                if (pr.tagsList.Exists(x => x.tagName == tb.Text) || pr.InTagsList.Exists(x => x.tagName == tb.Text))
                 {
                     tb?.BindingGroup?.CancelEdit();
                 }
@@ -550,7 +540,7 @@ namespace FenixWPF
                     tb?.BindingGroup?.CommitEdit();
                 }
             }
-            else if(tg is InTag)
+            else if (tg is InTag)
             {
                 Project pr = ((InTag)tg).Proj;
                 TextBox tb = ((TextBox)sender);
@@ -563,8 +553,7 @@ namespace FenixWPF
                 {
                     tb?.BindingGroup?.CommitEdit();
                 }
-
-            }     
+            }
         }
 
         //Grubosc linii na wykresie
@@ -572,12 +561,11 @@ namespace FenixWPF
         {
             try
             {
-                if(((Xceed.Wpf.Toolkit.IntegerUpDown)sender).BindingGroup != null)
+                if (((Xceed.Wpf.Toolkit.IntegerUpDown)sender).BindingGroup != null)
                     ((Xceed.Wpf.Toolkit.IntegerUpDown)sender).BindingGroup.CommitEdit();
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -592,21 +580,20 @@ namespace FenixWPF
                     Tag tg = (Tag)((Xceed.Wpf.Toolkit.ShortUpDown)sender).DataContext;
 
                     if (tg.idrv.isAlive)
-                    {                       
-                       tg.setValueMethod(((Xceed.Wpf.Toolkit.ShortUpDown)sender).Value);                   
+                    {
+                        tg.setValueMethod(((Xceed.Wpf.Toolkit.ShortUpDown)sender).Value);
                     }
                 }
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.ShortUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         //Byte Data Chanched
@@ -626,14 +613,13 @@ namespace FenixWPF
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.ByteUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         //Single Data Chanched
@@ -653,14 +639,13 @@ namespace FenixWPF
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.SingleUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         //Double
@@ -680,7 +665,7 @@ namespace FenixWPF
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.DoubleUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
@@ -706,7 +691,7 @@ namespace FenixWPF
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.IntegerUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
@@ -734,13 +719,12 @@ namespace FenixWPF
                         {
                             MessageBox.Show(Ex.Message);
                         }
-                       
                     }
                 }
                 else
                 {
                     InTag tg = (InTag)((Xceed.Wpf.Toolkit.IntegerUpDown)sender).DataContext;
-                    //nie wiem co tu   
+                    //nie wiem co tu
                 }
             }
             catch (Exception Ex)
@@ -754,13 +738,10 @@ namespace FenixWPF
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
-
             ITag itg = ((ITag)value);
 
             if (!itg.ActBitByte)
                 return new List<int> { 0 };
-
 
             Tag tg = ((Tag)itg);
 
@@ -910,7 +891,6 @@ namespace FenixWPF
                     }
             }
 
-
             return new int[] { 0 };
         }
 
@@ -924,11 +904,10 @@ namespace FenixWPF
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             ITag tgx = (ITag)value;
 
-            if(!tgx.ActAreaData)
-                return new List<string>(){""};
+            if (!tgx.ActAreaData)
+                return new List<string>() { "" };
 
             return (from x in ((Tag)tgx).idrv.MemoryAreaInf select x.Name);
         }
@@ -952,7 +931,6 @@ namespace FenixWPF
         }
     }
 
-
     public class ColorConv : IValueConverter
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -965,7 +943,7 @@ namespace FenixWPF
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color cl = (Color)value;
-            return System.Drawing.Color.FromArgb(cl.R,cl.G,cl.B);
+            return System.Drawing.Color.FromArgb(cl.R, cl.G, cl.B);
         }
     }
 
@@ -973,10 +951,8 @@ namespace FenixWPF
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             if (value is bool)
             {
-
                 if ((bool)value)
                     return new SolidColorBrush(Colors.Green);
                 else
@@ -984,7 +960,6 @@ namespace FenixWPF
             }
             else
                 return new SolidColorBrush(Colors.White);
-
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -13,18 +13,16 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Margin="5" Content="Add Drivers" Grid.Column="0" Click="Button_AddDriver_Click"/>
-            <Button Margin="5" Content="Remove Driver" Grid.Column="1" Click="Button_RemoveDriver_Click"/>
-            <Button Margin="5" Content="Reset" Grid.Column="3" Click="Button_Reset_Click"/>
+            <Button Margin="5" Content="Add Drivers" Grid.Column="0" Click="Button_AddDriver_Click" />
+            <Button Margin="5" Content="Remove Driver" Grid.Column="1" Click="Button_RemoveDriver_Click" />
+            <Button Margin="5" Content="Reset" Grid.Column="3" Click="Button_Reset_Click" />
         </Grid>
 
-
-        <DataGrid Name="View" Margin="5" ItemsSource="{Binding Drvs}"/>
-
+        <DataGrid Name="View" Margin="5" ItemsSource="{Binding Drvs}" />
     </StackPanel>
 </Cntrl:MetroWindow>

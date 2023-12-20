@@ -6,7 +6,7 @@
         xmlns:Cntrl="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:FenixWPF"
         mc:Ignorable="d"
-        Title="Check Version" Height="200" Width="400" 
+        Title="Check Version" Height="200" Width="400"
                    ShowMinButton="False"
                    ShowMaxRestoreButton="False"
                    GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
@@ -14,29 +14,28 @@
     <StackPanel>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Margin="10" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Text="Server Version" Grid.RowSpan="2"/>
-            <TextBlock Margin="10" FontWeight="Bold"  Grid.Row="1" Grid.Column="0" Text="Installed Version" Grid.RowSpan="2"/>
-            <TextBlock Margin="10" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Text="Status" Grid.RowSpan="2"/>
+            <TextBlock Margin="10" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Text="Server Version" Grid.RowSpan="2" />
+            <TextBlock Margin="10" FontWeight="Bold"  Grid.Row="1" Grid.Column="0" Text="Installed Version" Grid.RowSpan="2" />
+            <TextBlock Margin="10" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Text="Status" Grid.RowSpan="2" />
 
-            <TextBlock Margin="10" Grid.Row="0" Grid.Column="1" Text="{Binding SerVer}" Grid.RowSpan="2"/>
-            <TextBlock Margin="10" Grid.Row="1" Grid.Column="1" Text="{Binding InsVer}" Grid.RowSpan="2"/>
-            <TextBlock Margin="10" Grid.Row="2" Grid.Column="1" Text="{Binding Status}" Grid.RowSpan="2"/>
-
+            <TextBlock Margin="10" Grid.Row="0" Grid.Column="1" Text="{Binding SerVer}" Grid.RowSpan="2" />
+            <TextBlock Margin="10" Grid.Row="1" Grid.Column="1" Text="{Binding InsVer}" Grid.RowSpan="2" />
+            <TextBlock Margin="10" Grid.Row="2" Grid.Column="1" Text="{Binding Status}" Grid.RowSpan="2" />
         </Grid>
-        <ProgressBar Name="pBar" Margin="10" Height="25" Minimum="0" Maximum="100"/>
+        <ProgressBar Name="pBar" Margin="10" Height="25" Minimum="0" Maximum="100" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="50" Content="Update"  Margin="10" Click="Button_Update_Click" IsEnabled="{Binding Update}"/>
-            <Button Width="50" Content="Close" Margin="10"  Click="Button_Close_Click"/>
+            <Button Width="50" Content="Update"  Margin="10" Click="Button_Update_Click" IsEnabled="{Binding Update}" />
+            <Button Width="50" Content="Close" Margin="10"  Click="Button_Close_Click" />
         </StackPanel>
     </StackPanel>
 </Cntrl:MetroWindow>

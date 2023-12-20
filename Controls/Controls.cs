@@ -11,8 +11,6 @@ using System.Windows.Forms.Design;
 
 namespace Controls
 {
-
-
     /// <summary>
     /// TreeView
     /// </summary>
@@ -27,8 +25,10 @@ namespace Controls
         /// Metody przeciwdzaiłające migotaniu
         /// </summary>
         private const int TVM_SETEXTENDEDSTYLE = 0x1100 + 44;
+
         private const int TVM_GETEXTENDEDSTYLE = 0x1100 + 45;
         private const int TVS_EX_DOUBLEBUFFER = 0x0004;
+
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
@@ -57,7 +57,7 @@ namespace Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TreeViewCus_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void TreeViewCus_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
             //Blokada rozwienicia przy kliknieciu podwojnym
             if (TreeX > e.Node.Bounds.Left) e.Cancel = true;
@@ -68,7 +68,7 @@ namespace Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TreeViewCus_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        private void TreeViewCus_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
             //Blokada rozwienicia przy kliknieciu podwojnym
             if (TreeX > e.Node.Bounds.Left) e.Cancel = true;
@@ -79,7 +79,7 @@ namespace Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TreeViewCus_MouseMove(object sender, MouseEventArgs e)
+        private void TreeViewCus_MouseMove(object sender, MouseEventArgs e)
         {
             TreeX = e.X;
         }
@@ -93,6 +93,7 @@ namespace Controls
         private const int TVM_SETEXTENDEDSTYLE = 0x1100 + 44;
         private const int TVM_GETEXTENDEDSTYLE = 0x1100 + 45;
         private const int TVS_EX_DOUBLEBUFFER = 0x0004;
+
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
@@ -143,7 +144,6 @@ namespace Controls
                 //Sprawdzenie czy atrybut to event
                 if (properties[i].IsDefined(EventAttributeType, true))
                     filtereds.Add(propertyDescriptions[properties[i].Name]);
-
             }
 
             // now add a custom property descriptor to show hidden properties
@@ -174,13 +174,12 @@ namespace Controls
 
     /// <summary>
     ///  This attribute is using to indicate that a property is a filtered property for us.
-    ///  
+    ///
     ///  Properties which has this attribute will be shown in our Custom Property Tab Page
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class CusEventPropertyAttribute : Attribute
     {
-
     }
 
     /// <summary>
@@ -199,7 +198,7 @@ namespace Controls
         }
 
         /// <summary>
-        /// Edycja 
+        /// Edycja
         /// </summary>
         /// <param name="context"></param>
         /// <param name="provider"></param>
@@ -215,7 +214,6 @@ namespace Controls
             else
                 ui.editor.Text = " ";
 
-
             ui.ShowDialog();
 
             value = ui.editor.Text;
@@ -223,7 +221,6 @@ namespace Controls
             return base.EditValue(context, provider, value);
         }
     }
-  
 }
 
 namespace XButton
@@ -241,7 +238,7 @@ namespace XButton
         MSOffice2010_Publisher = 7
     }
 
-    #endregion
+    #endregion ENUM
 
     #region COLOR TABLE
 
@@ -250,7 +247,7 @@ namespace XButton
     {
         #region Static Color Tables
 
-        static Office2010Blue office2010blu = new Office2010Blue();
+        private static Office2010Blue office2010blu = new Office2010Blue();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Blue
@@ -258,7 +255,7 @@ namespace XButton
             get { return office2010blu; }
         }
 
-        static Office2010Green office2010gr = new Office2010Green();
+        private static Office2010Green office2010gr = new Office2010Green();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Green
@@ -266,7 +263,7 @@ namespace XButton
             get { return office2010gr; }
         }
 
-        static Office2010Red office2010rd = new Office2010Red();
+        private static Office2010Red office2010rd = new Office2010Red();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Red
@@ -274,7 +271,7 @@ namespace XButton
             get { return office2010rd; }
         }
 
-        static Office2010Pink office2010pk = new Office2010Pink();
+        private static Office2010Pink office2010pk = new Office2010Pink();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Pink
@@ -282,7 +279,7 @@ namespace XButton
             get { return office2010pk; }
         }
 
-        static Office2010Yellow office2010yl = new Office2010Yellow();
+        private static Office2010Yellow office2010yl = new Office2010Yellow();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Yellow
@@ -290,7 +287,7 @@ namespace XButton
             get { return office2010yl; }
         }
 
-        static Office2010White office2010wt = new Office2010White();
+        private static Office2010White office2010wt = new Office2010White();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010White
@@ -298,8 +295,7 @@ namespace XButton
             get { return office2010wt; }
         }
 
-
-        static Office2010Publisher office2010pb = new Office2010Publisher();
+        private static Office2010Publisher office2010pb = new Office2010Publisher();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public static Colortable Office2010Publisher
@@ -307,16 +303,15 @@ namespace XButton
             get { return office2010pb; }
         }
 
-
-        #endregion
+        #endregion Static Color Tables
 
         #region Custom Properties
 
-        Color textColor = Color.White;
-        Color selectedTextColor = Color.FromArgb(30, 57, 91);
-        Color OverTextColor = Color.FromArgb(30, 57, 91);
-        Color borderColor = Color.FromArgb(31, 72, 161);
-        Color innerborderColor = Color.FromArgb(68, 135, 228);
+        private Color textColor = Color.White;
+        private Color selectedTextColor = Color.FromArgb(30, 57, 91);
+        private Color OverTextColor = Color.FromArgb(30, 57, 91);
+        private Color borderColor = Color.FromArgb(31, 72, 161);
+        private Color innerborderColor = Color.FromArgb(68, 135, 228);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual Color TextColor
@@ -353,14 +348,14 @@ namespace XButton
             set { innerborderColor = value; }
         }
 
-        #endregion
+        #endregion Custom Properties
 
         #region Button Normal
 
-        Color buttonNormalBegin = Color.FromArgb(31, 72, 161);
-        Color buttonNormalMiddleBegin = Color.FromArgb(68, 135, 228);
-        Color buttonNormalMiddleEnd = Color.FromArgb(41, 97, 181);
-        Color buttonNormalEnd = Color.FromArgb(62, 125, 219);
+        private Color buttonNormalBegin = Color.FromArgb(31, 72, 161);
+        private Color buttonNormalMiddleBegin = Color.FromArgb(68, 135, 228);
+        private Color buttonNormalMiddleEnd = Color.FromArgb(41, 97, 181);
+        private Color buttonNormalEnd = Color.FromArgb(62, 125, 219);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual Color ButtonNormalColor1
@@ -390,14 +385,14 @@ namespace XButton
             set { buttonNormalEnd = value; }
         }
 
-        #endregion
+        #endregion Button Normal
 
         #region Button Selected
 
-        Color buttonSelectedBegin = Color.FromArgb(236, 199, 87);
-        Color buttonSelectedMiddleBegin = Color.FromArgb(252, 243, 215);
-        Color buttonSelectedMiddleEnd = Color.FromArgb(255, 229, 117);
-        Color buttonSelectedEnd = Color.FromArgb(255, 216, 107);
+        private Color buttonSelectedBegin = Color.FromArgb(236, 199, 87);
+        private Color buttonSelectedMiddleBegin = Color.FromArgb(252, 243, 215);
+        private Color buttonSelectedMiddleEnd = Color.FromArgb(255, 229, 117);
+        private Color buttonSelectedEnd = Color.FromArgb(255, 216, 107);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual Color ButtonSelectedColor1
@@ -427,14 +422,14 @@ namespace XButton
             set { buttonSelectedEnd = value; }
         }
 
-        #endregion
+        #endregion Button Selected
 
         #region Button Mouse Over
 
-        Color buttonMouseOverBegin = Color.FromArgb(236, 199, 87);
-        Color buttonMouseOverMiddleBegin = Color.FromArgb(252, 243, 215);
-        Color buttonMouseOverMiddleEnd = Color.FromArgb(249, 225, 137);
-        Color buttonMouseOverEnd = Color.FromArgb(251, 249, 224);
+        private Color buttonMouseOverBegin = Color.FromArgb(236, 199, 87);
+        private Color buttonMouseOverMiddleBegin = Color.FromArgb(252, 243, 215);
+        private Color buttonMouseOverMiddleEnd = Color.FromArgb(249, 225, 137);
+        private Color buttonMouseOverEnd = Color.FromArgb(251, 249, 224);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public virtual Color ButtonMouseOverColor1
@@ -464,10 +459,10 @@ namespace XButton
             set { buttonMouseOverEnd = value; }
         }
 
-        #endregion
+        #endregion Button Mouse Over
     }
 
-    #endregion
+    #endregion COLOR TABLE
 
     #region Office 2010 Blue
 
@@ -514,7 +509,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 Blue
 
     #region Office 2010 GREEN
 
@@ -561,7 +556,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 GREEN
 
     #region Office 2010 Red
 
@@ -608,7 +603,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 Red
 
     #region Office 2010 Pink
 
@@ -655,7 +650,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 Pink
 
     #region Office 2010 White
 
@@ -702,7 +697,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 White
 
     #region Office 2010 Yellow
 
@@ -749,7 +744,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 Yellow
 
     #region Office 2010 Publisher
 
@@ -796,7 +791,7 @@ namespace XButton
         }
     }
 
-    #endregion
+    #endregion Office 2010 Publisher
 
     public partial class XButton : Button
     {
@@ -804,11 +799,12 @@ namespace XButton
 
         private Theme thm = Theme.MSOffice2010_BLUE;
 
-        private enum MouseState { None = 1, Down = 2, Up = 3, Enter = 4, Leave = 5, Move = 6 }
+        private enum MouseState
+        { None = 1, Down = 2, Up = 3, Enter = 4, Leave = 5, Move = 6 }
 
         private MouseState MState = MouseState.None;
 
-        #endregion
+        #endregion Fields
 
         #region Constructor
 
@@ -829,7 +825,7 @@ namespace XButton
             this.MouseMove += new MouseEventHandler(_MouseMove);
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Events
 
@@ -845,13 +841,13 @@ namespace XButton
 
                 PaintEventArgs e = new PaintEventArgs(g, clipRect);
 
-                // save the graphics state so that if anything goes wrong 
+                // save the graphics state so that if anything goes wrong
                 // we're not fubar
                 GraphicsState state = g.Save();
 
                 try
                 {
-                    // move the graphics object so that we are drawing in 
+                    // move the graphics object so that we are drawing in
                     // the correct place
                     g.TranslateTransform((float)-this.Location.X, (float)-this.Location.Y);
 
@@ -874,7 +870,7 @@ namespace XButton
             g.FillRectangle(SystemBrushes.Control, clipRect);
         }
 
-        #endregion
+        #endregion Paint Transparent Background
 
         #region Mouse Events
 
@@ -902,7 +898,7 @@ namespace XButton
             Invalidate();
         }
 
-        #endregion
+        #endregion Mouse Events
 
         #region Path
 
@@ -926,7 +922,7 @@ namespace XButton
             return gp;
         }
 
-        #endregion
+        #endregion Path
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -940,7 +936,7 @@ namespace XButton
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            #endregion
+            #endregion Painting
 
             #region Color
 
@@ -949,7 +945,6 @@ namespace XButton
             Color tBottomColorBegin = this.colorTable.ButtonNormalColor3;
             Color tBottomColorEnd = this.colorTable.ButtonNormalColor4;
             Color Textcol = this.colorTable.TextColor;
-
 
             if (!this.Enabled)
             {
@@ -988,8 +983,7 @@ namespace XButton
                 }
             }
 
-
-            #endregion
+            #endregion Color
 
             #region Theme 2010
 
@@ -1000,7 +994,7 @@ namespace XButton
                 TEXTandIMAGE(this.ClientRectangle, g, Textcol);
             }
 
-            #endregion
+            #endregion Theme 2010
         }
 
         #region Paint 2010 Background
@@ -1081,7 +1075,7 @@ namespace XButton
             }
         }
 
-        #endregion
+        #endregion Paint 2010 Background
 
         #region Paint TEXT AND IMAGE
 
@@ -1110,7 +1104,7 @@ namespace XButton
                 sf.Alignment = StringAlignment.Far;
             }
 
-            #endregion
+            #endregion Top
 
             #region Middle
 
@@ -1130,7 +1124,7 @@ namespace XButton
                 sf.Alignment = StringAlignment.Far;
             }
 
-            #endregion
+            #endregion Middle
 
             #region Bottom
 
@@ -1150,7 +1144,7 @@ namespace XButton
                 sf.Alignment = StringAlignment.Far;
             }
 
-            #endregion
+            #endregion Bottom
 
             if (this.ShowKeyboardCues)
                 sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
@@ -1159,15 +1153,15 @@ namespace XButton
             g.DrawString(this.Text, this.Font, new SolidBrush(textColor), Rec, sf);
         }
 
-        #endregion
+        #endregion Paint TEXT AND IMAGE
 
-        #endregion
+        #endregion Events
 
         #region Properties
 
         #region ColorTable
 
-        Colortable colorTable = null;
+        private Colortable colorTable = null;
 
         [DefaultValue(typeof(Colortable), "Office2010Blue")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -1182,14 +1176,12 @@ namespace XButton
             }
             set
             {
-
                 if (value == null)
                     value = Colortable.Office2010Blue;
 
                 colorTable = (Colortable)value;
 
                 this.Invalidate();
-
             }
         }
 
@@ -1260,7 +1252,7 @@ namespace XButton
             }
         }
 
-        #endregion
+        #endregion ColorTable
 
         #region Background Image
 
@@ -1290,12 +1282,8 @@ namespace XButton
             }
         }
 
-        #endregion
+        #endregion Background Image
 
-        #endregion
+        #endregion Properties
     }
 }
-
-
-
-

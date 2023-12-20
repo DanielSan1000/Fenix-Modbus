@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace FenixServer
 {
-    partial class AboutMe : Form
+    internal partial class AboutMe : Form
     {
         public AboutMe()
         {
@@ -95,6 +95,7 @@ namespace FenixServer
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
             }
         }
-        #endregion
+
+        #endregion Assembly Attribute Accessors
     }
 }

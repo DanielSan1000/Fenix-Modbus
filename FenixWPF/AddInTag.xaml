@@ -10,22 +10,21 @@
         mc:Ignorable="d"
         Title="Add InTag" Height="450" Width="310" WindowStartupLocation="CenterScreen" GlowBrush="{DynamicResource MahApps.Brushes.Accent}">
     <Window.Resources>
-        
+
         <ObjectDataProvider x:Key="TypeDataProvider" MethodName="GetValues"  ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="PrCon:TypeData"/>
+                <x:Type TypeName="PrCon:TypeData" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
-        <local:ValueConv        x:Key="ValueConv"/>
-
+        <local:ValueConv        x:Key="ValueConv" />
     </Window.Resources>
-    
+
     <StackPanel>
-        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/IntTag.png" HorizontalAlignment="Left"/>
+        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/IntTag.png" HorizontalAlignment="Left" />
         <TextBlock Margin="5,15,5,0">Name</TextBlock>
-        <TextBox Margin="5,0,5,15" Text="{Binding tagName, Mode=TwoWay}"/>
-        
+        <TextBox Margin="5,0,5,15" Text="{Binding tagName, Mode=TwoWay}" />
+
         <TextBlock Margin="5,0,5,0">Data Type</TextBlock>
         <ComboBox Margin="5,0,5,15" ItemsSource="{Binding Source={StaticResource TypeDataProvider}}"
                                     SelectedItem="{Binding TypeData,Mode=TwoWay}" />
@@ -34,19 +33,19 @@
         <TextBox Margin="5,0,5,15">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource ValueConv}">
-                    <Binding Path="value"/>
+                    <Binding Path="value" />
                     <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=Window}" Path="DataContext" />
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
 
         <TextBlock Margin="5,0,5,0">Description</TextBlock>
-        <TextBox Height="100" Margin="5,0,5,15" Text="{Binding describe , Mode=TwoWay}" 
-                 AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+        <TextBox Height="100" Margin="5,0,5,15" Text="{Binding describe , Mode=TwoWay}"
+                 AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,5,0">
-            <Button  Width="50" Margin="0,0,5,0" Content="Ok"  Click="Button_Ok_Click"/>
-            <Button  Width="50" Content="Cancel" Click="Button_Cancel_Click"/>
+            <Button  Width="50" Margin="0,0,5,0" Content="Ok"  Click="Button_Ok_Click" />
+            <Button  Width="50" Content="Cancel" Click="Button_Cancel_Click" />
         </StackPanel>
     </StackPanel>
 </Controls:MetroWindow>

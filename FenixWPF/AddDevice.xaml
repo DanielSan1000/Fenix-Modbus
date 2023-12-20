@@ -9,9 +9,9 @@
         mc:Ignorable="d"
         Title="Add Device" Height="400" Width="300" WindowStartupLocation="CenterScreen" GlowBrush="{DynamicResource MahApps.Brushes.Accent}">
     <StackPanel>
-        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/Device.ico" HorizontalAlignment="Left"/>
+        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/Device.ico" HorizontalAlignment="Left" />
         <TextBlock Margin="5">Name</TextBlock>
-        <TextBox Margin="5" Name="TbName" Text="{Binding name}"/>
+        <TextBox Margin="5" Name="TbName" Text="{Binding name}" />
         <TextBlock Margin="5">Device Adress</TextBlock>
         <xctk:IntegerUpDown Margin="5" Name="TbAdress" Value="{Binding adress}" Minimum="0" />
 

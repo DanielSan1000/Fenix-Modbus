@@ -1,21 +1,17 @@
 ﻿using ProjectDataLib;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using Xceed.Wpf.AvalonDock.Layout;
-using wf = System.Windows.Forms;
 using io = System.IO;
-using System.Windows.Input;
+using wf = System.Windows.Forms;
 
 namespace FenixWPF
 {
@@ -25,17 +21,19 @@ namespace FenixWPF
     public partial class CommunicationView : UserControl, INotifyPropertyChanged
     {
         //Field
-        ProjectContainer PrCon;
+        private ProjectContainer PrCon;
+
         public Project Pr { get; set; }
-        Guid Sel;
-        ElementKind ElKind;
-        LayoutAnchorable Win;
-        ObservableCollection<IDriverModel> DriverList = new ObservableCollection<IDriverModel>();
-        ObservableCollection<EventElement> Stack = new ObservableCollection<EventElement>();
+        private Guid Sel;
+        private ElementKind ElKind;
+        private LayoutAnchorable Win;
+        private ObservableCollection<IDriverModel> DriverList = new ObservableCollection<IDriverModel>();
+        private ObservableCollection<EventElement> Stack = new ObservableCollection<EventElement>();
 
-        int index;
+        private int index;
 
-        PropertyChangedEventHandler propChanged_;
+        private PropertyChangedEventHandler propChanged_;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -49,16 +47,15 @@ namespace FenixWPF
             }
         }
 
-        bool mScroll_ = true;
-        public Boolean mScroll { get { return mScroll_; } set { mScroll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScroll")); } }
+        private bool mScroll_ = true;
+        public Boolean mScroll
+        { get { return mScroll_; } set { mScroll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScroll")); } }
 
         //Konstuktor
         public CommunicationView(ProjectContainer prCon, Guid pr, Guid sel, ElementKind elKind, LayoutAnchorable win)
         {
-            
             InitializeComponent();
-                     
-            
+
             //zmienne
             PrCon = prCon;
             Pr = prCon.projectList.First();
@@ -66,19 +63,17 @@ namespace FenixWPF
             ElKind = elKind;
             Win = win;
 
-   
             //dataselection
             if (elKind == ElementKind.Project)
             {
                 //Title
                 Win.Title = Pr.projectName;
 
-                DriverList =  ((IDriversMagazine)Pr).Children;                
+                DriverList = ((IDriversMagazine)Pr).Children;
 
                 //Zdarzenia
                 ((INotifyPropertyChanged)Pr).PropertyChanged += CommunicationView_PropertyChanged;
             }
-
             else if (elKind == ElementKind.Connection)
             {
                 if (Pr.connectionList.Exists(x => x.objId == Sel))
@@ -100,7 +95,6 @@ namespace FenixWPF
                     Win.Close();
                 }
             }
-
             else if (elKind == ElementKind.Device)
             {
                 if (Pr.DevicesList.Exists(x => x.objId == Sel))
@@ -114,7 +108,7 @@ namespace FenixWPF
                     //Title
                     Win.Title = Pr.projectName + "." + cn.connectionName + "." + dev.name;
 
-                    //Zdarzenie 
+                    //Zdarzenie
                     ((INotifyPropertyChanged)Pr).PropertyChanged += CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged += CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)dev).PropertyChanged += CommunicationView_PropertyChanged;
@@ -124,7 +118,6 @@ namespace FenixWPF
                     Win.Close();
                 }
             }
-
 
             //Drivery
             foreach (IDriverModel idrv in DriverList)
@@ -151,7 +144,6 @@ namespace FenixWPF
             //zmiana kolkcji
             Stack.CollectionChanged += Stack_CollectionChanged;
             DriverList.CollectionChanged += DriverList_CollectionChanged;
-
         }
 
         //Zmiana listy driverow
@@ -166,8 +158,6 @@ namespace FenixWPF
                     idrv.dataSent -= new EventHandler(idrv_sendLogInfo);
                     idrv.error -= new EventHandler(idrv_errorRecived);
                     idrv.information -= new EventHandler(idrv_informationRecived);
-
-
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
@@ -194,7 +184,6 @@ namespace FenixWPF
                 {
                     Win.Title = Pr.projectName;
                 }
-
                 else if (ElKind == ElementKind.Connection)
                 {
                     //Typy
@@ -203,10 +192,8 @@ namespace FenixWPF
                     //Title
                     Win.Title = Pr.projectName + "." + cn.connectionName;
                 }
-
                 else if (ElKind == ElementKind.Device)
                 {
-
                     //Typy bazowe
                     Device dev = PrCon.getDevice(Pr.objId, Sel);
                     Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
@@ -262,7 +249,7 @@ namespace FenixWPF
                     Device dev = PrCon.getDevice(Pr.objId, Sel);
                     Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
 
-                    //Zdarzenie 
+                    //Zdarzenie
                     ((INotifyPropertyChanged)Pr).PropertyChanged -= CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged -= CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)dev).PropertyChanged -= CommunicationView_PropertyChanged;
@@ -280,7 +267,7 @@ namespace FenixWPF
         }
 
         /// Wyslanie danych przez sterownik
-        void idrv_sendLogInfo(object sender1, EventArgs e1)
+        private void idrv_sendLogInfo(object sender1, EventArgs e1)
         {
             //Delegat
             EventHandler crossDef = delegate (object sender, EventArgs e)
@@ -304,10 +291,9 @@ namespace FenixWPF
 
                 EventElement lsEl = null;
                 if (Stack.Count > 0)
-                lsEl =  Stack.Last();
+                    lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr,sender,data,time,description,EventType.OUT,lsEl,cn?.connectionName ?? "No Name"));
-               
+                Stack.Add(new EventElement(Pr, sender, data, time, description, EventType.OUT, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             try
@@ -317,14 +303,13 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
         // Odebranie danych przez sterownik
-        void idrv_reciveLogInfo(object sender1, EventArgs e1)
+        private void idrv_reciveLogInfo(object sender1, EventArgs e1)
         {
             EventHandler crossDef = delegate (object sender, EventArgs e)
             {
@@ -348,23 +333,22 @@ namespace FenixWPF
                 if (Stack.Count > 0)
                     lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr,sender, data, time, description,EventType.IN,lsEl, cn?.connectionName ?? "No Name"));    
+                Stack.Add(new EventElement(Pr, sender, data, time, description, EventType.IN, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             try
             {
-                    this.Dispatcher?.Invoke(crossDef, sender1, e1);
+                this.Dispatcher?.Invoke(crossDef, sender1, e1);
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
         //Informacja
-        void idrv_informationRecived(object sender, EventArgs e)
+        private void idrv_informationRecived(object sender, EventArgs e)
         {
             EventHandler lacznik = delegate (object se, EventArgs e1)
             {
@@ -389,15 +373,14 @@ namespace FenixWPF
                     lsEl = Stack.Last();
 
                 //Stack add
-                Stack.Add(new EventElement(Pr,se,data, time, description,EventType.INFO,lsEl, cn?.connectionName ?? "No Name"));             
-
+                Stack.Add(new EventElement(Pr, se, data, time, description, EventType.INFO, lsEl, cn?.connectionName ?? "No Name"));
             };
 
-                View.Dispatcher?.Invoke(lacznik, sender, e);
+            View.Dispatcher?.Invoke(lacznik, sender, e);
         }
 
         // Error
-        void idrv_errorRecived(object sender, EventArgs e)
+        private void idrv_errorRecived(object sender, EventArgs e)
         {
             EventHandler lacznik = delegate (object se, EventArgs e1)
             {
@@ -421,11 +404,10 @@ namespace FenixWPF
                 if (Stack.Count > 0)
                     lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr,se, data, time, description,EventType.ERROR,lsEl, cn?.connectionName ?? "No Name"));
-
+                Stack.Add(new EventElement(Pr, se, data, time, description, EventType.ERROR, lsEl, cn?.connectionName ?? "No Name"));
             };
 
-                View.Dispatcher?.Invoke(lacznik, sender, e);
+            View.Dispatcher?.Invoke(lacznik, sender, e);
         }
 
         //Wyczysc Log
@@ -440,9 +422,8 @@ namespace FenixWPF
             wf.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
             sfd.Filter = "*.CSV | *.csv";
 
-            if(sfd.ShowDialog() == wf.DialogResult.OK)
+            if (sfd.ShowDialog() == wf.DialogResult.OK)
             {
-
                 //View.SelectAllCells();
                 View.SelectAll();
                 View.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
@@ -454,7 +435,6 @@ namespace FenixWPF
                 io.File.WriteAllText(sfd.FileName, result);
                 Clipboard.Clear();
             }
-
         }
 
         private void Clipbord(object sender, RoutedEventArgs e)
@@ -485,7 +465,7 @@ namespace FenixWPF
     public class DataBytes : IMultiValueConverter
     {
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {    
+        {
             IDriverModel idrv = (IDriverModel)values[0];
             byte[] data = (byte[])values[1];
             string info = (string)values[2];
@@ -493,13 +473,12 @@ namespace FenixWPF
 
             if (Type == EventType.OUT)
                 return idrv.FormatFrameRequest(data, NumberStyles.HexNumber);
-
             else if (Type == EventType.IN)
                 return idrv.FormatFrameResponse(data, NumberStyles.HexNumber);
             else
             {
                 return "INTERNAL PROBLEM";
-            }   
+            }
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -514,23 +493,17 @@ namespace FenixWPF
         {
             EventElement ev = (EventElement)value;
 
-            if(ev.Type == EventType.ERROR)
+            if (ev.Type == EventType.ERROR)
                 return new SolidColorBrush(Colors.Red);
-
-            else if(ev.Type == EventType.INFO)
+            else if (ev.Type == EventType.INFO)
                 return new SolidColorBrush(Colors.Yellow);
-
             else if (ev.Type == EventType.IN)
                 return new SolidColorBrush(Colors.LightGreen);
-
             else if (ev.Type == EventType.OUT)
                 return new SolidColorBrush(Colors.LightBlue);
 
-
             return new SolidColorBrush(Colors.Gray);
-
         }
-
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -563,7 +536,7 @@ namespace FenixWPF
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((bool)value)
+            if ((bool)value)
                 return Visibility.Hidden;
             else
                 return Visibility.Visible;
@@ -574,6 +547,4 @@ namespace FenixWPF
             return DependencyProperty.UnsetValue;
         }
     }
-
-  
 }

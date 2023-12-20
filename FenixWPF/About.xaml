@@ -8,13 +8,13 @@
         mc:Ignorable="d"
         Title="About" Height="230" Width="400" WindowStyle="None" WindowStartupLocation="CenterScreen" GlowBrush="{DynamicResource MahApps.Brushes.Accent}">
     <Grid>
-        <Grid.ColumnDefinitions >
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        
-        <Image Grid.Column="0" Width="100" Height="100" 
-               Source="pack://application:,,,/TreeImage/Fenix.ico" HorizontalAlignment="Center"/>
+
+        <Image Grid.Column="0" Width="100" Height="100"
+               Source="pack://application:,,,/TreeImage/Fenix.ico" HorizontalAlignment="Center" />
 
         <StackPanel Grid.Column="1" Background="#FFD6DBE9">
             <TextBlock FontWeight="Bold" FontSize="16" Margin="5">Fenix</TextBlock>
@@ -23,10 +23,8 @@
                 <TextBlock FontWeight="Bold" Margin="5">Version:</TextBlock>
                 <TextBlock Margin="5" Name="TbVer" HorizontalAlignment="Center"></TextBlock>
             </StackPanel>
-           
-            <Button Margin="5,110,5,5" Content="Close" Width="80" HorizontalAlignment="Right" Click="Button_Click"/>
-        </StackPanel>
 
-        
+            <Button Margin="5,110,5,5" Content="Close" Width="80" HorizontalAlignment="Right" Click="Button_Click" />
+        </StackPanel>
     </Grid>
 </Controls:MetroWindow>

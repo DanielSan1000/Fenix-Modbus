@@ -1,5 +1,4 @@
-﻿
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using ProjectDataLib;
 using System;
@@ -7,18 +6,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
@@ -34,153 +29,199 @@ namespace FenixWPF
     {
         #region Visibilty
 
-          Boolean mFile_ ;
-          Boolean mNew_ ;
-          Boolean mOpen_ ;
-          Boolean mAdd_ ;
-          Boolean mConnection_ ;
-          Boolean mDevice_ ;
-          Boolean mTag_ ;
-          Boolean mIntTag_ ;
-          Boolean mScriptFile_;
-          Boolean mFolder_;
-          Boolean mInFile_ ;
-          Boolean mClosePr_ ;
-          Boolean mSave_ ;
-          Boolean mSaveAs_ ;
-          Boolean mExit_ ;
+        private Boolean mFile_;
+        private Boolean mNew_;
+        private Boolean mOpen_;
+        private Boolean mAdd_;
+        private Boolean mConnection_;
+        private Boolean mDevice_;
+        private Boolean mTag_;
+        private Boolean mIntTag_;
+        private Boolean mScriptFile_;
+        private Boolean mFolder_;
+        private Boolean mInFile_;
+        private Boolean mClosePr_;
+        private Boolean mSave_;
+        private Boolean mSaveAs_;
+        private Boolean mExit_;
 
-          Boolean mEdit_ ;
-          Boolean mCut_ ;
-          Boolean mCopy_ ;
-          Boolean mPaste_ ;
-          Boolean mDelete_ ;
+        private Boolean mEdit_;
+        private Boolean mCut_;
+        private Boolean mCopy_;
+        private Boolean mPaste_;
+        private Boolean mDelete_;
 
-          Boolean mView_ ;
-          Boolean mSolution_ ;
-          Boolean mProperties_ ;
-          Boolean mOutput_ ;
-          Boolean mTable_ ;
-          Boolean mChart_ ;
-          Boolean mCommView_ ;
-          Boolean mEditor_ ;
+        private Boolean mView_;
+        private Boolean mSolution_;
+        private Boolean mProperties_;
+        private Boolean mOutput_;
+        private Boolean mTable_;
+        private Boolean mChart_;
+        private Boolean mCommView_;
+        private Boolean mEditor_;
 
-          Boolean mDriversSt_ ;
-          Boolean mStart_ ;
-          Boolean mStop_ ;
-          Boolean mStartAll_;
-          Boolean mStopAll_;
+        private Boolean mDriversSt_;
+        private Boolean mStart_;
+        private Boolean mStop_;
+        private Boolean mStartAll_;
+        private Boolean mStopAll_;
 
-          Boolean mTools_ ;
-          Boolean mBlock_;
-          Boolean mUnBlock_;
-          Boolean mSimulate_ ;
-          Boolean mShowLoc_ ;
-          Boolean mDrivers_ ;
-         
+        private Boolean mTools_;
+        private Boolean mBlock_;
+        private Boolean mUnBlock_;
+        private Boolean mSimulate_;
+        private Boolean mShowLoc_;
+        private Boolean mDrivers_;
 
-        Boolean mDatabase_;
-        Boolean mDbShowFile_;
-        Boolean mDbReset_;
-        Boolean mShowDb_;
-        Boolean mSaveCSV_;
+        private Boolean mDatabase_;
+        private Boolean mDbShowFile_;
+        private Boolean mDbReset_;
+        private Boolean mShowDb_;
+        private Boolean mSaveCSV_;
 
-        Boolean mHelp_ ;
-          Boolean mUpdates_ ;
-          Boolean mAbout_ ;
-          Boolean mViewHelp_ ;
+        private Boolean mHelp_;
+        private Boolean mUpdates_;
+        private Boolean mAbout_;
+        private Boolean mViewHelp_;
 
-        public Boolean mFile { get { return mFile_; } set { mFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFile")); }}
-            public Boolean mNew {  get { return mNew_; } set { mNew_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mNew")); } }
-            public Boolean mOpen {  get { return mOpen_; } set { mOpen_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOpen")); } }
-            public Boolean mAdd {  get { return mAdd_; } set { mAdd_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAdd")); } }
-                public Boolean mConnection {  get { return mConnection_; } set { mConnection_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mConnection")); } }
-                public Boolean mDevice {  get { return mDevice_; } set { mDevice_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDevice")); } }
-                public Boolean mTag {  get { return mTag_; } set { mTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTag")); } }
-                public Boolean mIntTag {  get { return mIntTag_; } set { mIntTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mIntTag")); } }
-                public Boolean mScriptFile { get { return mScriptFile_; } set { mScriptFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScriptFile")); } }
-                public Boolean mFolder { get { return mFolder_; } set { mFolder_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFolder")); } }
-                public Boolean mInFile {  get { return mInFile_; } set { mInFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mInFile")); } }
-                public Boolean mClosePr {  get { return mClosePr_; } set { mClosePr_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mClosePr")); } }
-                public Boolean mSave {  get { return mSave_; } set { mSave_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSave")); } }
-                public Boolean mSaveAs {  get { return mSaveAs_; } set { mSaveAs_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveAs")); } }
-        public Boolean mExit {  get { return mExit_; } set { mExit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mExit")); } }
+        public Boolean mFile
+        { get { return mFile_; } set { mFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFile")); } }
+        public Boolean mNew
+        { get { return mNew_; } set { mNew_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mNew")); } }
+        public Boolean mOpen
+        { get { return mOpen_; } set { mOpen_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOpen")); } }
+        public Boolean mAdd
+        { get { return mAdd_; } set { mAdd_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAdd")); } }
+        public Boolean mConnection
+        { get { return mConnection_; } set { mConnection_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mConnection")); } }
+        public Boolean mDevice
+        { get { return mDevice_; } set { mDevice_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDevice")); } }
+        public Boolean mTag
+        { get { return mTag_; } set { mTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTag")); } }
+        public Boolean mIntTag
+        { get { return mIntTag_; } set { mIntTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mIntTag")); } }
+        public Boolean mScriptFile
+        { get { return mScriptFile_; } set { mScriptFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScriptFile")); } }
+        public Boolean mFolder
+        { get { return mFolder_; } set { mFolder_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFolder")); } }
+        public Boolean mInFile
+        { get { return mInFile_; } set { mInFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mInFile")); } }
+        public Boolean mClosePr
+        { get { return mClosePr_; } set { mClosePr_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mClosePr")); } }
+        public Boolean mSave
+        { get { return mSave_; } set { mSave_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSave")); } }
+        public Boolean mSaveAs
+        { get { return mSaveAs_; } set { mSaveAs_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveAs")); } }
+        public Boolean mExit
+        { get { return mExit_; } set { mExit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mExit")); } }
 
-        public Boolean mEdit {  get { return mEdit_; } set { mEdit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEdit")); } }   
-            public Boolean mCut {  get { return mCut_; } set { mCut_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCut")); } }    
-            public Boolean mCopy {  get { return mCopy_; } set { mCopy_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCopy")); } }
-            public Boolean mPaste {  get { return mPaste_; } set { mPaste_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mPaste")); } }
-            public Boolean mDelete {  get { return mDelete_; } set { mDelete_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDelete")); } }
+        public Boolean mEdit
+        { get { return mEdit_; } set { mEdit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEdit")); } }
+        public Boolean mCut
+        { get { return mCut_; } set { mCut_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCut")); } }
+        public Boolean mCopy
+        { get { return mCopy_; } set { mCopy_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCopy")); } }
+        public Boolean mPaste
+        { get { return mPaste_; } set { mPaste_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mPaste")); } }
+        public Boolean mDelete
+        { get { return mDelete_; } set { mDelete_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDelete")); } }
 
-        public Boolean mView {  get { return mView_; } set { mView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mView")); } }
-            public Boolean mSolution {  get { return mSolution_; } set { mSolution_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSolution")); } }
-            public Boolean mProperties {  get { return mProperties_; } set { mProperties_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mProperties")); } }
-            public Boolean mOutput {  get { return mOutput_; } set { mOutput_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOutput")); } }
-            public Boolean mTable {  get { return mTable_; } set { mTable_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTable")); } }
-            public Boolean mChart {  get { return mChart_; } set { mChart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mChart")); } }
-            public Boolean mCommView {  get { return mCommView_; } set { mCommView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCommView")); } }
-            public Boolean mEditor {  get { return mEditor_; } set { mEditor_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEditor")); } }
+        public Boolean mView
+        { get { return mView_; } set { mView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mView")); } }
+        public Boolean mSolution
+        { get { return mSolution_; } set { mSolution_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSolution")); } }
+        public Boolean mProperties
+        { get { return mProperties_; } set { mProperties_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mProperties")); } }
+        public Boolean mOutput
+        { get { return mOutput_; } set { mOutput_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOutput")); } }
+        public Boolean mTable
+        { get { return mTable_; } set { mTable_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTable")); } }
+        public Boolean mChart
+        { get { return mChart_; } set { mChart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mChart")); } }
+        public Boolean mCommView
+        { get { return mCommView_; } set { mCommView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCommView")); } }
+        public Boolean mEditor
+        { get { return mEditor_; } set { mEditor_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEditor")); } }
 
-        public Boolean mDriversSt {  get { return mDriversSt_; } set { mDriversSt_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDriversSt")); } }
-            public Boolean mStart {  get { return mStart_; } set { mStart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStart")); } }
-            public Boolean mStop {  get { return mStop_; } set { mStop_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStop")); } }
-            public Boolean mStartAll { get { return mStartAll_; } set { mStartAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStartAll")); } }
-            public Boolean mStopAll { get { return mStopAll_; } set { mStopAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStopAll")); } }
+        public Boolean mDriversSt
+        { get { return mDriversSt_; } set { mDriversSt_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDriversSt")); } }
+        public Boolean mStart
+        { get { return mStart_; } set { mStart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStart")); } }
+        public Boolean mStop
+        { get { return mStop_; } set { mStop_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStop")); } }
+        public Boolean mStartAll
+        { get { return mStartAll_; } set { mStartAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStartAll")); } }
+        public Boolean mStopAll
+        { get { return mStopAll_; } set { mStopAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStopAll")); } }
 
-        public Boolean mTools {  get { return mTools_; } set { mTools_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTools")); } }
-            public Boolean mBlock { get { return mBlock_; } set { mBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mBlock")); } }
-            public Boolean mUnBlock { get { return mUnBlock_; } set { mUnBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUnBlock")); } }
-            public Boolean mSimulate {  get { return mSimulate_; } set { mSimulate_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSimulate")); } }
-            public Boolean mShowLoc {  get { return mShowLoc_; } set { mShowLoc_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowLoc")); } }
-            public Boolean mDrivers {  get { return mDrivers_; } set { mDrivers_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDrivers")); } }
-            
-        public Boolean mDatabase { get { return mDatabase_; } set { mDatabase_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDatabase")); } }
-            public Boolean mDbShowFile { get { return mDbShowFile_; } set { mDbShowFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbShowFile")); } }
-            public Boolean mDbReset { get { return mDbReset_; } set { mDbReset_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbReset")); } }
-            public Boolean mShowDb { get { return mShowDb_; } set { mShowDb_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowDb")); } }
-            public Boolean mSaveCSV { get { return mSaveCSV_; } set { mSaveCSV_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveCSV")); } }
+        public Boolean mTools
+        { get { return mTools_; } set { mTools_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTools")); } }
+        public Boolean mBlock
+        { get { return mBlock_; } set { mBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mBlock")); } }
+        public Boolean mUnBlock
+        { get { return mUnBlock_; } set { mUnBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUnBlock")); } }
+        public Boolean mSimulate
+        { get { return mSimulate_; } set { mSimulate_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSimulate")); } }
+        public Boolean mShowLoc
+        { get { return mShowLoc_; } set { mShowLoc_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowLoc")); } }
+        public Boolean mDrivers
+        { get { return mDrivers_; } set { mDrivers_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDrivers")); } }
 
-        public Boolean mHelp {  get { return mHelp_; } set { mHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mHelp")); } }
-            public Boolean mUpdates {  get { return mUpdates_; } set { mUpdates_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUpdates")); }}
-            public Boolean mAbout {  get { return mAbout_; } set { mAbout_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAbout")); } }
-            public Boolean mViewHelp {  get { return mViewHelp_; } set { mViewHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mViewHelp")); }}
+        public Boolean mDatabase
+        { get { return mDatabase_; } set { mDatabase_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDatabase")); } }
+        public Boolean mDbShowFile
+        { get { return mDbShowFile_; } set { mDbShowFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbShowFile")); } }
+        public Boolean mDbReset
+        { get { return mDbReset_; } set { mDbReset_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbReset")); } }
+        public Boolean mShowDb
+        { get { return mShowDb_; } set { mShowDb_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowDb")); } }
+        public Boolean mSaveCSV
+        { get { return mSaveCSV_; } set { mSaveCSV_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveCSV")); } }
 
-        #endregion
+        public Boolean mHelp
+        { get { return mHelp_; } set { mHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mHelp")); } }
+        public Boolean mUpdates
+        { get { return mUpdates_; } set { mUpdates_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUpdates")); } }
+        public Boolean mAbout
+        { get { return mAbout_; } set { mAbout_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAbout")); } }
+        public Boolean mViewHelp
+        { get { return mViewHelp_; } set { mViewHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mViewHelp")); } }
+
+        #endregion Visibilty
 
         #region Fileds
 
-        ProjectContainer PrCon = new ProjectContainer();
-        ElementKind actualKindElement;
+        private ProjectContainer PrCon = new ProjectContainer();
+        private ElementKind actualKindElement;
 
-        object SelObj;
-        Guid SelGuid;
+        private object SelObj;
+        private Guid SelGuid;
 
-        Project Pr;
-        string pathRun = "";
+        private Project Pr;
+        private string pathRun = "";
 
+        private string SelSrcPath = string.Empty;
 
-        string SelSrcPath = string.Empty;
+        private LayoutAnchorable laPropGrid = new LayoutAnchorable();
+        private PropertiesGridManager propManag = new PropertiesGridManager();
 
-        LayoutAnchorable laPropGrid = new LayoutAnchorable();
-        PropertiesGridManager propManag = new PropertiesGridManager();
+        private LayoutAnchorable laTvMain = new LayoutAnchorable();
+        private TreeViewManager tvMain = new TreeViewManager();
 
-        LayoutAnchorable laTvMain = new LayoutAnchorable();
-        TreeViewManager tvMain = new TreeViewManager();
-
-        LayoutAnchorGroup laGrOutput = new LayoutAnchorGroup();
-        LayoutAnchorable laOutput = new LayoutAnchorable();
-        Output frOutput;
+        private LayoutAnchorGroup laGrOutput = new LayoutAnchorGroup();
+        private LayoutAnchorable laOutput = new LayoutAnchorable();
+        private Output frOutput;
 
         //Wszystkie Wyjatki
-        ObservableCollection<CustomException> exList = new ObservableCollection<CustomException>();
+        private ObservableCollection<CustomException> exList = new ObservableCollection<CustomException>();
 
         //Obserwacja plikow Http
-        io.FileSystemWatcher FsWatcher;
+        private io.FileSystemWatcher FsWatcher;
 
-        object thLock = new object();
+        private object thLock = new object();
 
+        private PropertyChangedEventHandler propChanged_;
 
-        PropertyChangedEventHandler propChanged_;
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -194,27 +235,27 @@ namespace FenixWPF
             }
         }
 
-        #endregion
+        #endregion Fileds
 
         #region Konstruktor
 
         public FenixMenager()
         {
-            //Tu by poloczyc obiekty przed utworzeniem                   
+            //Tu by poloczyc obiekty przed utworzeniem
             InitializeComponent();
 
             this.DataContext = this;
 
             //Ustawienie PropertyGrid
-           
+
             laPropGrid.Content = propManag;
             laPropGrid.Title = "Properties";
             laPropGrid.ContentId = "Properties";
             RightPan.Children.Add(laPropGrid);
 
-            //Ustawienie TreeView 
-            
-            tvMain.View.SelectedItemChanged += View_SelectedItemChanged;      
+            //Ustawienie TreeView
+
+            tvMain.View.SelectedItemChanged += View_SelectedItemChanged;
 
             laTvMain.Content = tvMain;
             laTvMain.Title = "Solution";
@@ -222,13 +263,13 @@ namespace FenixWPF
             LeftPan.Children.Add(laTvMain);
 
             //wyjatki
-            frOutput = new Output(PrCon,exList);
-            laOutput.Title = "Output";        
+            frOutput = new Output(PrCon, exList);
+            laOutput.Title = "Output";
             laOutput.Content = frOutput;
             laOutput.ContentId = "Output";
             laGrOutput.Children.Add(laOutput);
             BottomPan.Children.Add(laGrOutput);
-    
+
             //frOutput.View
             frOutput.View.DataContext = exList;
             frOutput.View.ItemsSource = exList;
@@ -242,7 +283,7 @@ namespace FenixWPF
             //Bledy z roznuch okien
             PrCon.ApplicationError += new EventHandler(Error);
 
-            //sparawdzenie czy jest admin
+            //Sprawdzenie czy jest admin
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
             if (identity != null)
             {
@@ -251,9 +292,9 @@ namespace FenixWPF
                     Title = Title + " (Administrator)";
             }
 
-            //Ustawinie dostepności Menu
+            //Ustawianie dostepności Menu
             checkAccess();
-     
+
             //Otwarcie pliku
             string[] s = Environment.GetCommandLineArgs();
             if (s.Length > 1)
@@ -265,10 +306,9 @@ namespace FenixWPF
                     Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
                 }
             }
-          
         }
 
-        #endregion
+        #endregion Konstruktor
 
         #region Internal Commands
 
@@ -279,825 +319,830 @@ namespace FenixWPF
         {
             try
             {
-                #region Nic nie jest zaznaczone 
+                #region Nic nie jest zaznaczone
+
                 if (tvMain.View.SelectedItem == null)
                 {
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = false;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = false;
-                        mSave = false;
-                        mSaveAs = false;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = false;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = false;
+                    mSave = false;
+                    mSaveAs = false;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = false;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = false;
-                        mStopAll = false;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = false;
+                    mStopAll = false;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = false;
-                        mDbShowFile = false;
-                        mDbReset = false;
-                        mShowDb = false;
+                    mDbShowFile = false;
+                    mDbReset = false;
+                    mShowDb = false;
                     mSaveCSV = false;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;                                                    
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
                 }
 
-                #endregion
+                #endregion Nic nie jest zaznaczone
 
                 #region Zaznaczony Projekt
+
                 if (tvMain.View.SelectedItem is Project)
                 {
-                   
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = true;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = true;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = PrCon.SrcType == ElementKind.Connection ? true : false;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = PrCon.SrcType == ElementKind.Connection ? true : false;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = true;
-                        mChart = true;
-                        mCommView = true;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = true;
+                    mChart = true;
+                    mCommView = true;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = true;
-                        mSimulate = false;
-                        mDrivers = true;
-                    
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = true;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;      
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
                 }
-                #endregion
+
+                #endregion Zaznaczony Projekt
 
                 #region InternalTags
+
                 if (tvMain.View.SelectedItem is InternalTagsDriver)
                 {
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;                          
-                            mIntTag = true;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = true;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = !((ITreeViewModel)SelObj).IsBlocked;
-                        mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
-                  
+                    mBlock = !((ITreeViewModel)SelObj).IsBlocked;
+                    mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
                 }
-                #endregion
+
+                #endregion InternalTags
 
                 #region Scripts
+
                 if (tvMain.View.SelectedItem is ScriptsDriver)
                 {
-                   
-                      mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = true;
-                            mFolder = false;
-                            mInFile = true;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = true;
+                    mFolder = false;
+                    mInFile = true;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = !((ITreeViewModel)SelObj).IsBlocked;
-                        mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
-                        mShowLoc = true;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = !((ITreeViewModel)SelObj).IsBlocked;
+                    mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
+                    mShowLoc = true;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
-
                 }
-                #endregion
+
+                #endregion Scripts
 
                 #region File
 
                 if (tvMain.View.SelectedItem is CusFile)
                 {
-
-                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = !((CusFile)tvMain.View.SelectedItem).IsFile;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;                      
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = !((CusFile)tvMain.View.SelectedItem).IsFile;
-                            mInFile = !((CusFile)tvMain.View.SelectedItem).IsFile;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = !((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = !((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mInFile = !((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = ((CusFile)tvMain.View.SelectedItem).IsFile;
-                        mCopy = ((CusFile)tvMain.View.SelectedItem).IsFile;
-                        mPaste = !((CusFile)tvMain.View.SelectedItem).IsFile && PrCon.SrcType == ElementKind.InFile;
-                        mDelete = true;
-                                  
+                    mCut = ((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mCopy = ((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mPaste = !((CusFile)tvMain.View.SelectedItem).IsFile && PrCon.SrcType == ElementKind.InFile;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = ((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = ((CusFile)tvMain.View.SelectedItem).IsFile;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = !((CusFile)tvMain.View.SelectedItem).IsFile;
-                        mSimulate = false;
-                        mDrivers = true;
-                      
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = !((CusFile)tvMain.View.SelectedItem).IsFile;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
-
                 }
-                #endregion
+
+                #endregion File
 
                 #region ScriptFile
+
                 if (tvMain.View.SelectedItem is ScriptFile)
                 {
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = false;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = false;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = true;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = true;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = true;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = !((ITreeViewModel)SelObj).IsBlocked;
-                        mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
-                  
+                    mBlock = !((ITreeViewModel)SelObj).IsBlocked;
+                    mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
                 }
-                #endregion
+
+                #endregion ScriptFile
 
                 #region IntTag
+
                 if (tvMain.View.SelectedItem is InTag)
                 {
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = false;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = false;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = true;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
-
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
                 }
-                #endregion
+
+                #endregion IntTag
 
                 #region Database
 
-                if(tvMain.View.SelectedItem is DatabaseModel)
+                if (tvMain.View.SelectedItem is DatabaseModel)
                 {
-                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = false;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = false;
-                        mSave = false;
-                        mSaveAs = false;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = false;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = false;
+                    mSave = false;
+                    mSaveAs = false;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = false;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = false;
-                        mStopAll = false;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = false;
+                    mStopAll = false;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;  
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
                 }
 
-                #endregion
+                #endregion Database
 
                 #region Connection
+
                 if (tvMain.View.SelectedItem is Connection)
                 {
                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = false;
-                            mDevice = true;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mInFile =false;
-                            mFolder = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = false;
+                    mDevice = true;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mInFile = false;
+                    mFolder = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = true;
-                        mCopy = true;
-                        mPaste = PrCon.SrcType == ElementKind.Device ? true : false;
-                        mDelete = true;
-                                  
+                    mCut = true;
+                    mCopy = true;
+                    mPaste = PrCon.SrcType == ElementKind.Device ? true : false;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = true;
-                        mChart = true;
-                        mCommView = true;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = true;
+                    mChart = true;
+                    mCommView = true;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = !((ITreeViewModel)SelObj).IsBlocked;
-                        mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
-
+                    mBlock = !((ITreeViewModel)SelObj).IsBlocked;
+                    mUnBlock = ((ITreeViewModel)SelObj).IsBlocked;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
-
                 }
-                #endregion
+
+                #endregion Connection
 
                 #region HttpServer
+
                 if (tvMain.View.SelectedItem is WebServer)
                 {
-                      mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = true;
-                            mInFile = true;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = true;
+                    mInFile = true;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = PrCon.SrcType == ElementKind.InFile;
-                        mDelete = false;
-                                  
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = PrCon.SrcType == ElementKind.InFile;
+                    mDelete = false;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = true;
-                        mSimulate = true;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = true;
+                    mSimulate = true;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;        
-                    
-                                                 
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
                 }
-                #endregion
+
+                #endregion HttpServer
 
                 #region Device
+
                 if (tvMain.View.SelectedItem is Device)
                 {
-                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = true;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = true;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mIntTag = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = true;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = true;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mIntTag = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = true;
-                        mCopy = true;
-                        mPaste = PrCon.SrcType == ElementKind.Tag ? true : false;
-                        mDelete = true;
-                                  
+                    mCut = true;
+                    mCopy = true;
+                    mPaste = PrCon.SrcType == ElementKind.Tag ? true : false;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = true;
-                        mChart = true;
-                        mCommView = true;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = true;
+                    mChart = true;
+                    mCommView = true;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
                 }
-                #endregion
+
+                #endregion Device
 
                 #region Zaznaczone Tag
+
                 if (tvMain.View.SelectedItem is Tag)
                 {
-                     mFile = true;
-                        mNew = true;
-                        mOpen = true;
-                        mAdd = false;
-                            mConnection = false;
-                            mDevice = false;
-                            mTag = false;
-                            mIntTag = false;
-                            mScriptFile = false;
-                            mFolder = false;
-                            mInFile = false;
-                        mClosePr = true;
-                        mSave = true;
-                        mSaveAs = true;
-                        mExit = true;
+                    mFile = true;
+                    mNew = true;
+                    mOpen = true;
+                    mAdd = false;
+                    mConnection = false;
+                    mDevice = false;
+                    mTag = false;
+                    mIntTag = false;
+                    mScriptFile = false;
+                    mFolder = false;
+                    mInFile = false;
+                    mClosePr = true;
+                    mSave = true;
+                    mSaveAs = true;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = true;
-                        mCopy = true;
-                        mPaste = false;
-                        mDelete = true;
-                                  
+                    mCut = true;
+                    mCopy = true;
+                    mPaste = false;
+                    mDelete = true;
+
                     mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        mTable = false;
-                        mChart = false;
-                        mCommView = false;
-                        mEditor = false;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    mTable = false;
+                    mChart = false;
+                    mCommView = false;
+                    mEditor = false;
 
                     mDriversSt = true;
-                        mStart = false;
-                        mStop = false;
-                        mStartAll = true;
-                        mStopAll = true;
+                    mStart = false;
+                    mStop = false;
+                    mStartAll = true;
+                    mStopAll = true;
 
                     mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        mShowLoc = false;
-                        mSimulate = false;
-                        mDrivers = true;
+                    mBlock = false;
+                    mUnBlock = false;
+                    mShowLoc = false;
+                    mSimulate = false;
+                    mDrivers = true;
 
                     mDatabase = true;
-                        mDbShowFile = true;
-                        mDbReset = true;
-                        mShowDb = true;
-                        mSaveCSV = true;
+                    mDbShowFile = true;
+                    mDbReset = true;
+                    mShowDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = true;
-                        mViewHelp = true;
+                    mAbout = true;
+                    mUpdates = true;
+                    mViewHelp = true;
 
                     propManag.View.Enabled = !((ITreeViewModel)SelObj).IsLive;
                 }
-                #endregion
+
+                #endregion Zaznaczone Tag
 
                 #region Trwa Komunikacja
+
                 if (PrCon.anyCommunication())
                 {
-
                     if (SelObj == null)
                         return;
 
-                      mFile = true;
-                        mNew = false;
-                        mOpen = false;
-                        mAdd = true;
-                            mConnection = !((ITreeViewModel)SelObj).IsLive;
-                            mDevice = !((ITreeViewModel)SelObj).IsLive;
-                            mTag = !((ITreeViewModel)SelObj).IsLive;
-                            mIntTag = !((ITreeViewModel)SelObj).IsLive;
-                            mScriptFile = false;
-                            mFolder = true;
-                            mInFile = !((ITreeViewModel)SelObj).IsLive;
-                        mClosePr = false;
-                        mSave = false;
-                        mSaveAs = false;
-                        mExit = true;
+                    mFile = true;
+                    mNew = false;
+                    mOpen = false;
+                    mAdd = true;
+                    mConnection = !((ITreeViewModel)SelObj).IsLive;
+                    mDevice = !((ITreeViewModel)SelObj).IsLive;
+                    mTag = !((ITreeViewModel)SelObj).IsLive;
+                    mIntTag = !((ITreeViewModel)SelObj).IsLive;
+                    mScriptFile = false;
+                    mFolder = true;
+                    mInFile = !((ITreeViewModel)SelObj).IsLive;
+                    mClosePr = false;
+                    mSave = false;
+                    mSaveAs = false;
+                    mExit = true;
 
                     mEdit = false;
-                        mCut = false;
-                        mCopy = false;
-                        mPaste = false;
-                        mDelete = false;
-                                  
-                    mView = true;
-                        mSolution = true;
-                        mProperties = true;
-                        mOutput = true;
-                        //mTable = false;
-                        //mChart = false;
-                        //mCommView = false;
-                        //mEditor = false;
+                    mCut = false;
+                    mCopy = false;
+                    mPaste = false;
+                    mDelete = false;
 
-                   // mDriversSt = true;
-                        //mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        //mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
-                        //mStartAll = true;
-                        //mStopAll = true;
+                    mView = true;
+                    mSolution = true;
+                    mProperties = true;
+                    mOutput = true;
+                    //mTable = false;
+                    //mChart = false;
+                    //mCommView = false;
+                    //mEditor = false;
+
+                    // mDriversSt = true;
+                    //mStart = (!((ITreeViewModel)SelObj).IsBlocked && !((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    //mStop = (!((ITreeViewModel)SelObj).IsBlocked && ((ITreeViewModel)SelObj).IsLive) ? true : false;
+                    //mStartAll = true;
+                    //mStopAll = true;
 
                     //mTools = true;
-                        mBlock = false;
-                        mUnBlock = false;
-                        //mShowLoc = true;
-                        //mSimulate = false;
-                        mDrivers = false;
+                    mBlock = false;
+                    mUnBlock = false;
+                    //mShowLoc = true;
+                    //mSimulate = false;
+                    mDrivers = false;
 
                     mDatabase = false;
-                        mDbShowFile = false;
-                        mDbReset = false;
-                        mShowDb = false;
-                        mSaveCSV = false;
+                    mDbShowFile = false;
+                    mDbReset = false;
+                    mShowDb = false;
+                    mSaveCSV = false;
 
                     mHelp = true;
-                        mAbout = true;
-                        mUpdates = false;
-                        mViewHelp = true;                                     
+                    mAbout = true;
+                    mUpdates = false;
+                    mViewHelp = true;
                 }
-                #endregion
 
-    
+                #endregion Trwa Komunikacja
             }
             catch (Exception Ex)
             {
@@ -1112,7 +1157,7 @@ namespace FenixWPF
         /// <param name="projId"></param>
         /// <param name="id"></param>
         /// <param name="elKind"></param>
-        void DeleteElementMethod(Guid projId, Guid id, ElementKind elKind)
+        private void DeleteElementMethod(Guid projId, Guid id, ElementKind elKind)
         {
             try
             {
@@ -1124,7 +1169,7 @@ namespace FenixWPF
 
                 wf.DialogResult result = wf.MessageBox.Show("Do you really want delate this element", "Warning", wf.MessageBoxButtons.OKCancel, wf.MessageBoxIcon.Warning);
                 if (result == wf.DialogResult.OK)
-                {     
+                {
                     PrCon.deleteElement(Pr.objId, id, elKind);
                     return;
                 }
@@ -1137,7 +1182,7 @@ namespace FenixWPF
         }
 
         [Obsolete("Trzeba to zmienic")]
-        void updateSoftware(object sender)
+        private void updateSoftware(object sender)
         {
             //Zmienne
             Version newVersion = null;
@@ -1147,16 +1192,17 @@ namespace FenixWPF
             //Sprawdzenie czy istnieje poloczenie
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                this.Dispatcher.Invoke(new Action(() => {
+                this.Dispatcher.Invoke(new Action(() =>
+                {
                     lbInfo.Content = "No Internet connection.";
-
                 }));
 
                 return;
             }
 
             //Wyświetlenie informacji o aktualizacji
-            this.Dispatcher.Invoke(new Action(() => {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
                 lbInfo.Content = "Checking update for software...";
             }));
 
@@ -1193,7 +1239,8 @@ namespace FenixWPF
                 }
 
                 //Wyświetlenie informacji o aktualizacji
-                this.Dispatcher.Invoke(new Action(() => {
+                this.Dispatcher.Invoke(new Action(() =>
+                {
                     lbInfo.Content = "Completed";
                 }));
                 checkVersion(newVersion, url, (Boolean)sender);
@@ -1213,25 +1260,25 @@ namespace FenixWPF
         /// <param name="newVersion"></param>
         /// <param name="url"></param>
         /// <param name="automatic"></param>
-        void checkVersion(Version newVersion, string url, bool automatic)
+        private void checkVersion(Version newVersion, string url, bool automatic)
         {
-            // get the running version  
+            // get the running version
             Version curVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-            // compare the versions  
+            // compare the versions
             if (curVersion.CompareTo(newVersion) < 0)
             {
-                // ask the user if he would like  
-                // to download the new version  
+                // ask the user if he would like
+                // to download the new version
                 string title = "New version detected.";
                 string question = "Download the new version Fenix " + newVersion.ToString() + " ?";
 
                 if (wf.DialogResult.Yes == wf.MessageBox.Show(question, title, wf.MessageBoxButtons.YesNo, wf.MessageBoxIcon.Question))
                 {
-                    // navigate the default web  
-                    // browser to our app  
-                    // homepage (the url  
-                    // comes from the xml content)  
+                    // navigate the default web
+                    // browser to our app
+                    // homepage (the url
+                    // comes from the xml content)
                     System.Diagnostics.Process.Start(url);
                 }
             }
@@ -1242,13 +1289,9 @@ namespace FenixWPF
                     MessageBox.Show("Your version is actual");
                 }
             }
-
-
         }
 
-   
-
-        #endregion
+        #endregion Internal Commands
 
         #region Internal Events
 
@@ -1271,7 +1314,7 @@ namespace FenixWPF
         {
             try
             {
-                if(Pr != null)
+                if (Pr != null)
                 {
                     MessageBox.Show("Project is already load. Please close project and try again!");
                     return;
@@ -1283,11 +1326,11 @@ namespace FenixWPF
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.InitialDirectory = io.Path.GetDirectoryName(strp);
                 ofd.Filter = "XML Files (*.psx)|*.psx";
-                
+
                 if (ofd.ShowDialog() == true)
                 {
                     PrCon.openProjects(ofd.FileName);
-                    Pr = PrCon.projectList.First();                                     
+                    Pr = PrCon.projectList.First();
                 }
             }
             catch (Exception Ex)
@@ -1308,7 +1351,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1323,7 +1365,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1341,7 +1382,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1393,14 +1433,13 @@ namespace FenixWPF
                 }
                 else if (tvMain.View.SelectedItem is WebServer)
                 {
-                    AddCusFile fr = new AddCusFile(PrCon, Pr, io.Path.GetDirectoryName(Pr.path)+PrCon.HttpCatalog, actualKindElement);
+                    AddCusFile fr = new AddCusFile(PrCon, Pr, io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog, actualKindElement);
                     fr.Show();
-                }                
-                           
+                }
             }
             catch (Exception Ex)
             {
-                    PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -1410,7 +1449,6 @@ namespace FenixWPF
             {
                 AddScript fr = new AddScript(PrCon, Pr, SelGuid, actualKindElement);
                 fr.Show();
-
             }
             catch (Exception Ex)
             {
@@ -1427,14 +1465,14 @@ namespace FenixWPF
                     Process.Start(io.Path.GetDirectoryName(Pr.path));
                 }
                 else if (actualKindElement == ElementKind.HttpConfig)
-                {           
+                {
                     Process.Start(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
                 }
                 else if (actualKindElement == ElementKind.Scripts)
                 {
                     Process.Start(io.Path.GetDirectoryName(Pr.path) + PrCon.ScriptsCatalog);
                 }
-                else if(actualKindElement == ElementKind.InFile)
+                else if (actualKindElement == ElementKind.InFile)
                 {
                     Process.Start(((CusFile)tvMain.View.SelectedItem).FullName);
                 }
@@ -1460,7 +1498,7 @@ namespace FenixWPF
                 //Zamkniecie edytorow
                 var docs = dockManager.Layout.Descendents()
                     .OfType<LayoutAnchorable>()
-                    .Where(x => x.Title != "Output" && x.Title !="Properties" && x.Title != "Solution")
+                    .Where(x => x.Title != "Output" && x.Title != "Properties" && x.Title != "Solution")
                     .Select(x => x).ToList();
 
                 for (int i = 0; i < docs.Count(); i++)
@@ -1469,7 +1507,6 @@ namespace FenixWPF
                 propManag.View.SelectedObject = null;
                 exList.Clear();
 
-              
                 tvMain.View.ItemsSource = null;
 
                 actualKindElement = ElementKind.Empty;
@@ -1479,7 +1516,7 @@ namespace FenixWPF
                 FsWatcher.Deleted -= FsWatch_Changed;
                 FsWatcher.Renamed -= FsWatch_Changed;
                 FsWatcher = null;
-                      
+
                 PrCon.closeAllProject(true);
 
                 Pr = null;
@@ -1489,7 +1526,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1524,8 +1560,7 @@ namespace FenixWPF
         {
             try
             {
-
-                if(SelObj== null)
+                if (SelObj == null)
                     return;
 
                 if (((ITreeViewModel)SelObj).IsBlocked)
@@ -1552,8 +1587,6 @@ namespace FenixWPF
 
                     checkAccess();
                 }
-
-                
             }
             catch (Exception Ex)
             {
@@ -1569,7 +1602,7 @@ namespace FenixWPF
                     return;
 
                 if (SelObj is IDriverModel)
-                {                    
+                {
                     ((IDriverModel)SelObj).error -= Error;
                     ((IDriverModel)SelObj).information -= Error;
                     ((IDriverModel)SelObj).deactivateCycle();
@@ -1590,7 +1623,6 @@ namespace FenixWPF
 
                     checkAccess();
                 }
-               
             }
             catch (Exception Ex)
             {
@@ -1602,7 +1634,6 @@ namespace FenixWPF
         {
             try
             {
-
                 foreach (IDriverModel id in ((IDriversMagazine)Pr).Children)
                 {
                     //Zabezpiecznie
@@ -1696,7 +1727,6 @@ namespace FenixWPF
                 pInfo.Arguments = "-s";
 
                 Process.Start(pInfo);
-
             }
             catch (Exception Ex)
             {
@@ -1709,7 +1739,7 @@ namespace FenixWPF
         {
             try
             {
-                if(tvMain.View.SelectedItem is CusFile)
+                if (tvMain.View.SelectedItem is CusFile)
                 {
                     CusFile f = (CusFile)tvMain.View.SelectedItem;
                     if (f.IsFile)
@@ -1725,12 +1755,10 @@ namespace FenixWPF
                     SelSrcPath = string.Empty;
                 }
 
-                
                 checkAccess();
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1756,12 +1784,10 @@ namespace FenixWPF
                     SelSrcPath = string.Empty;
                 }
 
-                
                 checkAccess();
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1771,7 +1797,6 @@ namespace FenixWPF
         {
             try
             {
-
                 //Elementy normalne systemu
                 if (PrCon.SrcType != ElementKind.InFile)
                 {
@@ -1781,34 +1806,31 @@ namespace FenixWPF
                 //pliki Http
                 else
                 {
-                    if(PrCon.cutMarks)
+                    if (PrCon.cutMarks)
                     {
                         if (!string.IsNullOrEmpty(SelSrcPath))
                         {
-
                             if (tvMain.View.SelectedItem is WebServer)
                             {
-                              
-                                string dest = io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog+"\\"+io.Path.GetFileName(SelSrcPath);
+                                string dest = io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + "\\" + io.Path.GetFileName(SelSrcPath);
                                 if (dest == SelSrcPath)
                                     throw new ApplicationException("This operation is forbbiden");
 
-                                io.File.Copy(SelSrcPath, dest,true);
+                                io.File.Copy(SelSrcPath, dest, true);
                                 io.File.Delete(SelSrcPath);
 
                                 SelSrcPath = string.Empty;
                                 PrCon.SrcType = ElementKind.Empty;
                                 PrCon.cutMarks = false;
-
                             }
                             else
                             {
-                                string dest = ((CusFile)tvMain.View.SelectedItem).FullName+"\\"+ io.Path.GetFileName(SelSrcPath);
+                                string dest = ((CusFile)tvMain.View.SelectedItem).FullName + "\\" + io.Path.GetFileName(SelSrcPath);
 
                                 if (dest == SelSrcPath)
                                     throw new ApplicationException("This operation is forbbiden");
 
-                                io.File.Copy(SelSrcPath, dest,true);
+                                io.File.Copy(SelSrcPath, dest, true);
                                 io.File.Delete(SelSrcPath);
 
                                 SelSrcPath = string.Empty;
@@ -1845,7 +1867,6 @@ namespace FenixWPF
                                 SelSrcPath = string.Empty;
                                 PrCon.SrcType = ElementKind.Empty;
                                 PrCon.cutMarks = false;
-
                             }
                         }
                     }
@@ -1856,7 +1877,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1868,21 +1888,19 @@ namespace FenixWPF
             {
                 if (tvMain.View.SelectedItem is CusFile)
                 {
-
                     CusFile f = (CusFile)tvMain.View.SelectedItem;
                     if (f == null)
                         return;
 
-                    if(wf.MessageBox.Show("Do you want to remove this file or directory?","Attention",wf.MessageBoxButtons.OKCancel) == wf.DialogResult.OK)
+                    if (wf.MessageBox.Show("Do you want to remove this file or directory?", "Attention", wf.MessageBoxButtons.OKCancel) == wf.DialogResult.OK)
                     {
-
                         if (f.IsFile)
                             io.File.Delete(f.FullName);
                         else
                             io.Directory.Delete(f.FullName, true);
 
                         checkAccess();
-                    }                                    
+                    }
                 }
                 else
                 {
@@ -1892,7 +1910,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1901,9 +1918,9 @@ namespace FenixWPF
         private void Solution0_Click(object sender, RoutedEventArgs e)
         {
             try
-            {         
+            {
                 LayoutAnchorable lpAnchor = dockManager.Layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.Title == "Solution").First();
-                lpAnchor.IsVisible = true;         
+                lpAnchor.IsVisible = true;
             }
             catch (Exception Ex)
             {
@@ -1920,7 +1937,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -1944,18 +1960,17 @@ namespace FenixWPF
         {
             try
             {
-
                 if (Pr == null)
                     return;
 
                 LayoutAnchorable laTableView = new LayoutAnchorable();
                 laTableView.ContentId = "TableView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                TableView tbView = new TableView(PrCon, Pr.objId, SelGuid, actualKindElement, laTableView);                       
+                TableView tbView = new TableView(PrCon, Pr.objId, SelGuid, actualKindElement, laTableView);
                 laTableView.Closed += LaCtrl_Closed;
                 laTableView.Content = tbView;
 
                 var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
-                        
+
                 MiddlePan1.Children.Add(laTableView);
                 laTableView.IsActive = true;
 
@@ -1972,19 +1987,17 @@ namespace FenixWPF
         {
             try
             {
-
                 LayoutAnchorable laChartView = new LayoutAnchorable();
                 laChartView.ContentId = "ChartView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                ChartView chartView = new ChartView(PrCon, Pr.objId, SelGuid, actualKindElement,laChartView);              
+                ChartView chartView = new ChartView(PrCon, Pr.objId, SelGuid, actualKindElement, laChartView);
                 laChartView.Closed += LaCtrl_Closed;
-                
+
                 laChartView.Content = chartView;
                 var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
                 MiddlePan1.Children.Add(laChartView);
                 laChartView.IsActive = true;
 
                 checkAccess();
-
             }
             catch (Exception Ex)
             {
@@ -1997,13 +2010,12 @@ namespace FenixWPF
         {
             try
             {
-
                 LayoutAnchorable laCommView = new LayoutAnchorable();
                 laCommView.ContentId = "CommView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                CommunicationView commView = new CommunicationView(PrCon, Pr.objId, SelGuid, actualKindElement,laCommView);
-                
+                CommunicationView commView = new CommunicationView(PrCon, Pr.objId, SelGuid, actualKindElement, laCommView);
+
                 laCommView.Closed += LaCtrl_Closed;
-                
+
                 laCommView.Content = commView;
                 var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
                 MiddlePan1.Children.Add(laCommView);
@@ -2021,19 +2033,18 @@ namespace FenixWPF
         {
             try
             {
-
                 if (actualKindElement == ElementKind.InFile)
                 {
                     LayoutAnchorable laEdit = new LayoutAnchorable();
-                    laEdit.ContentId = "Editor;" + ((CusFile)tvMain.View.SelectedItem).FullName + ";"+actualKindElement.ToString();
-                    Editor edit = new Editor(PrCon,Pr.objId,((CusFile)tvMain.View.SelectedItem).FullName ,actualKindElement,laEdit);                                      
+                    laEdit.ContentId = "Editor;" + ((CusFile)tvMain.View.SelectedItem).FullName + ";" + actualKindElement.ToString();
+                    Editor edit = new Editor(PrCon, Pr.objId, ((CusFile)tvMain.View.SelectedItem).FullName, actualKindElement, laEdit);
                     laEdit.Closed += LaCtrl_Closed; ;
-                    laEdit.Title = System.IO.Path.GetFileName(((CusFile)tvMain.View.SelectedItem).FullName);      
-                    
+                    laEdit.Title = System.IO.Path.GetFileName(((CusFile)tvMain.View.SelectedItem).FullName);
+
                     laEdit.Content = edit;
                     var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
                     MiddlePan1.Children.Add(laEdit);
-                    laEdit.IsActive = true;         
+                    laEdit.IsActive = true;
                     checkAccess();
                 }
 
@@ -2043,10 +2054,10 @@ namespace FenixWPF
                     laEdit.ContentId = "Editor;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
                     ScriptFile file = PrCon.GetScriptFile(Pr.objId, SelGuid);
                     Editor edit = new Editor(PrCon, Pr.objId, file.FilePath, actualKindElement, laEdit);
-                                
+
                     laEdit.Closed += LaCtrl_Closed;
                     laEdit.Title = file.Name;
-                
+
                     laEdit.Content = edit;
                     var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
                     MiddlePan1.Children.Add(laEdit);
@@ -2076,7 +2087,6 @@ namespace FenixWPF
                     win.Content = null;
                     GC.Collect();
                 }
-
                 else if (win.Content is ChartView)
                 {
                     ChartView tbVw = (ChartView)win.Content;
@@ -2084,7 +2094,6 @@ namespace FenixWPF
                     tbVw = null;
                     GC.Collect();
                 }
-
                 else if (win.Content is Editor)
                 {
                     Editor editor = (Editor)win.Content;
@@ -2099,7 +2108,6 @@ namespace FenixWPF
 
                 win = null;
                 checkAccess();
-
             }
             catch (Exception Ex)
             {
@@ -2116,7 +2124,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -2131,7 +2138,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
@@ -2154,13 +2160,11 @@ namespace FenixWPF
         private void ShHelp0_Click(object sender, RoutedEventArgs e)
         {
             try
-            {        
+            {
                 System.Diagnostics.Process.Start(PrCon.HelpWebSite);
-
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -2174,10 +2178,9 @@ namespace FenixWPF
                     XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
                     serializer.Serialize(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
                 }
-              
+
                 lbPathProject.Content = string.Empty;
                 Pr = null;
-
             }
             catch (Exception Ex)
             {
@@ -2190,12 +2193,9 @@ namespace FenixWPF
         {
             try
             {
-
-
                 //Sprawdzanie Wersji
                 Thread update = new Thread(new ParameterizedThreadStart(updateSoftware));
                 update.Start(false);
-
 
                 if (!String.IsNullOrEmpty(pathRun))
                 {
@@ -2205,7 +2205,6 @@ namespace FenixWPF
                     Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
 
                     checkAccess();
-
                 }
             }
             catch (Exception Ex)
@@ -2267,21 +2266,19 @@ namespace FenixWPF
         {
             try
             {
-             
                 propManag.View.SelectedObject = e.NewValue;
                 SelObj = e.NewValue;
 
                 if (e.NewValue is Project)
                 {
-                    if(e.OldValue != null)
+                    if (e.OldValue != null)
                         ((INotifyPropertyChanged)e.OldValue).PropertyChanged -= FenixMenager_PropertyChanged;
 
                     ((ContextMenu)Resources["CtxProject"]).DataContext = this;
                     tvMain.View.ContextMenu = (ContextMenu)Resources["CtxProject"];
-                    SelGuid =  ((Project)e.NewValue).objId;
+                    SelGuid = ((Project)e.NewValue).objId;
                     actualKindElement = ElementKind.Project;
                 }
-
                 else if (e.NewValue is WebServer)
                 {
                     if (e.OldValue != null)
@@ -2292,23 +2289,20 @@ namespace FenixWPF
                     SelGuid = ((WebServer)e.NewValue).ObjId;
                     actualKindElement = ElementKind.HttpConfig;
                 }
-
-                else if(e.NewValue is DatabaseModel)
+                else if (e.NewValue is DatabaseModel)
                 {
                     if (e.OldValue != null)
                         ((INotifyPropertyChanged)e.OldValue).PropertyChanged -= FenixMenager_PropertyChanged;
 
                     ((ContextMenu)Resources["CtxDatabse"]).DataContext = this;
                     tvMain.View.ContextMenu = (ContextMenu)Resources["CtxDatabse"];
-
                 }
-
                 else if (e.NewValue is CusFile)
                 {
                     if (e.OldValue != null)
                         ((INotifyPropertyChanged)e.OldValue).PropertyChanged -= FenixMenager_PropertyChanged;
 
-                    if(((CusFile)e.NewValue).IsFile)
+                    if (((CusFile)e.NewValue).IsFile)
                     {
                         ((ContextMenu)Resources["CtxInFile"]).DataContext = this;
                         tvMain.View.ContextMenu = (ContextMenu)Resources["CtxInFile"];
@@ -2322,9 +2316,7 @@ namespace FenixWPF
                         SelGuid = PrCon.HttpFileGuid;
                         actualKindElement = ElementKind.InFile;
                     }
-                   
                 }
-
                 else if (e.NewValue is ScriptsDriver)
                 {
                     if (e.OldValue != null)
@@ -2335,7 +2327,6 @@ namespace FenixWPF
                     SelGuid = ((ScriptsDriver)e.NewValue).objId;
                     actualKindElement = ElementKind.Scripts;
                 }
-
                 else if (e.NewValue is ScriptFile)
                 {
                     if (e.OldValue != null)
@@ -2346,7 +2337,6 @@ namespace FenixWPF
                     SelGuid = ((ScriptFile)e.NewValue).objId;
                     actualKindElement = ElementKind.ScriptFile;
                 }
-
                 else if (e.NewValue is InternalTagsDriver)
                 {
                     if (e.OldValue != null)
@@ -2357,7 +2347,6 @@ namespace FenixWPF
                     SelGuid = ((InternalTagsDriver)e.NewValue).objId;
                     actualKindElement = ElementKind.InternalsTags;
                 }
-
                 else if (e.NewValue is InTag)
                 {
                     if (e.OldValue != null)
@@ -2370,9 +2359,7 @@ namespace FenixWPF
 
                     if (e.NewValue != null)
                         ((INotifyPropertyChanged)e.NewValue).PropertyChanged += FenixMenager_PropertyChanged;
-
                 }
-
                 else if (e.NewValue is Connection)
                 {
                     if (e.OldValue != null)
@@ -2383,7 +2370,6 @@ namespace FenixWPF
                     SelGuid = ((Connection)e.NewValue).objId;
                     actualKindElement = ElementKind.Connection;
                 }
-
                 else if (e.NewValue is Device)
                 {
                     if (e.OldValue != null)
@@ -2394,7 +2380,6 @@ namespace FenixWPF
                     SelGuid = ((Device)e.NewValue).objId;
                     actualKindElement = ElementKind.Device;
                 }
-
                 else if (e.NewValue is Tag)
                 {
                     if (e.OldValue != null)
@@ -2414,29 +2399,25 @@ namespace FenixWPF
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-                
             }
         }
 
         //Zmiana wartosci dla PropGrid
         private void FenixMenager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Dispatcher.Invoke(new Action(()=> {
-
+            Dispatcher.Invoke(new Action(() =>
+            {
                 if (SelObj is Tag || SelObj is ITag)
                 {
                     if (!((IDriverModel)sender).isAlive)
                         propManag.View.SelectedObject = sender;
                 }
-
             }));
-                     
         }
 
         //Show Databse
         private void MenuItem_ShowDbFile_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 string p = io.Path.GetDirectoryName(Pr.path) + io.Path.GetDirectoryName(PrCon.Database);
@@ -2455,9 +2436,8 @@ namespace FenixWPF
         {
             try
             {
-
                 DataTable tb = Pr.Db.GetAll();
-               
+
                 LayoutAnchorable laTableView = new LayoutAnchorable();
                 laTableView.ContentId = "Database";
                 DbExplorer db = new DbExplorer(tb);
@@ -2477,25 +2457,23 @@ namespace FenixWPF
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         //Save Databse
         private void MenuItem_SaveDatabeCSV_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 StringBuilder sb = new StringBuilder();
 
                 DataTable tb = Pr.Db.GetAll();
-           
+
                 IEnumerable<string> columnNames = tb.Columns.Cast<DataColumn>().Select(column => column.ColumnName);
                 sb.AppendLine(string.Join(",", columnNames));
 
                 foreach (DataRow row in tb.Rows)
                 {
-                    IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString().Replace(',','.'));
+                    IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString().Replace(',', '.'));
                     sb.AppendLine(string.Join(",", fields));
                 }
 
@@ -2517,7 +2495,7 @@ namespace FenixWPF
             return "Fenix Manager";
         }
 
-        #endregion
+        #endregion Internal Events
 
         #region External Events
 
@@ -2527,18 +2505,15 @@ namespace FenixWPF
         {
             try
             {
-
                 //Pobranie proejktu
                 Project pr = (Project)ev.element;
                 this.Pr = pr;
 
-               
+                #region Sprawdzenie czy istnieje zapisany layout
 
-                #region Sprawdzenie czy istnieje zapisany layout         
-                if ( System.IO.File.Exists( System.IO.Path.GetDirectoryName(PrCon.projectList.First().path)+"\\"+PrCon.LayoutFile))
+                if (System.IO.File.Exists(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile))
                 {
-
-                    Project pp = (Project)sender;           
+                    Project pp = (Project)sender;
                     XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
 
                     serializer.LayoutSerializationCallback += (s, args) =>
@@ -2561,10 +2536,10 @@ namespace FenixWPF
                             case "Database":
                                 args.Content = new DbExplorer(null);
                                 break;
-                             
+
                             case "TableView":
                                 LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
-                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind),param[2]),laTableView);
+                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
                                 laTableView.Closed += LaCtrl_Closed;
                                 args.Content = tbView;
                                 break;
@@ -2580,14 +2555,14 @@ namespace FenixWPF
                                 LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
                                 CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
                                 laCommView.Closed += LaCtrl_Closed;
-                                args.Content =comView;
+                                args.Content = comView;
                                 break;
 
                             case "Editor":
                                 LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
 
                                 //Zabezpieczenie
-                                if(System.IO.File.Exists(param[1]))
+                                if (System.IO.File.Exists(param[1]))
                                 {
                                     Editor edView = new Editor(PrCon, pp.objId, param[1], (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laEditorView);
                                     laEditorView.Closed += LaCtrl_Closed;
@@ -2597,20 +2572,21 @@ namespace FenixWPF
                                 {
                                     laEditorView.Close();
                                 }
-                                                               
+
                                 break;
+
                             default:
                                 args.Content = new System.Windows.Controls.TextBox() { Text = args.Model.ContentId };
                                 break;
                         }
-
                     };
 
                     //Deserializacja
                     string ss = System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile;
-                    serializer.Deserialize(ss);                 
+                    serializer.Deserialize(ss);
                 }
-                #endregion
+
+                #endregion Sprawdzenie czy istnieje zapisany layout
 
                 tvMain.View.DataContext = ((ITreeViewModel)PrCon).Children;
                 tvMain.View.ItemsSource = ((ITreeViewModel)PrCon).Children;
@@ -2618,7 +2594,7 @@ namespace FenixWPF
                 //Zaznaczenie elementu
                 TreeViewItem PrNode = FindTviFromObjectRecursive(tvMain.View, pr);
                 if (PrNode != null) PrNode.IsSelected = true;
-              
+
                 if (!io.Directory.Exists(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog))
                     io.Directory.CreateDirectory(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
 
@@ -2636,7 +2612,6 @@ namespace FenixWPF
                 Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
 
                 checkAccess();
-
             }
             catch (Exception Ex)
             {
@@ -2645,12 +2620,13 @@ namespace FenixWPF
             }
         }
 
-        //Zmiana pliku w katalogu Http      
+        //Zmiana pliku w katalogu Http
         private void FsWatch_Changed(object sender, io.FileSystemEventArgs e)
         {
             try
             {
                 #region Renamed
+
                 if (e.ChangeType == io.WatcherChangeTypes.Renamed)
                 {
                     io.RenamedEventArgs k = (io.RenamedEventArgs)e;
@@ -2659,9 +2635,11 @@ namespace FenixWPF
                     if (m != null)
                         ((CusFile)m).FullName = k.FullPath;
                 }
-                #endregion
+
+                #endregion Renamed
 
                 #region Creted
+
                 else if (e.ChangeType == io.WatcherChangeTypes.Created)
                 {
                     //Sprawdzamy czy to plik
@@ -2670,7 +2648,6 @@ namespace FenixWPF
                         string dir = io.Path.GetDirectoryName(e.FullPath);
                         if (dir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
                         {
-
                             Dispatcher.Invoke(new Action(() =>
                             {
                                 ((ITreeViewModel)Pr.WebServer1).Children.Add(new CusFile(new io.FileInfo(e.FullPath)));
@@ -2712,10 +2689,12 @@ namespace FenixWPF
                         }
                     }
                 }
-                #endregion
+
+                #endregion Creted
 
                 #region Delete
-                if(e.ChangeType  == System.IO.WatcherChangeTypes.Deleted)
+
+                if (e.ChangeType == System.IO.WatcherChangeTypes.Deleted)
                 {
                     string sDir = io.Directory.GetParent(e.FullPath).FullName;
                     if (sDir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
@@ -2724,49 +2703,42 @@ namespace FenixWPF
                         {
                             var rem = ((ITreeViewModel)Pr.WebServer1).Children.ToList().Where(x => ((CusFile)x).FullName == e.FullPath).First();
                             ((ITreeViewModel)Pr.WebServer1).Children.Remove(rem);
-
                         }));
                     }
                     else
                     {
-                        ITreeViewModel tm =  Pr.WebServer1.DirSearch(e.FullPath, Pr.WebServer1);
+                        ITreeViewModel tm = Pr.WebServer1.DirSearch(e.FullPath, Pr.WebServer1);
                         ITreeViewModel par = Pr.WebServer1.DirSearch(sDir, Pr.WebServer1);
 
                         if (tm != null)
                         {
-
                             Dispatcher.Invoke(new Action(() =>
-                            {                         
+                            {
                                 (par).Children.Remove((CusFile)tm);
-
                             }));
                         }
                     }
                 }
-                #endregion
 
+                #endregion Delete
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
+        }
 
-        }  
-        
         //Application Error
         private void Error(object sender, EventArgs ev)
         {
-
             this.Dispatcher.Invoke(() =>
             {
                 ProjectEventArgs e = (ProjectEventArgs)ev;
 
                 if (e.element is Exception)
                     exList.Add(new CustomException(sender, (Exception)e.element));
-
                 else if (e.element2 is Exception)
                     exList.Add(new CustomException(sender, (Exception)e.element2));
-
                 else
                     exList.Add(new CustomException(sender, new Exception(e.element1.ToString())));
 
@@ -2774,7 +2746,6 @@ namespace FenixWPF
                 LayoutAnchorable lpAnchor = dockManager.Layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.Title == "Output").First();
                 lpAnchor.IsActive = true;
             });
-
         }
 
         //Przeszukiwanie TreeView
@@ -2794,6 +2765,7 @@ namespace FenixWPF
             return null;
         }
 
-        #endregion  
+        #endregion External Events
+
     }
 }

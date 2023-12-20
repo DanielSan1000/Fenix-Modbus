@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace FenixServer
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-
             bool instanceCountOne = false;
             using (Mutex mtex = new Mutex(true, "FenixServer", out instanceCountOne))
             {

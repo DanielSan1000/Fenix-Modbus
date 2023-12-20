@@ -21,30 +21,29 @@ namespace FenixWPF
     /// </summary>
     public partial class Editor : UserControl
     {
-       #pragma warning disable CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
-        CompletionWindow completionWindow;
-       #pragma warning restore CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
+#pragma warning disable CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
+        private CompletionWindow completionWindow;
+#pragma warning restore CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
 
-        string currentFileName;
-        FoldingManager foldingManager;
-        LayoutAnchorable Win;
-        ProjectContainer PrCon;
-        Guid Pr;
-        ElementKind ElKind;
-        string path_ = "";
+        private string currentFileName;
+        private FoldingManager foldingManager;
+        private LayoutAnchorable Win;
+        private ProjectContainer PrCon;
+        private Guid Pr;
+        private ElementKind ElKind;
+        private string path_ = "";
 
-        object foldingStrategy;
+        private object foldingStrategy;
 
         public Editor(ProjectContainer PrCon, Guid Pr, string path, ElementKind ElKind, LayoutAnchorable Win)
         {
             try
             {
-               
                 InitializeComponent();
 
                 //Pokaz numery
                 textEditor.ShowLineNumbers = true;
-               
+
                 //sciezka
                 path_ = path;
 
@@ -63,7 +62,7 @@ namespace FenixWPF
                 {
                     textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("JavaScript");
                 }
-                else if(ext == ".css")
+                else if (ext == ".css")
                 {
                     textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("CSS");
                 }
@@ -122,8 +121,8 @@ namespace FenixWPF
                     textEditor.Save(path_);
 
                 //Usuń '*'
-                if(Win.Title.Contains("*"))
-                    Win.Title = Win.Title.Remove(Win.Title.Length-1);
+                if (Win.Title.Contains("*"))
+                    Win.Title = Win.Title.Remove(Win.Title.Length - 1);
             }
             catch (Exception Ex)
             {
@@ -158,9 +157,8 @@ namespace FenixWPF
             }
         }
 
-        void saveFileClick(object sender, EventArgs e)
+        private void saveFileClick(object sender, EventArgs e)
         {
-
             try
             {
                 if (currentFileName == null)
@@ -185,7 +183,7 @@ namespace FenixWPF
             }
         }
 
-        void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        private void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
             try
             {
@@ -212,7 +210,7 @@ namespace FenixWPF
             }
         }
 
-        void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        private void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
             try
             {
@@ -233,8 +231,8 @@ namespace FenixWPF
         }
 
         #region Folding
-       
-        void HighlightingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void HighlightingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -250,6 +248,7 @@ namespace FenixWPF
                             foldingStrategy = new XmlFoldingStrategy();
                             textEditor.TextArea.IndentationStrategy = new ICSharpCode.AvalonEdit.Indentation.DefaultIndentationStrategy();
                             break;
+
                         case "C#":
                         case "C++":
                         case "PHP":
@@ -257,6 +256,7 @@ namespace FenixWPF
                             textEditor.TextArea.IndentationStrategy = new ICSharpCode.AvalonEdit.Indentation.CSharp.CSharpIndentationStrategy(textEditor.Options);
                             foldingStrategy = new BraceFoldingStrategy();
                             break;
+
                         default:
                             textEditor.TextArea.IndentationStrategy = new ICSharpCode.AvalonEdit.Indentation.DefaultIndentationStrategy();
                             foldingStrategy = null;
@@ -284,7 +284,7 @@ namespace FenixWPF
             }
         }
 
-        void UpdateFoldings()
+        private void UpdateFoldings()
         {
             try
             {
@@ -299,12 +299,11 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        #endregion
+        #endregion Folding
 
         #region ClipBoard
 
@@ -323,8 +322,8 @@ namespace FenixWPF
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-  
-        #endregion
+
+        #endregion ClipBoard
     }
 
     /// <summary>
@@ -355,7 +354,8 @@ namespace FenixWPF
             get { return "Description for " + this.Text; }
         }
 
-        public double Priority { get { return 0; } }
+        public double Priority
+        { get { return 0; } }
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {

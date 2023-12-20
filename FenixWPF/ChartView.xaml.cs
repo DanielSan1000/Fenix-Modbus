@@ -5,7 +5,6 @@ using ProjectDataLib;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -19,9 +18,10 @@ namespace FenixWPF
     /// </summary>
     public partial class ChartView : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
-        int index;
+        private int index;
 
         private ProjectContainer PrCon_;
+
         public ProjectContainer PrCon
         {
             get { return PrCon_; }
@@ -33,6 +33,7 @@ namespace FenixWPF
         }
 
         private Project Pr_;
+
         public Project Pr
         {
             get { return Pr_; }
@@ -44,6 +45,7 @@ namespace FenixWPF
         }
 
         private Connection Con_;
+
         public Connection Con
         {
             get { return Con_; }
@@ -51,19 +53,21 @@ namespace FenixWPF
         }
 
         private Device Dev_;
+
         public Device Dev
         {
             get { return Dev_; }
             set { Dev_ = value; }
         }
 
-        ObservableCollection<ITag> ITagList;
-        ObservableCollection<IDriverModel> IDriverList;
-        LayoutAnchorable Win;
-        ElementKind ElKind;
-        Guid Sel;
+        private ObservableCollection<ITag> ITagList;
+        private ObservableCollection<IDriverModel> IDriverList;
+        private LayoutAnchorable Win;
+        private ElementKind ElKind;
+        private Guid Sel;
 
-        PropertyChangedEventHandler propChanged_;
+        private PropertyChangedEventHandler propChanged_;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -82,6 +86,7 @@ namespace FenixWPF
 
         //Os X
         public LinearAxis AxY1 { get; set; }
+
         public DateTimeAxis AxX1 { get; set; }
 
         //Konstruktor
@@ -96,22 +101,21 @@ namespace FenixWPF
                 ElKind = elkind;
                 Sel = sel;
 
-
                 InitializeComponent();
-              
+
                 #region Selekcja Elementu
 
                 //wybur obiektu
                 if (ElKind == ElementKind.Project)
                 {
-                    ITagList = ((ITableView)Pr).Children;                  
+                    ITagList = ((ITableView)Pr).Children;
                     IDriverList = ((IDriversMagazine)Pr).Children;
 
                     //Collection
 
                     ((ITableView)Pr).Children.CollectionChanged += ITagList_CollectionChanged;
                     ((ITreeViewModel)Pr).Children.CollectionChanged += Project_ChildrenChanged;
-                    ((IDriversMagazine)Pr).Children.CollectionChanged +=  IDriver_CollectionChanged;
+                    ((IDriversMagazine)Pr).Children.CollectionChanged += IDriver_CollectionChanged;
 
                     //Properties
 
@@ -131,15 +135,14 @@ namespace FenixWPF
 
                     foreach (IDriverModel idr in IDriverList)
                         idr.refreshedCycle += driverRefreshed;
-
                 }
                 else if (ElKind == ElementKind.Connection)
                 {
                     if (Pr.connectionList.Exists(x => x.objId == Sel))
                     {
                         Con = PrCon.getConnection(Pr.objId, Sel);
-                                                             
-                        ITagList = ((ITableView)Con).Children;                       
+
+                        ITagList = ((ITableView)Con).Children;
                         IDriverList = ((IDriversMagazine)Con).Children;
 
                         //Collection
@@ -166,22 +169,21 @@ namespace FenixWPF
 
                         foreach (IDriverModel idr in IDriverList)
                             idr.refreshedCycle += driverRefreshed;
-
                     }
                     else
                     {
                         Win.Close();
                     }
                 }
-                else if(ElKind == ElementKind.Device)
+                else if (ElKind == ElementKind.Device)
                 {
                     if (Pr.DevicesList.Exists(x => x.objId == Sel))
                     {
                         Dev = PrCon.getDevice(Pr.objId, Sel);
                         Con = PrCon.getConnection(Pr.objId, Dev.parentId);
-                   
+
                         //Dane
-                        ITagList = ((ITableView)Dev).Children;                        
+                        ITagList = ((ITableView)Dev).Children;
                         IDriverList = ((IDriversMagazine)Dev).Children;
 
                         //Collection
@@ -205,7 +207,6 @@ namespace FenixWPF
 
                         foreach (IDriverModel idr in IDriverList)
                             idr.refreshedCycle += driverRefreshed;
-
                     }
                     else
                     {
@@ -213,7 +214,7 @@ namespace FenixWPF
                     }
                 }
 
-                #endregion
+                #endregion Selekcja Elementu
 
                 #region Plot Series
 
@@ -242,9 +243,9 @@ namespace FenixWPF
                 plotModel.Axes.Add(AxX1);
                 plotModel.Axes.Add(AxY1);
                 View.Model = plotModel;
-                
+
                 //Obieg tagow
-                foreach (ITag t in ITagList.Where(x=>x.GrEnable))
+                foreach (ITag t in ITagList.Where(x => x.GrEnable))
                 {
                     if (t.GrEnable)
                     {
@@ -252,10 +253,10 @@ namespace FenixWPF
                         var s1 = new LineSeries
                         {
                             Title = t.Name,
-                            TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:"+ Pr.longDT+"}",
+                            TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:" + Pr.longDT + "}",
                             Color = OxyColor.FromRgb(t.Clr.R, t.Clr.G, t.Clr.B),
                             StrokeThickness = t.Width,
-                            IsVisible = t.GrVisible                          
+                            IsVisible = t.GrVisible
                         };
 
                         s1.Tag = t.Id;
@@ -263,7 +264,9 @@ namespace FenixWPF
                     }
                 }
 
-                #endregion           
+                #endregion Plot Series
+
+
 
                 RefreshObservablePath();
 
@@ -282,7 +285,7 @@ namespace FenixWPF
         //Project Properties
         private void Project_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-             if (e.PropertyName == nameof(Connection.connectionName))
+            if (e.PropertyName == nameof(Connection.connectionName))
                 RefreshObservablePath();
         }
 
@@ -303,7 +306,6 @@ namespace FenixWPF
         //ITag Properties
         private void ITag_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-
             try
             {
                 if (e.PropertyName != nameof(ITag.Value) && e.PropertyName != "IsLive" && e.PropertyName != "isAlive")
@@ -337,7 +339,6 @@ namespace FenixWPF
                                     Color = OxyColor.FromRgb(tg.Clr.R, tg.Clr.G, tg.Clr.B),
                                     StrokeThickness = tg.Width,
                                     IsVisible = tg.GrVisible
-
                                 };
 
                                 s1.Tag = tg.Id;
@@ -352,20 +353,16 @@ namespace FenixWPF
                                 ser.StrokeThickness = tg.Width;
                                 ser.IsVisible = tg.GrVisible;
                             }
-
                         }
 
                         plotModel.InvalidatePlot(true);
-
                     }));
                 }
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
-
         }
 
         //ChartConf Properties
@@ -386,12 +383,9 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-
-
 
         private void Project_ChildrenChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -408,7 +402,7 @@ namespace FenixWPF
                             {
                                 if (Con != null)
                                     ((INotifyPropertyChanged)Con).PropertyChanged -= Connection_PropertyChanged;
-                                
+
                                 Win.Close();
                             }
                         }
@@ -416,16 +410,16 @@ namespace FenixWPF
                         {
                             if (cn.objId == Dev.parentId)
                             {
-                                if(Con != null)
-                                ((INotifyPropertyChanged)Con).PropertyChanged -= Connection_PropertyChanged;
+                                if (Con != null)
+                                    ((INotifyPropertyChanged)Con).PropertyChanged -= Connection_PropertyChanged;
 
-                                if(Dev != null)
+                                if (Dev != null)
                                     ((INotifyPropertyChanged)Dev).PropertyChanged -= Device_PropertyChanged;
 
                                 Win.Close();
                             }
                         }
-                    }                    
+                    }
                 }
             }
             catch (Exception Ex)
@@ -496,7 +490,6 @@ namespace FenixWPF
                 }
                 else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
                 {
-
                     ITag t = (ITag)e.OldItems[0];
 
                     if (t as Tag != null)
@@ -516,7 +509,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -524,35 +516,31 @@ namespace FenixWPF
         //IDriver Collection
         private void IDriver_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 ((IDriverModel)e.OldItems[0]).refreshedCycle -= driverRefreshed;
             }
-            else if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 ((IDriverModel)e.NewItems[0]).refreshedCycle += driverRefreshed;
             }
         }
 
-
-        //Odswierz Opisy Okna 
+        //Odswierz Opisy Okna
         private void RefreshObservablePath()
         {
-
             try
-            {           
+            {
                 if (ElKind == ElementKind.Project)
                 {
                     Win.Title = Pr.projectName;
                 }
-
                 else if (ElKind == ElementKind.Connection)
                 {
                     Connection cn = PrCon.getConnection(Pr.objId, Sel);
                     if (cn != null && Pr != null)
                         Win.Title = Pr.projectName + "." + cn.connectionName;
                 }
-
                 else if (ElKind == ElementKind.Device)
                 {
                     Device dev = PrCon.getDevice(Pr.objId, Sel);
@@ -571,10 +559,10 @@ namespace FenixWPF
         public void driverRefreshed(object sender, EventArgs e)
         {
             try
-            {                    
+            {
                 //Obsluga wymiany miedzywatkami
-                View.Dispatcher.InvokeAsync(new Action(()=>{
-
+                View.Dispatcher.InvokeAsync(new Action(() =>
+                {
                     //Blokada
                     if (Pr.ChartConf.histData)
                         return;
@@ -583,55 +571,9 @@ namespace FenixWPF
                     if (sender is ScriptsDriver || sender is InternalTagsDriver)
                     {
                         #region Script Etc.
+
                         foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is InTag))
                         {
-
-                            if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
-                            {
-
-                                Boolean lastPoint = false;
-                                var ser = (LineSeries)(from x in plotModel.Series where x.Title == tg.Name select x).First();
-
-                                if (tg.TypeData_ == TypeData.BIT)
-                                {
-                                    if (ser.Points.Count != 0)
-                                        lastPoint = Convert.ToBoolean(ser.Points[ser.Points.Count - 1].Y);
-
-                                    if (lastPoint != (bool)tg.Value)
-                                    {
-                                        var data = DateTime.Now;
-                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(lastPoint)));
-                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
-                                    }
-                                    else
-                                    {
-                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
-                                    }
-                                }
-                                else if(tg.TypeData_ == TypeData.CHAR)
-                                {
-                                    int pom = (int)Char.GetNumericValue((char)tg.Value);
-                                    double val = Convert.ToDouble(pom);
-                                    ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(),val));
-                                }
-                                else
-                                {
-                                    ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
-                                }                              
-                            }
-                        }
-
-                        plotModel.InvalidatePlot(true);
-                        #endregion
-                    }
-                    else
-                    {
-                        #region CommDriver
-
-                        //Odswierzenie Tag
-                        foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is Tag && ((IDriverModel)sender).ObjId == ((IDriverModel)x).ObjId))
-                        {
-
                             if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
                             {
                                 Boolean lastPoint = false;
@@ -668,7 +610,52 @@ namespace FenixWPF
 
                         plotModel.InvalidatePlot(true);
 
-                        #endregion
+                        #endregion Script Etc.
+                    }
+                    else
+                    {
+                        #region CommDriver
+
+                        //Odswierzenie Tag
+                        foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is Tag && ((IDriverModel)sender).ObjId == ((IDriverModel)x).ObjId))
+                        {
+                            if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
+                            {
+                                Boolean lastPoint = false;
+                                var ser = (LineSeries)(from x in plotModel.Series where x.Title == tg.Name select x).First();
+
+                                if (tg.TypeData_ == TypeData.BIT)
+                                {
+                                    if (ser.Points.Count != 0)
+                                        lastPoint = Convert.ToBoolean(ser.Points[ser.Points.Count - 1].Y);
+
+                                    if (lastPoint != (bool)tg.Value)
+                                    {
+                                        var data = DateTime.Now;
+                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(lastPoint)));
+                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
+                                    }
+                                    else
+                                    {
+                                        ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
+                                    }
+                                }
+                                else if (tg.TypeData_ == TypeData.CHAR)
+                                {
+                                    int pom = (int)Char.GetNumericValue((char)tg.Value);
+                                    double val = Convert.ToDouble(pom);
+                                    ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), val));
+                                }
+                                else
+                                {
+                                    ser.Points.Add(new DataPoint(DateTime.Now.ToOADate(), Convert.ToDouble(tg.Value)));
+                                }
+                            }
+                        }
+
+                        plotModel.InvalidatePlot(true);
+
+                        #endregion CommDriver
                     }
 
                     //Ogranicznie czasowe
@@ -682,24 +669,20 @@ namespace FenixWPF
                             {
                                 while (diff > Pr.ChartConf.TrackSpan)
                                 {
-                                    
                                     diff = DateTime.Now.Subtract(DateTime.FromOADate(sr.Points.First().X));
                                     sr.Points.RemoveAt(0);
                                 }
-                            }                            
+                            }
                         }
                     }
-                                         
                 }));
-
-              
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-                  
+
         //Reset widoku
         private void Button_Reset_Click(object sender, RoutedEventArgs e)
         {
@@ -731,19 +714,19 @@ namespace FenixWPF
         {
             try
             {
-                foreach (ITag tg in ITagList.Where(x=>x.GrEnable))
+                foreach (ITag tg in ITagList.Where(x => x.GrEnable))
                 {
-                    if(plotModel.Series.ToList().Exists(x=>x.Title == tg.Name))
+                    if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
                     {
                         //Seria danych
                         var ser = (LineSeries)(from x in plotModel.Series where x.Title == tg.Name select x).First();
                         ser.Points.Clear();
 
-                        DatabaseValues buff =  Pr.Db.GetRange(tg, Pr.ChartConf.From, Pr.ChartConf.To);
+                        DatabaseValues buff = Pr.Db.GetRange(tg, Pr.ChartConf.From, Pr.ChartConf.To);
 
-                        for(int i=0; i < buff.TimePts.Count;i++)
+                        for (int i = 0; i < buff.TimePts.Count; i++)
                             ser.Points.Add(new DataPoint(buff.TimePts[i], buff.ValPts[i]));
-                    }                                                 
+                    }
                 }
 
                 //Reset Widoku
@@ -770,7 +753,7 @@ namespace FenixWPF
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-        
+
         //Ustawienie bierzacego czasu dla From
         private void Button_SetFrom_Click(object sender, RoutedEventArgs e)
         {
@@ -796,13 +779,13 @@ namespace FenixWPF
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-        
+
         //Y1
         private void Button_Y1_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if(Y1.Value.HasValue)
+                if (Y1.Value.HasValue)
                 {
                     if (Double.IsNaN(AxY1.Minimum))
                     {
@@ -858,7 +841,6 @@ namespace FenixWPF
         {
             try
             {
-
                 if (X0.Value.HasValue && ((DateTime)X0.Value).Ticks > 0)
                 {
                     if (Double.IsNaN(AxX1.Maximum))
@@ -900,7 +882,7 @@ namespace FenixWPF
                         else
                             throw new Exception("Maximum must be grather then minumum!");
                     }
-               
+
                     plotModel.InvalidatePlot(true);
                 }
             }
@@ -967,7 +949,6 @@ namespace FenixWPF
 
                     foreach (IDriverModel idr in IDriverList)
                         idr.refreshedCycle -= driverRefreshed;
-
                 }
                 else if (ElKind == ElementKind.Connection)
                 {
@@ -995,8 +976,6 @@ namespace FenixWPF
 
                     foreach (IDriverModel idr in IDriverList)
                         idr.refreshedCycle -= driverRefreshed;
-
-
                 }
                 else if (ElKind == ElementKind.Device)
                 {
@@ -1021,7 +1000,6 @@ namespace FenixWPF
 
                     foreach (IDriverModel idr in IDriverList)
                         idr.refreshedCycle -= driverRefreshed;
-
                 }
 
                 //Informacja o stanie okna
@@ -1045,17 +1023,15 @@ namespace FenixWPF
                 View = null;
 
                 plotModel = null;
-
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-
     }
 
-    class TimeSpanValid : ValidationRule
+    internal class TimeSpanValid : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -1065,5 +1041,4 @@ namespace FenixWPF
                 return new ValidationResult(true, null);
         }
     }
-
 }

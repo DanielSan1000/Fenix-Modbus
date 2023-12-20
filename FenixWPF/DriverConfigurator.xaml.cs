@@ -1,22 +1,11 @@
 ﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace FenixWPF
 {
@@ -28,20 +17,20 @@ namespace FenixWPF
         /// <summary>
         /// Gloabalna konfiguracja
         /// </summary>
-        GlobalConfiguration gConf;
+        private GlobalConfiguration gConf;
 
         /// <summary>
         /// Kontener
         /// </summary>
-        ProjectContainer PrCon;
+        private ProjectContainer PrCon;
 
         private ObservableCollection<Drv> Drvs_ = new ObservableCollection<Drv>();
+
         public ObservableCollection<Drv> Drvs
         {
             get { return Drvs_; }
             set { Drvs_ = value; }
         }
-
 
         public DriverConfigurator(GlobalConfiguration conf, ProjectContainer prcn)
         {
@@ -74,7 +63,6 @@ namespace FenixWPF
                         Drvs.Add(d);
                     }
                 }
-
             }
         }
 
@@ -90,17 +78,15 @@ namespace FenixWPF
 
                 if (fDialog.ShowDialog().Equals(System.Windows.Forms.DialogResult.OK))
                 {
-
                     //Dodawanie plików
                     foreach (string s in fDialog.FileNames)
                     {
-
                         Assembly asm = Assembly.LoadFile(s);
 
                         if (gConf.checkAssembly(asm))
-                        {                           
+                        {
                             Type tp = asm.GetType("nmDriver.Driver");
-                            IDriverModel idrv = (IDriverModel)asm.CreateInstance(tp.FullName);                        
+                            IDriverModel idrv = (IDriverModel)asm.CreateInstance(tp.FullName);
                             Drv d = new Drv() { Index = Drvs.Count, Name = idrv.driverName, Ver = tp.Assembly.GetName().Version.ToString(), Path = s };
                             Drvs.Add(d);
                             gConf.addDrvMan(s);
@@ -119,7 +105,7 @@ namespace FenixWPF
         private void Button_RemoveDriver_Click(object sender, RoutedEventArgs e)
         {
             Drv dr = (Drv)View.SelectedItem;
-            if(dr != null)
+            if (dr != null)
             {
                 gConf.removeDrv(dr.Path);
                 Drvs.Remove(dr);
@@ -157,6 +143,7 @@ namespace FenixWPF
     public class Drv : INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -171,6 +158,7 @@ namespace FenixWPF
         }
 
         private int Index_;
+
         public int Index
         {
             get { return Index_; }
@@ -182,6 +170,7 @@ namespace FenixWPF
         }
 
         private string Name_;
+
         public string Name
         {
             get { return Name_; }
@@ -193,6 +182,7 @@ namespace FenixWPF
         }
 
         private string Ver_;
+
         public string Ver
         {
             get { return Ver_; }
@@ -204,6 +194,7 @@ namespace FenixWPF
         }
 
         private string Path_;
+
         public string Path
         {
             get { return Path_; }
@@ -213,6 +204,5 @@ namespace FenixWPF
                 propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Path)));
             }
         }
-
     }
 }

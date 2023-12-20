@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
+﻿using WeifenLuo.WinFormsUI.Docking;
 
 namespace FenixServer
 {
@@ -9,6 +8,5 @@ namespace FenixServer
         {
             InitializeComponent();
         }
-
     }
 }

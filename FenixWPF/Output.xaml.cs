@@ -13,9 +13,10 @@ namespace FenixWPF
     /// </summary>
     public partial class Output : UserControl, INotifyPropertyChanged
     {
-        ProjectContainer PrCon;
+        private ProjectContainer PrCon;
 
-        PropertyChangedEventHandler propChanged_;
+        private PropertyChangedEventHandler propChanged_;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -29,11 +30,12 @@ namespace FenixWPF
             }
         }
 
-        bool mScroll_ = true;
-        public Boolean mScroll { get { return mScroll_; } set { mScroll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScroll")); } }
+        private bool mScroll_ = true;
+        public Boolean mScroll
+        { get { return mScroll_; } set { mScroll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScroll")); } }
 
         //Konstruktor
-        public Output(ProjectContainer prCon ,object listaAlarmow)
+        public Output(ProjectContainer prCon, object listaAlarmow)
         {
             InitializeComponent();
 
@@ -44,7 +46,6 @@ namespace FenixWPF
 
             ((ObservableCollection<CustomException>)listaAlarmow).CollectionChanged += Output_CollectionChanged;
         }
-
 
         private void Output_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -60,9 +61,7 @@ namespace FenixWPF
             //        }
             //    }
             //}
-            
         }
-
 
         //Wyczysc
         private void Button_Clr_Click(object sender, RoutedEventArgs e)
@@ -74,10 +73,9 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this,new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-
 
         public override string ToString()
         {

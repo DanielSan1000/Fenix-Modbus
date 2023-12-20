@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Windows;
-using System.IO;
 
 namespace FenixWPF
 {
@@ -10,8 +10,7 @@ namespace FenixWPF
     /// </summary>
     public partial class App : Application
     {
-
-        Mutex myMutex;
+        private Mutex myMutex;
 
         public App()
         {
@@ -21,7 +20,6 @@ namespace FenixWPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-
             bool aIsNewInstance = false;
             myMutex = new Mutex(true, "FenixManager", out aIsNewInstance);
 
@@ -34,17 +32,14 @@ namespace FenixWPF
             base.OnStartup(e);
         }
 
-
-        void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        private void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
 
             if (!Directory.Exists(Environment.CurrentDirectory + "\\Logs"))
                 Directory.CreateDirectory(Environment.CurrentDirectory + "\\Logs");
 
-            File.WriteAllText(Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToString("MM_dd_yy_H_mm_ss") +".txt", e.StackTrace);
-
+            File.WriteAllText(Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToString("MM_dd_yy_H_mm_ss") + ".txt", e.StackTrace);
         }
-
     }
 }

@@ -14,6 +14,7 @@ namespace nmDriver
     {
         // Constants for access
         private const byte fctReadCoil = 1;
+
         private const byte fctReadDiscreteInputs = 2;
         private const byte fctReadHoldingRegister = 3;
         private const byte fctReadInputRegister = 4;
@@ -23,52 +24,55 @@ namespace nmDriver
         private const byte fctWriteMultipleRegister = 16;
 
         //Głowny Buffor danych punkt wejsciowy dla obslugi tagów
-        List<Tag> tagList = new List<Tag>();
+        private List<Tag> tagList = new List<Tag>();
 
         //Beckgroundworker
         [NonSerialized]
+        private
         //Watek wtle
         BackgroundWorker bWorker;
 
         //Informacja o aktywnosci odczytu
-        Boolean isLive_;
+        private Boolean isLive_;
+
         public bool isLive
         {
             get { return isLive_; }
             set
             {
-                isLive_ = value;        
+                isLive_ = value;
             }
         }
 
+        [field: NonSerialized]
+        private EventHandler sendInfoEv;
 
         [field: NonSerialized]
-        EventHandler sendInfoEv;
+        private EventHandler errorSendEv;
 
         [field: NonSerialized]
-        EventHandler errorSendEv;
+        private EventHandler refreshedPartial;
 
         [field: NonSerialized]
-        EventHandler refreshedPartial;
+        private EventHandler refreshCycleEv;
 
         [field: NonSerialized]
-        EventHandler refreshCycleEv;
+        private EventHandler sendLogInfoEv;
 
         [field: NonSerialized]
-        EventHandler sendLogInfoEv;
-
-        [field: NonSerialized]
-        EventHandler reciveLogInfoEv;
+        private EventHandler reciveLogInfoEv;
 
         /// <summary>
         /// Obszary Pamieci dla sterownika
         /// </summary>
-        static string CoilsName = "Coils";
-        static string DigitalInputsName = "DigitalInputs";
-        static string InputRegisterName = "InputRegisters";
-        static string HoldingRegisterName = "HoldingRegisters";
+        private static string CoilsName = "Coils";
 
-        Guid ObjId_;
+        private static string DigitalInputsName = "DigitalInputs";
+        private static string InputRegisterName = "InputRegisters";
+        private static string HoldingRegisterName = "HoldingRegisters";
+
+        private Guid ObjId_;
+
         Guid IDriverModel.ObjId
         {
             get { return ObjId_; }
@@ -77,17 +81,17 @@ namespace nmDriver
         /// <summary>
         /// Zapytanie do urzadzen zdalnych
         /// </summary>
-        List<byte[]> mainFrames = new List<byte[]>();
+        private List<byte[]> mainFrames = new List<byte[]>();
 
         /// <summary>
         /// Serialport
         /// </summary>
-        SerialPort sPort;
+        private SerialPort sPort;
 
         /// <summary>
         /// Parametry Transmisji
         /// </summary>
-        IoDriverParam DriverParam_;
+        private IoDriverParam DriverParam_;
 
         /// <summary>
         /// Nazwa Sterownika
@@ -137,11 +141,10 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
-
         }
 
         /// <summary>
@@ -169,7 +172,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -198,7 +201,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -212,7 +215,6 @@ namespace nmDriver
         {
             try
             {
-
                 ConfigData(this.tagList);
 
                 return true;
@@ -220,7 +222,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -283,10 +285,10 @@ namespace nmDriver
         {
             get
             {
-                return new MemoryAreaInfo[] { 
-                    new MemoryAreaInfo(CoilsName,1,1), 
-                    new MemoryAreaInfo(DigitalInputsName,1,2), 
-                    new MemoryAreaInfo(InputRegisterName,16,4), 
+                return new MemoryAreaInfo[] {
+                    new MemoryAreaInfo(CoilsName,1,1),
+                    new MemoryAreaInfo(DigitalInputsName,1,2),
+                    new MemoryAreaInfo(InputRegisterName,16,4),
                     new MemoryAreaInfo(HoldingRegisterName,16,3) };
             }
         }
@@ -318,7 +320,6 @@ namespace nmDriver
             set
             {
                 isLive = value;
-             
             }
         }
 
@@ -351,12 +352,11 @@ namespace nmDriver
                 bWorker.WorkerSupportsCancellation = true;
                 bWorker.DoWork += new DoWorkEventHandler(bWorker_DoWork);
                 bWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bWorker_RunWorkerCompleted);
-
             }
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.Constructor :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.Constructor :" + Ex.Message, Ex));
             }
         }
 
@@ -365,13 +365,13 @@ namespace nmDriver
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void bWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             //Sprawdz cy klient jest poloczony
             if (!sPort.IsOpen)
                 return;
-      
-           //Wysalnie zapytan
+
+            //Wysalnie zapytan
             if (mainFrames.Count > 0)
             {
                 try
@@ -386,11 +386,12 @@ namespace nmDriver
                 catch (Exception Ex)
                 {
                     if (errorSendEv != null)
-                        errorSendEv(this, new ProjectEventArgs(mainFrames, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork :" + Ex.Message,Ex));
+                        errorSendEv(this, new ProjectEventArgs(mainFrames, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork :" + Ex.Message, Ex));
                 }
             }
-            
+
             #region Zapisz dane na porcie
+
             //Tagi z obszaru Coils do zapisu
             List<Tag> COWrite = tagList.Where(x => x.areaData.Equals(CoilsName) && x.setMod).ToList();
             if (COWrite.Count > 0)
@@ -410,7 +411,7 @@ namespace nmDriver
                         btArray.CopyTo(buffByteArr, 0);
 
                         //Formowanie ramki
-                        byte[] wrCoFrame = CreateWriteHeader((byte)tg.deviceAdress, (ushort)tg.startData,(ushort)tg.coreDataSend.Length, buffByteArr,fctWriteMultipleCoils);
+                        byte[] wrCoFrame = CreateWriteHeader((byte)tg.deviceAdress, (ushort)tg.startData, (ushort)tg.coreDataSend.Length, buffByteArr, fctWriteMultipleCoils);
                         tg.setMod = false;
 
                         //Zdarzenia
@@ -429,29 +430,25 @@ namespace nmDriver
                             //Sprawdzenie
                             if (checkResponse(wrCoFrame, rcvCo))
                             {
-
                             }
                         }
                     }
                 }
                 catch (Exception Ex)
                 {
-
                     if (errorSendEv != null)
-                        errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork.WriteCO :" + Ex.Message,Ex));
+                        errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork.WriteCO :" + Ex.Message, Ex));
                 }
             }
-           
+
             //Tagi do zapisu w obszarze HoldingRegisters do zapisu
             List<Tag> HRWrite = tagList.Where(x => x.areaData.Equals(HoldingRegisterName) && x.setMod).ToList();
             if (HRWrite.Count > 0)
             {
-                
                 try
                 {
                     foreach (Tag tg in HRWrite)
                     {
-
                         //Utworzenie do wyslania
                         BitArray btArray = new BitArray(tg.coreDataSend);
                         //Utworzenie tablicy byte
@@ -460,13 +457,13 @@ namespace nmDriver
                         btArray.CopyTo(buffByteArr, 0);
 
                         //Formowanie ramki
-                        byte[] wrHRFrame = CreateWriteHeader((byte)tg.deviceAdress, (ushort)tg.startData, 0,buffByteArr,fctWriteMultipleRegister);
+                        byte[] wrHRFrame = CreateWriteHeader((byte)tg.deviceAdress, (ushort)tg.startData, 0, buffByteArr, fctWriteMultipleRegister);
                         tg.setMod = false;
 
                         //Zdarzenia
                         if (sendLogInfoEv != null)
                             sendLogInfoEv(this, new ProjectEventArgs(wrHRFrame, DateTime.Now, getAreaFromFrame(wrHRFrame) + "REQUEST"));
-     
+
                         //Wyslanie i oczekiwanie na zwrot Danych
                         byte[] rcvBuff = writeDataOnPort(wrHRFrame);
 
@@ -479,20 +476,18 @@ namespace nmDriver
 
                             if (checkResponse(wrHRFrame, rcvBuff))
                             {
-
                             }
                         }
                     }
                 }
                 catch (Exception Ex)
                 {
-
                     if (errorSendEv != null)
-                        errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork.WriteHR :" + Ex.Message,Ex));
+                        errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_DoWork.WriteHR :" + Ex.Message, Ex));
                 }
             }
 
-            #endregion
+            #endregion Zapisz dane na porcie
 
             //Opoznienie wątku o dany czas
             Thread.Sleep(DriverParam_.ReplyTime);
@@ -503,7 +498,7 @@ namespace nmDriver
         /// </summary>
         /// <param name="dane"></param>
         /// <returns></returns>
-        byte[] writeDataOnPort(byte[] dane)
+        private byte[] writeDataOnPort(byte[] dane)
         {
             //Zapis na port
             sPort.Write(dane, 0, dane.Length);
@@ -528,10 +523,10 @@ namespace nmDriver
             }
 
             //Odczyt kodu bledu
-            if(sPort.BytesToRead == 5)
+            if (sPort.BytesToRead == 5)
             {
                 byte[] response = new byte[5];
-                sPort.Read(response,0,response.Length);
+                sPort.Read(response, 0, response.Length);
                 return response;
             }
 
@@ -544,12 +539,12 @@ namespace nmDriver
         /// </summary>
         /// <param name="frRequest"></param>
         /// <returns></returns>
-        Boolean makeTranscation(byte[] frRequest)
+        private Boolean makeTranscation(byte[] frRequest)
         {
             //Zdarzenia
             if (sendLogInfoEv != null)
                 sendLogInfoEv(this, new ProjectEventArgs(frRequest, DateTime.Now, getAreaFromFrame(frRequest) + "REQUEST"));
-      
+
             //Fukcja zwraca dane odpowiedzi jezeli pakiet jest pusty jest Timeout
             byte[] frResponse = writeDataOnPort(frRequest);
 
@@ -628,7 +623,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.getDataFrame :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.getDataFrame :" + Ex.Message, Ex));
 
                 return null;
             }
@@ -639,7 +634,7 @@ namespace nmDriver
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
@@ -656,7 +651,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_RunWorkerCompleted :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.bWorker_RunWorkerCompleted :" + Ex.Message, Ex));
             }
         }
 
@@ -664,7 +659,7 @@ namespace nmDriver
         /// Konfiguracja parmamertów Bufforów dla rejestrow
         /// </summary>
         /// <param name="tagList"></param>
-        void ConfigData(List<Tag> tagList)
+        private void ConfigData(List<Tag> tagList)
         {
             //Testowanie strownika
             if (tagList == null)
@@ -681,7 +676,7 @@ namespace nmDriver
 
             //Tworzenie Ramek
             foreach (int i in adreses)
-             buffFrames.AddRange(configSingleDevice(tagList.Where(x => x.deviceAdress == i).ToList(),i));
+                buffFrames.AddRange(configSingleDevice(tagList.Where(x => x.deviceAdress == i).ToList(), i));
 
             //Przypisanie zapytań
             mainFrames = buffFrames;
@@ -692,7 +687,7 @@ namespace nmDriver
         /// </summary>
         /// <param name="tgs"></param>
         /// <returns></returns>
-        List<byte[]> configSingleDevice(List<Tag> tgs, int adress)
+        private List<byte[]> configSingleDevice(List<Tag> tgs, int adress)
         {
             int maxFrameSizeCO = 230 * 8;
             int maxSizeCO = 130;
@@ -732,21 +727,16 @@ namespace nmDriver
                         //Zabezpiecznie dlugiej ramki
                         if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrameSizeCO)
                         {
-
                             //Jestemy w miejscu Taga trzeba podac koniec
                             Tag halfTag = coilsTag.Where(x => x.startData <= i && (x.startData + x.coreData.Length) > i).ToList()[0];
                             if (halfTag != null)
                             {
-
                                 points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length - 1;
                                 i = points[points.Count - 1].Y + 1;
                                 points.Add(new PO(i, 0));
                             }
-
-
                             else
                                 points.Add(new PO(i, 0));
-
                         }
 
                         //Zabezpieczenie przed przekroczeniem wolnego odstepu
@@ -786,7 +776,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.CO :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.CO :" + Ex.Message, Ex));
             }
 
             try
@@ -816,12 +806,10 @@ namespace nmDriver
                             Tag halfTag = DiscreteInputTag.Where(x => x.startData <= i && (x.startData + x.coreData.Length) > i).ToList()[0];
                             if (halfTag != null)
                             {
-
                                 points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length - 1;
                                 i = points[points.Count - 1].Y + 1;
                                 points.Add(new PO(i, 0));
                             }
-
                             else
                                 points.Add(new PO(i, 0));
                         }
@@ -862,9 +850,8 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.DI :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.DI :" + Ex.Message, Ex));
             }
-
 
             try
             {
@@ -873,12 +860,10 @@ namespace nmDriver
                 InputRegisterTag = tgs.Where(x => x.areaData.Equals(InputRegisterName)).ToList<Tag>();
                 if (InputRegisterTag.Count > 0)
                 {
-
                     //Najnizszy i najwyzszy adres tagowy.
                     int min = InputRegisterTag.Min(x => x.startData);
                     int max = InputRegisterTag.Max(x => (x.startData + x.coreData.Length / 16)) - 1;
                     int marker = 0;
-
 
                     //Lista punktow do utworzenia ramek
                     List<PO> points = new List<PO>();
@@ -893,13 +878,10 @@ namespace nmDriver
                             Tag halfTag = InputRegisterTag.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 16) > i).ToList()[0];
                             if (halfTag != null)
                             {
-
                                 points[points.Count - 1].Y = halfTag.startData + (halfTag.coreData.Length / 16) - 1;
                                 i = points[points.Count - 1].Y + 1;
                                 points.Add(new PO(i, 0));
                             }
-
-
                             else
                                 points.Add(new PO(i, 0));
                         }
@@ -935,13 +917,12 @@ namespace nmDriver
                     {
                         buffFrames.Add(CreateReadHeader((byte)adress, (ushort)p.X, (ushort)((p.Y - p.X) + 1), fctReadInputRegister));
                     }
-
                 }
             }
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.IR :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.IR :" + Ex.Message, Ex));
             }
 
             try
@@ -970,16 +951,12 @@ namespace nmDriver
                             Tag halfTag = HoldingRegisterTag.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 16) > i).ToList()[0];
                             if (halfTag != null)
                             {
-
                                 points[points.Count - 1].Y = halfTag.startData + (halfTag.coreData.Length / 16) - 1;
                                 i = points[points.Count - 1].Y + 1;
                                 points.Add(new PO(i, 0));
                             }
-
-
                             else
                                 points.Add(new PO(i, 0));
-
                         }
 
                         //Zabezpieczenie przed przekroczeniem wolnego odstepu
@@ -1013,15 +990,13 @@ namespace nmDriver
                     {
                         buffFrames.Add(CreateReadHeader((byte)adress, (ushort)p.X, (ushort)((p.Y - p.X) + 1), fctReadHoldingRegister));
                     }
-
                 }
             }
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.HR :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "ModbusMasterRTU.configSingleDevice.HR :" + Ex.Message, Ex));
             }
-
 
             return buffFrames;
         }
@@ -1034,7 +1009,7 @@ namespace nmDriver
         /// <param name="length"></param>
         /// <param name="function"></param>
         /// <returns></returns>
-        byte[] CreateReadHeader(byte id, ushort startAddress, ushort length, byte function)
+        private byte[] CreateReadHeader(byte id, ushort startAddress, ushort length, byte function)
         {
             //tworzenie tablicy
             byte[] data = new byte[8];
@@ -1042,7 +1017,7 @@ namespace nmDriver
             data[0] = id; //id
             data[1] = function; // kod funkcji
 
-            //Start 
+            //Start
             byte[] start_adr = BitConverter.GetBytes(startAddress);
             data[2] = start_adr[1];
             data[3] = start_adr[0];
@@ -1070,7 +1045,7 @@ namespace nmDriver
         /// <param name="value"></param>
         /// <param name="function"></param>
         /// <returns></returns>
-        byte[] CreateWriteHeader(byte id, ushort startAddress, ushort countData ,byte[] value, byte function)
+        private byte[] CreateWriteHeader(byte id, ushort startAddress, ushort countData, byte[] value, byte function)
         {
             if (function == fctWriteSingleCoil)
             {
@@ -1080,7 +1055,7 @@ namespace nmDriver
                 data[0] = id; //id
                 data[1] = function; // kod funkcji
 
-                //Start 
+                //Start
                 byte[] start_adr = BitConverter.GetBytes(startAddress);
                 data[2] = start_adr[1];
                 data[3] = start_adr[0];
@@ -1107,7 +1082,7 @@ namespace nmDriver
                 data[0] = (Byte)id; //id
                 data[1] = function; // kod funkcji
 
-                //Start 
+                //Start
                 byte[] start_adr = BitConverter.GetBytes(startAddress);
                 data[2] = start_adr[1];
                 data[3] = start_adr[0];
@@ -1132,7 +1107,6 @@ namespace nmDriver
                 data[data.Length - 1] = crc_bytes[0];
 
                 return data;
-
             }
 
             if (function == fctWriteSingleRegister)
@@ -1143,7 +1117,7 @@ namespace nmDriver
                 data[0] = (Byte)id; //id
                 data[1] = function; // kod funkcji
 
-                //Start 
+                //Start
                 byte[] start_adr = BitConverter.GetBytes(startAddress);
                 data[2] = start_adr[1];
                 data[3] = start_adr[0];
@@ -1160,7 +1134,6 @@ namespace nmDriver
                 data[7] = crc_bytes[0];
 
                 return data;
-
             }
 
             if (function == fctWriteMultipleRegister)
@@ -1171,7 +1144,7 @@ namespace nmDriver
                 data[0] = (Byte)id; //id
                 data[1] = function; // kod funkcji
 
-                //Start 
+                //Start
                 byte[] start_adr = BitConverter.GetBytes(startAddress);
                 data[2] = start_adr[1];
                 data[3] = start_adr[0];
@@ -1201,15 +1174,17 @@ namespace nmDriver
         }
 
         /// <summary>
-         /// Crc16 calculation
+        /// Crc16 calculation
         /// </summary>
         /// <param name="modbusframe"></param>
         /// <param name="Length"></param>
         /// <returns></returns>
-        int crc16(byte[] modbusframe, int Length)
+        private int crc16(byte[] modbusframe, int Length)
         {
             byte[] crc_table = new byte[512];
+
             #region tablica CRC
+
             crc_table[0] = 0x0;
             crc_table[1] = 0xC1;
             crc_table[2] = 0x81;
@@ -1722,7 +1697,8 @@ namespace nmDriver
             crc_table[509] = 0x81;
             crc_table[510] = 0x80;
             crc_table[511] = 0x40;
-            #endregion
+
+            #endregion tablica CRC
 
             int i;
             int index;
@@ -1745,7 +1721,7 @@ namespace nmDriver
         /// <param name="zapytanie"></param>
         /// <param name="odpowiedz"></param>
         /// <returns></returns>
-        Boolean checkResponse(byte[] zapytanie, byte[] odpowiedz)
+        private Boolean checkResponse(byte[] zapytanie, byte[] odpowiedz)
         {
             try
             {
@@ -1767,6 +1743,7 @@ namespace nmDriver
                         throw new ApplicationException("Response code function isnt correct.");
 
                     #region Read CO i DI
+
                     //Read DI and CO
                     if (zapytanie[1] == 1 || zapytanie[1] == 2)
                     {
@@ -1787,9 +1764,11 @@ namespace nmDriver
                         if (odpowiedz.Length != odpowiedz[2] + 5)
                             throw new ApplicationException("Remote device problem. Response length isnt appropriate fct: 1, 2.");
                     }
-                    #endregion
+
+                    #endregion Read CO i DI
 
                     #region Read HR i DI
+
                     if (zapytanie[1] == 3 || zapytanie[1] == 4)
                     {
                         //kalkulcja odpowidzi
@@ -1801,23 +1780,28 @@ namespace nmDriver
                         if (odpowiedz.Length != odpowiedz[2] + 5)
                             throw new ApplicationException("Remote device problem. Response length isnt appropriate fct: 3, 4");
                     }
-                    #endregion
+
+                    #endregion Read HR i DI
 
                     #region WriteSingleCoil and WriteSingleRegester
+
                     if (zapytanie[1] == 5 || zapytanie[1] == 6)
                     {
                         if (!Enumerable.SequenceEqual(zapytanie.ToList().GetRange(0, 6), odpowiedz.ToList().GetRange(0, 6)))
                             throw new ApplicationException("Response and Request isnt equals - (fct 5, 6).");
                     }
-                    #endregion
+
+                    #endregion WriteSingleCoil and WriteSingleRegester
 
                     #region WriteMultipleCoil and WriteMultipleRegester
+
                     if (zapytanie[1] == 15 || zapytanie[1] == 16)
                     {
-                        if ( !Enumerable.SequenceEqual(zapytanie.ToList().GetRange(0, 6), odpowiedz.ToList().GetRange(0, 6)))
+                        if (!Enumerable.SequenceEqual(zapytanie.ToList().GetRange(0, 6), odpowiedz.ToList().GetRange(0, 6)))
                             throw new ApplicationException("Response and Request isn't equals - (fct 15, 16).");
                     }
-                    #endregion
+
+                    #endregion WriteMultipleCoil and WriteMultipleRegester
                 }
 
                 //Prawdopodobnie exeption
@@ -1826,22 +1810,19 @@ namespace nmDriver
                     //Jezeli CRC jest ok rzuć wyjatek
                     throw new ApplicationException(String.Format("Exception - Function: {0}    Code: {1}", odpowiedz[1], odpowiedz[2]));
                 }
-
                 else
                     //Niepoprawna dlugość ramki
                     throw new ApplicationException("Bad format frame, data length to low.");
 
                 return true;
-
             }
             catch (Exception Ex)
             {
                 if (sendInfoEv != null)
                     sendInfoEv(this, new ProjectEventArgs(odpowiedz, DateTime.Now, "ModbusMasterRTU.checkResponse :" + Ex.Message));
-                
-                  return false;
-            }
 
+                return false;
+            }
         }
 
         /// <summary>
@@ -1849,12 +1830,12 @@ namespace nmDriver
         /// </summary>
         /// <param name="ask"></param>
         /// <returns></returns>
-        string getAreaFromFrame(byte[] ask)
+        private string getAreaFromFrame(byte[] ask)
         {
             switch (ask[1])
             {
                 case 1:
-                    return CoilsName.ToUpper()+".READ.";
+                    return CoilsName.ToUpper() + ".READ.";
 
                 case 2:
                     return DigitalInputsName.ToUpper() + ".READ.";
@@ -1911,9 +1892,10 @@ namespace nmDriver
         /// </summary>
         /// <param name="frame"></param>
         /// <returns></returns>
-        int responseDataCount(byte[] frame)
+        private int responseDataCount(byte[] frame)
         {
             #region Read CO i DI
+
             //Read DI and CO
             if (frame[1] == 1 || frame[1] == 2)
             {
@@ -1927,28 +1909,34 @@ namespace nmDriver
                     byteCount++;
 
                 return byteCount + 5;
-     
             }
-            #endregion
+
+            #endregion Read CO i DI
 
             #region Read HR i DI
+
             if (frame[1] == 3 || frame[1] == 4)
             {
                 //kalkulcja odpowidzi
                 int countReq = BitConverter.ToInt16(new byte[2] { frame[5], frame[4] }, 0);
                 return 5 + (countReq * 2);
             }
-            #endregion
+
+            #endregion Read HR i DI
 
             #region Write sDI i sHR
+
             if (frame[1] == 5 || frame[1] == 6)
                 return 8;
-            #endregion
+
+            #endregion Write sDI i sHR
 
             #region Write mDI i mHR
+
             if (frame[1] == 15 || frame[1] == 16)
                 return 8;
-            #endregion
+
+            #endregion Write mDI i mHR
 
             return 500;
         }
@@ -1956,7 +1944,7 @@ namespace nmDriver
         /// <summary>
         /// Klasa ustawiająca parametry komunkacujne
         /// </summary>
-       
+
         /// <summary>
         /// Ustawienie klasy parametryzacji transmisji
         /// </summary>
@@ -1988,7 +1976,7 @@ namespace nmDriver
                 switch (num)
                 {
                     case NumberStyles.HexNumber:
-                          if (frame[1] <= 4)
+                        if (frame[1] <= 4)
                         {
                             modbusHeader = String.Format("{0:X}   {1:X}   {2:X}{3:X}   {4:X}{5:X}   {6:X}.{7:X}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5], frame[6], frame[7]);
                             return modbusHeader;
@@ -1996,7 +1984,7 @@ namespace nmDriver
 
                         if (frame[1] == 5 || frame[1] == 6)
                         {
-                            modbusHeader = String.Format("{0:X}   {1:X}   {2:X}{3:X}   {4:X}.{5:X}   {6:X}.{7:X}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5],frame[6],frame[7]);
+                            modbusHeader = String.Format("{0:X}   {1:X}   {2:X}{3:X}   {4:X}.{5:X}   {6:X}.{7:X}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5], frame[6], frame[7]);
                             return modbusHeader;
                         }
                         else
@@ -2015,14 +2003,14 @@ namespace nmDriver
 
                         if (frame[1] == 5 || frame[1] == 6)
                         {
-                            modbusHeader = String.Format("{0}   {1}   {2}{3}   {4}.{5}   {6}.{7}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5],frame[6],frame[7]);
+                            modbusHeader = String.Format("{0}   {1}   {2}{3}   {4}.{5}   {6}.{7}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5], frame[6], frame[7]);
                             return modbusHeader;
                         }
                         else
                         {
                             modbusHeader = String.Format("{0}   {1}   {2}{3}   {4}{5}   {6}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5], frame[6]);
                             restData = frame.ToList().GetRange(8, frame.Length - 10).Aggregate(String.Format("{0}", frame[7]), (sum, next) => sum + "." + String.Format("{0}", next));
-                            return modbusHeader + "   " + restData + String.Format("   {0}.{1}",frame[frame.Length - 2],frame[frame.Length - 1]);
+                            return modbusHeader + "   " + restData + String.Format("   {0}.{1}", frame[frame.Length - 2], frame[frame.Length - 1]);
                         }
 
                     default:
@@ -2034,7 +2022,7 @@ namespace nmDriver
 
                         if (frame[1] == 5 || frame[1] == 6)
                         {
-                            modbusHeader = String.Format("{0}   {1}   {2}{3}   {4}.{5}   {6}.{7}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5],frame[6],frame[7]);
+                            modbusHeader = String.Format("{0}   {1}   {2}{3}   {4}.{5}   {6}.{7}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5], frame[6], frame[7]);
                             return modbusHeader;
                         }
                         else
@@ -2043,7 +2031,6 @@ namespace nmDriver
                             restData = frame.ToList().GetRange(8, frame.Length - 10).Aggregate(String.Format("{0}", frame[7]), (sum, next) => sum + "." + String.Format("{0}", next));
                             return modbusHeader + "   " + restData + restData + String.Format("   {0}.{1}", frame[frame.Length - 2], frame[frame.Length - 1]);
                         }
-
                 }
             }
             catch (Exception Ex)
@@ -2051,10 +2038,8 @@ namespace nmDriver
                 if (sendInfoEv != null)
                     sendInfoEv(this, new ProjectEventArgs(frame, DateTime.Now, "ModbusMasterRTU.FormatFrameRequest :" + Ex.Message));
 
-                return "Fault: "+ frame.Aggregate("",(sum,next)=>sum +" " + next.ToString());
-
+                return "Fault: " + frame.Aggregate("", (sum, next) => sum + " " + next.ToString());
             }
-
         }
 
         /// <summary>
@@ -2098,7 +2083,6 @@ namespace nmDriver
                             modbusHeader = String.Format("{0:X}   {1:X}   {2:X}   {3:X}{4:X}", frame[0], frame[1], frame[2], frame[3], frame[4]);
                             return modbusHeader;
                         }
- 
 
                     case NumberStyles.Integer:
                         //Read Area
@@ -2126,7 +2110,6 @@ namespace nmDriver
                             modbusHeader = String.Format("{0}   {1}   {2}   {3}{4}", frame[0], frame[1], frame[2], frame[3], frame[4]);
                             return modbusHeader;
                         }
-
 
                     default:
                         //Read Area
@@ -2162,7 +2145,6 @@ namespace nmDriver
                     sendInfoEv(this, new ProjectEventArgs(frame, DateTime.Now, "ModbusMasterRTU.FormatFrameResponse :" + Ex.Message));
 
                 return "Fault: " + frame.Aggregate("", (sum, next) => sum + " " + next.ToString());
-
             }
         }
 
@@ -2191,7 +2173,7 @@ namespace nmDriver
         /// </summary>
         bool[] IDriverModel.AuxParam
         {
-            get { return new Boolean[] { true,false }; }
+            get { return new Boolean[] { true, false }; }
         }
 
         //Do wyswietlania
@@ -2201,6 +2183,7 @@ namespace nmDriver
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -2225,8 +2208,7 @@ namespace nmDriver
         {
             Dispose(true);
         }
-        #endregion
-    }
 
-   
+        #endregion IDisposable Support
+    }
 }

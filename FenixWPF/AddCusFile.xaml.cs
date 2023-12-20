@@ -13,11 +13,10 @@ namespace FenixWPF
     /// </summary>
     public partial class AddCusFile : MetroWindow
     {
-
-        ProjectContainer PrCon { get; set; }
-        Project Pr { get; set; }
-        String Path { get; set; }
-        ElementKind ElKind { get; set; }
+        private ProjectContainer PrCon { get; set; }
+        private Project Pr { get; set; }
+        private String Path { get; set; }
+        private ElementKind ElKind { get; set; }
 
         //Ctor
         public AddCusFile(ProjectContainer pc, Project pr, string path, ElementKind elKind)
@@ -30,7 +29,6 @@ namespace FenixWPF
                 Pr = pr;
                 Path = path;
                 ElKind = elKind;
-
             }
             catch (Exception Ex)
             {
@@ -49,8 +47,8 @@ namespace FenixWPF
 
                 if (fr.ShowDialog() == wf.DialogResult.OK)
                 {
-                    if(fr.CheckPathExists)
-                        TbAddFile.Text = fr.FileNames.Aggregate((p,k)=> (p + ";" + k ));
+                    if (fr.CheckPathExists)
+                        TbAddFile.Text = fr.FileNames.Aggregate((p, k) => (p + ";" + k));
                 }
             }
             catch (Exception Ex)
@@ -64,12 +62,9 @@ namespace FenixWPF
         {
             try
             {
-
-                //Nowy          
+                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
-
-
                     if (string.IsNullOrEmpty(TbNewFile.Text))
                     {
                         MessageBox.Show("Please fill File(s) name(s)!");
@@ -77,9 +72,7 @@ namespace FenixWPF
                     }
 
                     foreach (string s in TbNewFile.Text.Split(';'))
-                    {          
-                       
-
+                    {
                         if (io.File.Exists(Path + "\\" + s))
                         {
                             MessageBox.Show(String.Format("File: [{0}] already exist in this location!", Path + "\\" + s));
@@ -89,12 +82,11 @@ namespace FenixWPF
                             io.File.Create(Path + "\\" + s).Close();
                     }
 
-                    Close();                
+                    Close();
                 }
                 //Plik
-                else 
+                else
                 {
-
                     if (string.IsNullOrEmpty(TbAddFile.Text))
                     {
                         MessageBox.Show("Please fill File(s) name(s)!");
@@ -122,10 +114,8 @@ namespace FenixWPF
                             io.File.Copy(s, Path + "//" + io.Path.GetFileName(s));
 
                         Close();
-                            
                     }
                 }
-            
             }
             catch (Exception Ex)
             {
@@ -145,7 +135,5 @@ namespace FenixWPF
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-              
     }
-
 }

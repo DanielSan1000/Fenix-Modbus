@@ -1,30 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
-using MahApps.Metro.Controls;
+using System;
+using System.Windows;
 
 namespace FenixWPF
 {
-
     /// <summary>
     /// Interaction logic for AddInTag.xaml
     /// </summary>
     public partial class AddInTag : MetroWindow
     {
-        Project Pr { get; set; }
-        ProjectContainer PrCon { get; set; }
-        InTag iTg { get; set; }
+        private Project Pr { get; set; }
+        private ProjectContainer PrCon { get; set; }
+        private InTag iTg { get; set; }
 
         //Ctor
         public AddInTag(Guid projId, ProjectContainer prCon)

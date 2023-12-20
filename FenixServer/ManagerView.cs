@@ -17,64 +17,68 @@ namespace FenixServer
 {
     public partial class ManagerView : Form
     {
-
         #region Fields
 
         //Watcher plikow
-        FileSystemWatcher fsWatcher;
+        private FileSystemWatcher fsWatcher;
 
         //Projekt kontener
-        ProjectContainer PrCon = new ProjectContainer();
+        private ProjectContainer PrCon = new ProjectContainer();
 
         //sciezka projektu synlulacyjego
-        string simPath;
+        private string simPath;
 
         /// Project
-        Project Pr;
+        private Project Pr;
 
         /// Alarmy
         public List<AlarmEvent> alarmList = new List<AlarmEvent>();
+
         public List<GraphElement> graphList = new List<GraphElement>();
 
         /// Pusta tablica bytes
-        byte[] EmptyBytes = new byte[] { 0 };
+        private byte[] EmptyBytes = new byte[] { 0 };
 
         /// Licznik wyslanych bajtów
-        int sendBytes = 0;
+        private int sendBytes = 0;
 
         /// Licznik otrzymanych bajtow
-        int reciveBytes = 0;
+        private int reciveBytes = 0;
 
         //Rzadania ze strony serwerowe
-        int WebSend = 0;
-        int WebRecive = 0;
+        private int WebSend = 0;
+
+        private int WebRecive = 0;
 
         //Stale nazwa
-        string AuthPage = "\\auth.html";
+        private string AuthPage = "\\auth.html";
 
         //Stala nazwa strony
-        string IndexPage = "index.html";
+        private string IndexPage = "index.html";
 
         //panel wlasciwosi
-        PropManager prManag;
-        GridManager grManag;
-        EventManag evManag;
+        private PropManager prManag;
+
+        private GridManager grManag;
+        private EventManag evManag;
 
         //Znacznik zamkniecia
-        Boolean closeMarker;
-        Boolean shoudHided;
+        private Boolean closeMarker;
+
+        private Boolean shoudHided;
 
         //Zadanie
-        TaskDefinition td;
+        private TaskDefinition td;
 
         //Ilość probek
-        int ProbeCounter = 100;
+        private int ProbeCounter = 100;
 
         //Autostart
-        Boolean IsAutoStart;
+        private Boolean IsAutoStart;
+
         public Boolean Autostart
         {
-            get 
+            get
             {
                 //RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 //string value  =  (string) rkApp.GetValue("FenixServer");
@@ -86,20 +90,18 @@ namespace FenixServer
                     else return true;
                 }
             }
-            set 
+            set
             {
                 if (value)
                 {
-                   //AutoStart
-                   // RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                   // rkApp.SetValue("FenixServer", Application.ExecutablePath.ToString()+" -r");
+                    //AutoStart
+                    // RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    // rkApp.SetValue("FenixServer", Application.ExecutablePath.ToString()+" -r");
 
                     using (TaskService ts = new TaskService())
                     {
-
                         if (ts.GetTask(PrCon.TaskName) == null)
                         {
-                           
                             // Create a new task definition and assign properties
                             td = ts.NewTask();
                             td.RegistrationInfo.Description = "Start Fenix Server";
@@ -112,18 +114,15 @@ namespace FenixServer
                             td.Triggers.Add(lgTr);
 
                             // Create an action that will launch Notepad whenever the trigger fires
-                            td.Actions.Add(new ExecAction(Application.ExecutablePath,"-r", null));
+                            td.Actions.Add(new ExecAction(Application.ExecutablePath, "-r", null));
 
                             // Register the task in the root folder
                             ts.RootFolder.RegisterTaskDefinition(PrCon.TaskName, td);
                         }
                     }
-
-   
                 }
                 else
                 {
-
                     using (TaskService ts = new TaskService())
                     {
                         if (ts.GetTask(PrCon.TaskName) != null)
@@ -134,12 +133,12 @@ namespace FenixServer
                     }
 
                     //RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                   // rkApp.DeleteValue("FenixServer");
-                } 
+                    // rkApp.DeleteValue("FenixServer");
+                }
             }
         }
 
-        #endregion
+        #endregion Fields
 
         #region Konstruktor
 
@@ -148,7 +147,6 @@ namespace FenixServer
         {
             try
             {
-                    
                 InitializeComponent();
 
                 //Elementy dock
@@ -196,14 +194,14 @@ namespace FenixServer
                             fsWatcher.Deleted += new FileSystemEventHandler(fsWatcher_Changed);
                             fsWatcher.Created += new FileSystemEventHandler(fsWatcher_Changed);
                             fsWatcher.Renamed += new RenamedEventHandler(fsWatcher_Changed);
-                 
+
                             // Begin watching.
                             fsWatcher.IncludeSubdirectories = false;
                             fsWatcher.EnableRaisingEvents = true;
 
                             PrCon.openProjects(simPath);
 
-                            if(PrCon.projectList.Count > 0)
+                            if (PrCon.projectList.Count > 0)
                                 start();
                         }
                     }
@@ -211,7 +209,6 @@ namespace FenixServer
                     //Autostart
                     else if (args?[0] == "-r")
                     {
-
                         string strp = (string)Registry.GetValue(PrCon.RegUserRoot, PrCon.LastPathKey, "");
                         if (!String.IsNullOrEmpty(strp))
                         {
@@ -230,9 +227,10 @@ namespace FenixServer
                     }
                 }
 
-                #endregion
+                #endregion Opcje startowe
 
                 #region Info o Adminie
+
                 //sparawdzenie czy jest admin
                 WindowsIdentity identity = WindowsIdentity.GetCurrent();
                 if (identity != null)
@@ -242,8 +240,8 @@ namespace FenixServer
                     if (principal.IsInRole(WindowsBuiltInRole.Administrator))
                         Text = Text + " (Administrator)";
                 }
-                #endregion
 
+                #endregion Info o Adminie
             }
             catch (Exception Ex)
             {
@@ -253,7 +251,7 @@ namespace FenixServer
             }
         }
 
-        #endregion
+        #endregion Konstruktor
 
         #region Internal Method
 
@@ -263,8 +261,9 @@ namespace FenixServer
             try
             {
                 #region DodatkoweDane
+
                 //Informacja na temat danych
-         
+
                 grManag.Invoke(new System.Action(() =>
                 {
                     WebSend++;
@@ -275,15 +274,15 @@ namespace FenixServer
                     rw.Cells["conRecive"].Value = WebRecive.ToString();
                     rw.Cells["conSend"].Value = WebSend.ToString();
                     rw.Cells["conStatus"].Value = Pr.WebServer1.Acitve;
-
                 }));
-               
-                #endregion
+
+                #endregion DodatkoweDane
 
                 //Obroba sciezki zadania klienta
                 string reqPath = context.Request.RawUrl;
 
                 #region Autoryzacja
+
                 if (context.Request.IsAuthenticated || Pr.WebServer1.Auth != AuthenticationSchemes.Anonymous)
                 {
                     //Sprawdzanie czy jest jakis user
@@ -294,22 +293,23 @@ namespace FenixServer
                         string pass = identy.Password;
 
                         #region Brak Autoryzacji
+
                         if (Pr.WebServer1.Users.Find(x => x.Name == name && x.Pass == pass) == null)
                         {
+                            context.Response.StatusCode = 403;
 
-                            context.Response.StatusCode = 403; 
-                                                    
                             string fAuth = Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + AuthPage;
 
                             if (File.Exists(fAuth))
                                 return UTF8Encoding.UTF8.GetBytes(File.ReadAllText(fAuth));
                             else
                                 return UTF8Encoding.UTF8.GetBytes("Access Denied!");
-
                         }
-                        #endregion
+
+                        #endregion Brak Autoryzacji
 
                         #region Autoryzacja
+
                         else
                         {
                             /////////==============================obsluga po autoryzacji
@@ -329,7 +329,8 @@ namespace FenixServer
                                 return UTF8Encoding.UTF8.GetBytes(File.ReadAllText("Exception during autorization!"));
                             }
                         }
-                        #endregion
+
+                        #endregion Autoryzacja
                     }
                     //brak usera
                     else
@@ -337,12 +338,13 @@ namespace FenixServer
                         return UTF8Encoding.UTF8.GetBytes(File.ReadAllText("Problem with USER NAME"));
                     }
                 }
-                #endregion
+
+                #endregion Autoryzacja
 
                 #region Dostep Anonimowy
+
                 else
                 {
-                    
                     //obsluga rzadanie GET z klienta
                     if (context.Request.HttpMethod == "GET")
                         return GetMethodRes(reqPath);
@@ -355,8 +357,8 @@ namespace FenixServer
                     else
                         return UTF8Encoding.UTF8.GetBytes(File.ReadAllText("Exception during autorization!"));
                 }
-                #endregion
 
+                #endregion Dostep Anonimowy
             }
             catch (Exception Ex)
             {
@@ -371,12 +373,11 @@ namespace FenixServer
         /// Obsluga rzadania Get
         private byte[] GetMethodRes(string s)
         {
-
             //PUSTY STRING INDEX.HTML
             if (String.IsNullOrEmpty(s) || String.IsNullOrWhiteSpace(s) || s == "/")
             {
                 //Sprawdznie czy plik istnieje
-                if (File.Exists(Path.GetDirectoryName(Pr.path)+PrCon.HttpCatalog+"\\"+IndexPage))
+                if (File.Exists(Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + "\\" + IndexPage))
                 {
                     return UTF8Encoding.UTF8.GetBytes(File.ReadAllText(Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + "\\" + IndexPage));
                 }
@@ -395,10 +396,10 @@ namespace FenixServer
 
                 string k = Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + s.Replace('/', '\\');
                 if (File.Exists(k))
-                {                  
+                {
                     //Pobranie pliku
                     byte[] data = File.ReadAllBytes(Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog + "\\" + s);
-                    return data;               
+                    return data;
                 }
                 else
                 {
@@ -413,7 +414,6 @@ namespace FenixServer
         /// Obsluga rzadanie POST
         private byte[] PostMethodRes(string s)
         {
-
             //Zabranie / z danych pozostalosc po starych metodach
             s = s.Remove(0, 1);
 
@@ -443,7 +443,6 @@ namespace FenixServer
                     alarmList.Add(ev);
                     evManag.addEvent(ev);
 
-
                     return EmptyBytes;
                 }
             }
@@ -455,42 +454,34 @@ namespace FenixServer
             // Wyczysc liste alamrow
             if (obj == "Server" && name == "Alarms" && param == "Clr" && value == "*")
             {
-
-                evManag.dgvMain.Invoke(new System.Action(() => {
-                        evManag.dgvMain.Rows.Clear();
-                        
+                evManag.dgvMain.Invoke(new System.Action(() =>
+                {
+                    evManag.dgvMain.Rows.Clear();
                 }));
 
-                this.Invoke(new System.Action(() => {
-
+                this.Invoke(new System.Action(() =>
+                {
                     alarmList.Clear();
-                
                 }));
-            
+
                 return UTF8Encoding.UTF8.GetBytes("Alarms cleared!");
             }
-
             else if (obj == "Server" && name == "Communication" && param == "Res" && value == "*")
             {
-
-                Invoke(new System.Action(() => {
-
+                Invoke(new System.Action(() =>
+                {
                     stop();
                     ReOpen();
                     start();
-                
                 }));
 
                 return UTF8Encoding.UTF8.GetBytes("Communication restarted!");
             }
-
-            else if(obj == "Server" && name == "Buffor" && param == "Set")
+            else if (obj == "Server" && name == "Buffor" && param == "Set")
             {
-
                 ProbeCounter = Convert.ToInt32(value);
                 return UTF8Encoding.UTF8.GetBytes(ProbeCounter.ToString());
             }
-
             else
             {
                 string cmd = String.Format("Project.Set{0}{1}(\"{2}\",\"{3}\")", obj, param, name, value);
@@ -510,12 +501,10 @@ namespace FenixServer
             //Wprzypadku gdy mamy graph
             else if (obj == "Graph" && name == "All" && param == "All")
             {
-
                 string ret = JsonConvert.SerializeObject(graphList.ToArray());
                 return UTF8Encoding.UTF8.GetBytes(ret);
             }
-
-            else if(obj == "Server" && name == "Buffor" && param == "Get")
+            else if (obj == "Server" && name == "Buffor" && param == "Get")
             {
                 return UTF8Encoding.UTF8.GetBytes(ProbeCounter.ToString());
             }
@@ -532,12 +521,12 @@ namespace FenixServer
             System.Diagnostics.Process.Start(PrCon.HelpWebSite);
         }
 
-        #endregion
+        #endregion Internal Method
 
         #region Commands
 
-        /// start 
-        void start()
+        /// start
+        private void start()
         {
             try
             {
@@ -555,47 +544,44 @@ namespace FenixServer
                     throw new ApplicationException("There is no Tags to read");
 
                 //Start Sterowników
-                foreach(IDriverModel idrv in ((IDriversMagazine)Pr).Children)
+                foreach (IDriverModel idrv in ((IDriversMagazine)Pr).Children)
                 {
                     idrv.refreshedCycle += Idrv_refreshedCycle;
                     idrv.dataSent += idrv_sendLogInfo;
                     idrv.dataRecived += idrv_reciveLogInfo;
                     idrv.error += Idrv_error;
-                    idrv.activateCycle( (from t in Pr.tagsList where t.idrv.ObjId == idrv.ObjId select (ITag)t).ToList());
-                   
+                    idrv.activateCycle((from t in Pr.tagsList where t.idrv.ObjId == idrv.ObjId select (ITag)t).ToList());
                 }
 
                 //utworz dane dla graph
                 graphList.Clear();
                 foreach (ITag tg in ((ITableView)Pr).Children)
                     graphList.Add(new GraphElement(tg.Name));
-            
             }
             catch (Exception Ex)
             {
                 if (PrCon.ApplicationError != null)
-                        PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
         /// Stop
-        void stop()
+        private void stop()
         {
             try
             {
-
                 if (Pr == null)
                     return;
-            
+
                 //Stop
-                if(Pr.WebServer1.Acitve)
+                if (Pr.WebServer1.Acitve)
                     Pr.WebServer1.Stop();
 
                 //Przyciski
                 btStartWeb.Enabled = true;
                 btStopWeb.Enabled = false;
                 prManag.propGrid.Enabled = true;
-            
+
                 //Start Sterowników
                 foreach (IDriverModel idrv in ((IDriversMagazine)Pr).Children)
                 {
@@ -604,18 +590,17 @@ namespace FenixServer
                     idrv.dataSent -= idrv_sendLogInfo;
                     idrv.dataRecived -= idrv_reciveLogInfo;
                     idrv.error -= Idrv_error;
-                }                                  
+                }
             }
             catch (Exception Ex)
             {
-
                 if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
         //open
-        void Open()
+        private void Open()
         {
             try
             {
@@ -627,7 +612,7 @@ namespace FenixServer
                 }
 
                 //Sprawdzenie rejestru czy istnieje poprzednie otwzrcie
-                string strp = (string)Registry.GetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Application.StartupPath+"\\Project.psf");
+                string strp = (string)Registry.GetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Application.StartupPath + "\\Project.psf");
                 ofd_Menager.InitialDirectory = Path.GetDirectoryName(strp);
 
                 ofd_Menager.Filter = "XML Files (*.psx)|*.psx";
@@ -646,9 +631,8 @@ namespace FenixServer
             }
         }
 
-        void CloseAll()
+        private void CloseAll()
         {
-
             stop();
 
             mPath.Text = "-";
@@ -657,49 +641,45 @@ namespace FenixServer
 
             alarmList.Clear();
             graphList.Clear();
-            
 
             grManag.dgvMain.Rows.Clear();
             prManag.propGrid.SelectedObject = null;
             evManag.dgvMain.Rows.Clear();
-            
         }
 
         //hide
-        void HideForm()
+        private void HideForm()
         {
             try
             {
-               
                 ntfIcon.BalloonTipText = "Fenix Server hided!";
                 ntfIcon.ShowBalloonTip(1000);
                 Hide();
             }
             catch (Exception Ex)
             {
-                 if (PrCon.ApplicationError != null)
+                if (PrCon.ApplicationError != null)
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
         //showForm
-        void ShowForm()
+        private void ShowForm()
         {
             this.Show();
-         
         }
 
         //Ponowne otwarcie w celu odswierzenia
-        void ReOpen()
+        private void ReOpen()
         {
             PrCon.closeAllProject(true);
 
             CloseAll();
 
-            PrCon.openProjects(simPath );
+            PrCon.openProjects(simPath);
         }
 
-        #endregion
+        #endregion Commands
 
         #region Internal Events
 
@@ -716,12 +696,11 @@ namespace FenixServer
         }
 
         //File Changed
-        void fsWatcher_Changed(object sender, FileSystemEventArgs e)
+        private void fsWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-
             //Synchroizacja miedzy watakmi
-            this.Invoke(new System.Action(() => {
-
+            this.Invoke(new System.Action(() =>
+            {
                 try
                 {
                     //zabzpiecznie przed podwojnym dzialeniem
@@ -733,7 +712,6 @@ namespace FenixServer
                         ReOpen();
                         start();
                     }
-                    
 
                     //zabzpiecznie przed podwojnym dzialeniem
                     fsWatcher.EnableRaisingEvents = true;
@@ -744,9 +722,7 @@ namespace FenixServer
                     alarmList.Add(ev);
                     evManag.addEvent(ev);
                 }
-
             }));
-
         }
 
         //open
@@ -767,7 +743,7 @@ namespace FenixServer
             closeMarker = true;
             Close();
         }
-         
+
         //Notify Icon show App
         private void showServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -811,11 +787,10 @@ namespace FenixServer
                     Autostart = true;
                     IsAutoStart = true;
                 }
-
             }
             catch (Exception Ex)
             {
-              AlarmEvent ev = new AlarmEvent("mnAutostart_Click: " + Ex.Message);
+                AlarmEvent ev = new AlarmEvent("mnAutostart_Click: " + Ex.Message);
                 alarmList.Add(ev);
                 evManag.addEvent(ev);
             }
@@ -872,9 +847,9 @@ namespace FenixServer
         private void closeProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Usuniecie Trybu Sim.
-            if(Text.Contains("[Simulation Mode]"))
+            if (Text.Contains("[Simulation Mode]"))
             {
-                Text =  Text.Replace("[Simulation Mode]", " ");
+                Text = Text.Replace("[Simulation Mode]", " ");
                 fsWatcher.Changed -= new FileSystemEventHandler(fsWatcher_Changed);
                 fsWatcher.Deleted -= new FileSystemEventHandler(fsWatcher_Changed);
                 fsWatcher.Created -= new FileSystemEventHandler(fsWatcher_Changed);
@@ -883,13 +858,13 @@ namespace FenixServer
             }
 
             PrCon.closeAllProject(true);
-            
+
             CloseAll();
 
             Pr = null;
         }
 
-        #endregion
+        #endregion Internal Events
 
         #region External Events
 
@@ -939,7 +914,7 @@ namespace FenixServer
         }
 
         //AppError
-        void AppError(object sender1, EventArgs e1)
+        private void AppError(object sender1, EventArgs e1)
         {
             //Delegat
             EventHandler crossDef = delegate (object sender, EventArgs ev)
@@ -953,28 +928,26 @@ namespace FenixServer
                     alarmList.Add(ev1);
                     evManag.addEvent(ev1);
                 }
-
                 else if (e.element2 is Exception)
                 {
                     //Dodanie zdarzenia
                     AlarmEvent ev1 = new AlarmEvent("Error: " + ((Exception)e.element2).Message);
                     alarmList.Add(ev1);
                     evManag.addEvent(ev1);
-                }           
+                }
                 else
                 {
                     //Dodanie zdarzenia
                     AlarmEvent ev1 = new AlarmEvent("Error: " + e.element1.ToString());
                     alarmList.Add(ev1);
                     evManag.addEvent(ev1);
-                }             
+                }
             };
 
             try
             {
-                //Wywolanie  
+                //Wywolanie
                 this.Invoke(crossDef, sender1, e1);
-
             }
             catch (Exception Ex)
             {
@@ -982,11 +955,10 @@ namespace FenixServer
                 alarmList.Add(ev);
                 evManag.addEvent(ev);
             }
-
         }
 
         //Wyczysc dane
-        void btClear_Click(object sender, EventArgs e)
+        private void btClear_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1002,23 +974,21 @@ namespace FenixServer
         }
 
         //Dane dostarczone do sterwonika
-        void idrv_reciveLogInfo(object sender1, EventArgs e1)
+        private void idrv_reciveLogInfo(object sender1, EventArgs e1)
         {
-
             //Wywolanie zadarzenia
-            grManag.dgvMain.Invoke(new System.Action<object,EventArgs>((sender,e) => {
-
+            grManag.dgvMain.Invoke(new System.Action<object, EventArgs>((sender, e) =>
+            {
                 try
                 {
                     ProjectEventArgs ev = (ProjectEventArgs)e;
                     byte[] dane = (byte[])ev.element;
 
                     if (dane != null)
-                    reciveBytes = reciveBytes + dane.Length;
+                        reciveBytes = reciveBytes + dane.Length;
 
                     if (grManag.dgvMain.Rows.Count > 0)
                     {
-
                         if (grManag.dgvMain.Rows.Cast<DataGridViewRow>().ToList().Exists(x => ((Guid)x.Tag).Equals(((IDriverModel)sender).ObjId)))
                         {
                             DataGridViewRow row = grManag.dgvMain.Rows.Cast<DataGridViewRow>().Where(r => ((Guid)r.Tag).Equals(((IDriverModel)sender).ObjId)).First();
@@ -1030,8 +1000,6 @@ namespace FenixServer
                             }
                         }
                     }
-
-             
                 }
                 catch (Exception Ex)
                 {
@@ -1040,25 +1008,23 @@ namespace FenixServer
                     alarmList.Add(ev1);
                     evManag.addEvent(ev1);
                 }
-            
-            }),sender1,e1);
+            }), sender1, e1);
         }
 
         //Dane wyslane przez sterownik
-        void idrv_sendLogInfo(object sender1, EventArgs e1)
+        private void idrv_sendLogInfo(object sender1, EventArgs e1)
         {
-
             //Synchronizacja
-            grManag.dgvMain.Invoke(new System.Action<object, EventArgs>((sender,e) => {
-                
+            grManag.dgvMain.Invoke(new System.Action<object, EventArgs>((sender, e) =>
+            {
                 try
                 {
                     //Projct
                     ProjectEventArgs ev = (ProjectEventArgs)e;
                     byte[] dane = (byte[])ev.element;
 
-                    if(dane != null)
-                    sendBytes = sendBytes + dane.Length;
+                    if (dane != null)
+                        sendBytes = sendBytes + dane.Length;
 
                     if (grManag.dgvMain.Rows.Count > 0)
                     {
@@ -1079,10 +1045,7 @@ namespace FenixServer
                     alarmList.Add(ev1);
                     evManag.addEvent(ev1);
                 }
-            
-
-            }),sender1,e1);
-
+            }), sender1, e1);
         }
 
         //Refresh sterownika
@@ -1090,8 +1053,8 @@ namespace FenixServer
         {
             try
             {
-                Invoke(new System.Action(() => {
-
+                Invoke(new System.Action(() =>
+                {
                     //Pobranie tagow
                     List<ITag> tgs = PrCon.GetAllITags(Pr.objId, Pr.objId, false, true);
 
@@ -1105,20 +1068,20 @@ namespace FenixServer
                             DateTime time = DateTime.Now.Subtract(span);
                             long tm = (long)(time.Ticks / 10000);
 
-                            if(tgs[i].TypeData_ == TypeData.BIT)
+                            if (tgs[i].TypeData_ == TypeData.BIT)
                             {
-                               if(graphList[i].data.Count() < 1)
+                                if (graphList[i].data.Count() < 1)
                                     graphList[i].addDataPoint(new object[] { tm, 0.0 });
-                               else
+                                else
                                 {
                                     var lastEl = Convert.ToBoolean(((object[])graphList[i].data.Last())[1]);
-                                    if(lastEl != (bool)tgs[i].Value)
+                                    if (lastEl != (bool)tgs[i].Value)
                                     {
                                         double pt;
                                         if (!double.TryParse(tgs[i].GetFormatedValue(), out pt))
                                             pt = 0;
 
-                                        graphList[i].addDataPoint(new object[] { tm, Convert.ToDouble(lastEl)});
+                                        graphList[i].addDataPoint(new object[] { tm, Convert.ToDouble(lastEl) });
                                         graphList[i].addDataPoint(new object[] { tm, pt });
                                     }
                                     else
@@ -1129,7 +1092,7 @@ namespace FenixServer
 
                                         graphList[i].addDataPoint(new object[] { tm, pt });
                                     }
-                                }                                                                                                                
+                                }
                             }
                             else
                             {
@@ -1140,11 +1103,10 @@ namespace FenixServer
                                 graphList[i].addDataPoint(new object[] { tm, pt });
                             }
 
-
                             //Ograniczenie casowe sek.
                             long min = ((long)graphList[i].data.First()[0]);
                             var diff = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(min));
-                            if (diff > new TimeSpan(0,0,ProbeCounter))
+                            if (diff > new TimeSpan(0, 0, ProbeCounter))
                             {
                                 while (diff > new TimeSpan(0, 0, ProbeCounter))
                                 {
@@ -1153,14 +1115,11 @@ namespace FenixServer
                                 }
                             }
                         }
-                                   
                     }
-
                 }));
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -1168,17 +1127,16 @@ namespace FenixServer
         //beldy ze sterownkow
         private void Idrv_error(object sender, EventArgs e)
         {
-            Invoke(new System.Action(() => {
-
+            Invoke(new System.Action(() =>
+            {
                 ProjectEventArgs zd = (ProjectEventArgs)e;
                 AlarmEvent ev = new AlarmEvent($"{sender.ToString()}: {zd.element1}");
                 alarmList.Add(ev);
                 evManag.addEvent(ev);
-
             }));
         }
 
-        #endregion
+        #endregion External Events
 
         #region Depreticeted Method
 
@@ -1238,7 +1196,7 @@ namespace FenixServer
             str.AppendLine("<tbody>");
 
             //interacja
-            foreach (ITag tg in PrCon.GetAllITags(Pr.objId,Pr.objId,true,false))
+            foreach (ITag tg in PrCon.GetAllITags(Pr.objId, Pr.objId, true, false))
             {
                 str.AppendLine("<tr>");
 
@@ -1314,32 +1272,24 @@ namespace FenixServer
                 //Selekcja danych
                 if (Selector == ".value")
                     return tg.GetFormatedValue();
-
                 else if (Selector == ".name")
                     return tg.Name;
-
                 else if (Selector == ".adress")
                     return tg.Adress.ToString();
-
                 else if (Selector == ".devAdress")
                     return tg.DevAdress.ToString();
-
                 else if (Selector == ".description")
                     return tg.Description;
-
                 else if (Selector == ".secAdress")
                     return tg.BitByte.ToString();
-
                 else if (Selector == ".typeData")
                     return tg.TypeData_.ToString();
-
                 else
                     return "Tag Selektor Fault";
             }
             catch (Exception Ex)
             {
                 return Ex.Message;
-
             }
         }
 
@@ -1348,16 +1298,12 @@ namespace FenixServer
         {
             if (s == "@table")
                 return UTF8Encoding.UTF8.GetBytes(makeTable());
-
             else if (s == "@timer")
                 return UTF8Encoding.UTF8.GetBytes(makeTimer());
-
             else if (s == "@user")
                 return UTF8Encoding.UTF8.GetBytes("User");
-
             else if (s == "@machine")
                 return UTF8Encoding.UTF8.GetBytes(Environment.MachineName);
-
             else if (s.IndexOf("@tag") > -1)
             {
                 string content = s.Replace("@tag", "");
@@ -1369,7 +1315,6 @@ namespace FenixServer
             }
         }
 
-        #endregion
-
+        #endregion Depreticeted Method
     }
 }

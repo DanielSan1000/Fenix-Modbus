@@ -1,21 +1,10 @@
 ﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Globalization;
-using System.Collections.ObjectModel;
 
 namespace FenixWPF
 {
@@ -25,6 +14,7 @@ namespace FenixWPF
     public partial class AddTag : MetroWindow, INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
+
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -42,6 +32,7 @@ namespace FenixWPF
         public int Range { get; set; }
 
         private string TagName_;
+
         public string TagName
         {
             get { return TagName_; }
@@ -52,11 +43,12 @@ namespace FenixWPF
                     throw new ArgumentException("Change name of tag becuse is already exists!");
 
                 TagName_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TagName)));          
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TagName)));
             }
         }
 
         private BytesOrder BtOrder_;
+
         public BytesOrder BtOrder
         {
             get { return BtOrder_; }
@@ -68,6 +60,7 @@ namespace FenixWPF
         }
 
         private TypeData TpData_;
+
         public TypeData TpData
         {
             get { return TpData_; }
@@ -80,6 +73,7 @@ namespace FenixWPF
         }
 
         private MemoryAreaInfo SelArea_;
+
         public MemoryAreaInfo SelArea
         {
             get { return SelArea_; }
@@ -92,6 +86,7 @@ namespace FenixWPF
         }
 
         private bool DbBlockAct_;
+
         public bool DbBlockAct
         {
             get { return DbBlockAct_; }
@@ -102,8 +97,8 @@ namespace FenixWPF
             }
         }
 
-
         private ObservableCollection<MemoryAreaInfo> MemArList_;
+
         public ObservableCollection<MemoryAreaInfo> MemArList
         {
             get { return MemArList_; }
@@ -111,6 +106,7 @@ namespace FenixWPF
         }
 
         private int DbAdress_;
+
         public int DbAdress
         {
             get { return DbAdress_; }
@@ -122,6 +118,7 @@ namespace FenixWPF
         }
 
         private int Adress_;
+
         public int Adress
         {
             get { return Adress_; }
@@ -133,6 +130,7 @@ namespace FenixWPF
         }
 
         private int SecAdress_;
+
         public int SecAdress
         {
             get { return SecAdress_; }
@@ -144,6 +142,7 @@ namespace FenixWPF
         }
 
         private ObservableCollection<int> ScAdrList_ = new ObservableCollection<int>();
+
         public ObservableCollection<int> ScAdreList
         {
             get { return ScAdrList_; }
@@ -151,6 +150,7 @@ namespace FenixWPF
         }
 
         private string Desc_;
+
         public string Desc
         {
             get { return Desc_; }
@@ -164,42 +164,41 @@ namespace FenixWPF
         /// <summary>
         /// Kontener projektowy
         /// </summary>
-        ProjectContainer PrCon;
+        private ProjectContainer PrCon;
 
         /// <summary>
         /// Project
         /// </summary>
-        Project Pr;
+        private Project Pr;
 
         /// <summary>
         /// Identyfikator projektu
         /// </summary>
-        Guid PrId = Guid.Empty;
+        private Guid PrId = Guid.Empty;
 
         /// <summary>
         /// Identyfikator folderu taga
         /// </summary>
-        Guid DevId = Guid.Empty;
+        private Guid DevId = Guid.Empty;
 
         /// <summary>
         /// Globalna konfoguracja
         /// </summary>
-        GlobalConfiguration gConf = new GlobalConfiguration();
+        private GlobalConfiguration gConf = new GlobalConfiguration();
 
         /// <summary>
         /// Sterownik
         /// </summary>
-        IDriverModel Idrv;
+        private IDriverModel Idrv;
 
         /// <summary>
         /// Poloczenia
         /// </summary>
-        Connection Con;
+        private Connection Con;
 
         //Ctor
         public AddTag(ref ProjectContainer prCon, Guid prId, Guid devId)
         {
-
             try
             {
                 DataContext = this;
@@ -240,7 +239,6 @@ namespace FenixWPF
 
                 TagName = nm;
             }
-
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
@@ -254,38 +252,37 @@ namespace FenixWPF
             {
                 int buff = SecAdress;
                 ScAdreList.Clear();
-                if(TpData == TypeData.BIT)
+                if (TpData == TypeData.BIT)
                 {
                     if (SelArea?.AdresSize > 1)
                         //Dodanie elementu do wyboru
                         for (int i = 0; i < SelArea.AdresSize; i++)
                             ScAdreList.Add(i);
                 }
-                else if(TpData == TypeData.BYTE || TpData == TypeData.SBYTE)
+                else if (TpData == TypeData.BYTE || TpData == TypeData.SBYTE)
                 {
                     if (SelArea?.AdresSize > 8)
                         for (int i = 0; i < SelArea.AdresSize / 8; i++)
                             ScAdreList.Add(i);
                 }
-                else if(TpData == TypeData.CHAR || TpData == TypeData.SHORT || TpData ==  TypeData.USHORT)
+                else if (TpData == TypeData.CHAR || TpData == TypeData.SHORT || TpData == TypeData.USHORT)
                 {
                     if (SelArea?.AdresSize > 16)
                         for (int i = 0; i < SelArea.AdresSize / 16; i++)
                             ScAdreList.Add(i);
                 }
-                else if(TpData ==  TypeData.INT || TpData == TypeData.UINT || TpData == TypeData.FLOAT)
+                else if (TpData == TypeData.INT || TpData == TypeData.UINT || TpData == TypeData.FLOAT)
                 {
                     if (SelArea?.AdresSize > 32)
                         for (int i = 0; i < SelArea.AdresSize / 32; i++)
                             ScAdreList.Add(i);
                 }
-                else if(TpData == TypeData.DOUBLE)
+                else if (TpData == TypeData.DOUBLE)
                 {
                     if (SelArea?.AdresSize > 64)
                         for (int i = 0; i < SelArea.AdresSize / 64; i++)
                             ScAdreList.Add(i);
                 }
-
 
                 if (ScAdreList.Count > 0)
                 {
@@ -296,7 +293,6 @@ namespace FenixWPF
                 }
                 else
                     SecAdress = 0;
-     
             }
             catch (Exception Ex)
             {
@@ -321,14 +317,14 @@ namespace FenixWPF
                 {
                     //Find right name
                     string nm = $"{TagName}{i}";
-                    for (int x=0 ; ; x++)
+                    for (int x = 0; ; x++)
                     {
                         if (PrCon.GetAllITags().Exists(k => k.Name == nm))
                             nm = $"{TagName}{x}";
                         else
                             break;
                     }
-                                       
+
                     if (adressTag == null) // Pierwszy Tag
                     {
                         Tag tg = new Tag(nm, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, Idrv, Con.objId, DbAdress);
@@ -344,7 +340,6 @@ namespace FenixWPF
                         adressTag = tg;
                     }
                 }
-              
             }
 
             Close();
@@ -354,8 +349,5 @@ namespace FenixWPF
         {
             Close();
         }
-    
     }
-
-   
 }

@@ -28,7 +28,7 @@ namespace Controls
         /// <param name="e"></param>
         private void BtSizeDown_Click(object sender, EventArgs e)
         {
-            if(editor.Font.Size > 5)
+            if (editor.Font.Size > 5)
                 editor.Font = new Font(editor.Font.Name, editor.Font.Size - 4);
         }
     }

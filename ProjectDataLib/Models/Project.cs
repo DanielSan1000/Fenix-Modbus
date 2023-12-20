@@ -1,0 +1,963 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
+
+namespace ProjectDataLib
+{
+    [Serializable]
+    [System.Runtime.InteropServices.ComVisible(true)]
+    public class Project : IDisposable, ITreeViewModel, INotifyPropertyChanged, ITableView, IDriversMagazine
+    {
+        [field: NonSerialized]
+        private PropertyChangedEventHandler propChanged;
+
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add
+            {
+                propChanged += value;
+            }
+
+            remove
+            {
+                propChanged -= value;
+            }
+        }
+
+        [field: NonSerialized]
+        private ObservableCollection<object> TreeViewChildren_;
+
+        ObservableCollection<object> ITreeViewModel.Children
+        {
+            get
+            {
+                return TreeViewChildren_;
+            }
+
+            set
+            {
+                TreeViewChildren_ = value;
+            }
+        }
+
+        [field: NonSerialized]
+        private ObservableCollection<ITag> TagChildren;
+
+        ObservableCollection<ITag> ITableView.Children
+        {
+            get
+            {
+                return TagChildren;
+            }
+
+            set
+            {
+                TagChildren = value;
+            }
+        }
+
+        [field: NonSerialized]
+        private ObservableCollection<IDriverModel> DriverChildren_;
+
+        ObservableCollection<IDriverModel> IDriversMagazine.Children
+        {
+            get
+            {
+                return DriverChildren_;
+            }
+
+            set
+            {
+                DriverChildren_ = value;
+            }
+        }
+
+        Color ITreeViewModel.Clr
+        {
+            get { return Color.White; }
+            set { }
+        }
+
+        private Guid objId_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Id")]
+        public Guid objId
+        {
+            get { return objId_; }
+            set
+            {
+                objId_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("objId"));
+            }
+        }
+
+        [Category("06 Formats"), DisplayName("DateTime Long"), Description("Format for display")]
+        [XmlElement(ElementName = "DBDateTimeFormat")]
+        public string longDT { get; set; }
+
+        private string projectName_;
+
+        [Category("01 Design"), DisplayName("Project Name"), Description("Current project name")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Name")]
+        public string projectName
+        {
+            get
+            {
+                return projectName_;
+            }
+            set
+            {
+                projectName_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("projectName"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
+                modificationApear();
+            }
+        }
+
+        private Version fileVer_;
+
+        [Category("02 Header"), DisplayName("Version"), Description("Version of files.")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "FileVersion", Type = typeof(XMLVersion))]
+        public Version fileVer
+        {
+            get { return fileVer_; }
+            set
+            {
+                fileVer_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fileVer)));
+                modificationApear();
+            }
+        }
+
+        private string autor_;
+
+        [Category("03 Information"), DisplayName("Autor")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Autor")]
+        public string autor
+        {
+            get { return autor_; }
+            set
+            {
+                autor_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("autor"));
+                modificationApear();
+            }
+        }
+
+        private string company_;
+
+        [Category("03 Information"), DisplayName("Company")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Company")]
+        public string company
+        {
+            get { return company_; }
+            set
+            {
+                company_ = value;
+                modificationApear();
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("company"));
+            }
+        }
+
+        private string describe_;
+
+        [Category("05 Misc"), DisplayName("Description")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Description")]
+        public string describe
+        {
+            get { return describe_; }
+            set
+            {
+                describe_ = value;
+                modificationApear();
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("describe"));
+            }
+        }
+
+        private DateTime createTime_;
+
+        [Category("04 Time"), DisplayName("Create Time"), ReadOnly(true)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "Created")]
+        public DateTime createTime
+        {
+            get { return createTime_; }
+            set { createTime_ = value; }
+        }
+
+        private DateTime modifeTime_;
+
+        [Category("04 Time"), ReadOnly(true), DisplayName("Modification Time")]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "LastModification")]
+        public DateTime modifeTime
+        {
+            get { return modifeTime_; }
+            set
+            {
+                modifeTime_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("modifeTime"));
+            }
+        }
+
+        private Boolean modMarks_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlIgnore]
+        public Boolean modMarks
+        {
+            get { return modMarks_; }
+            set
+            {
+                modMarks_ = value;
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("modMarks"));
+            }
+        }
+
+        private string path_ = string.Empty;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "ProjectPath")]
+        public string path
+        {
+            get { return path_; }
+            set
+            {
+                path_ = value; modificationApear();
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("path"));
+            }
+        }
+
+        private ChartViewConf ChartConf_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "EditorsConfiguration")]
+        public ChartViewConf ChartConf
+        {
+            get { return ChartConf_; }
+            set { ChartConf_ = value; modificationApear(); }
+        }
+
+        [Browsable(false)]
+        [XmlElement(ElementName = "DatabaseConfiguration")]
+        public DatabaseModel Db { get; set; }
+
+        [Browsable(false)]
+        private WebServer WebServer1_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "WebServerConfiguration")]
+        public WebServer WebServer1
+        {
+            get { return WebServer1_; }
+            set { WebServer1_ = value; }
+        }
+
+        private Boolean IsExpand_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        public Boolean IsExpand
+        {
+            get { return IsExpand_; }
+            set
+            {
+                IsExpand_ = value;
+                modificationApear();
+
+                //ITreeViewModel
+                propChanged?.Invoke(this, new PropertyChangedEventArgs("IsExpand"));
+            }
+        }
+
+        [NonSerialized]
+        private ProjectContainer PrCon_; [Browsable(false)]
+
+        [XmlIgnore]
+        public ProjectContainer PrCon
+        {
+            get { return PrCon_; }
+            set { PrCon_ = value; }
+        }
+
+        [ComVisible(false)]
+        [field: NonSerialized]
+        [XmlIgnore]
+        public MSScriptControl.ScriptControl ScriptCon;
+
+        private List<InFile> FileList_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "FileList", Type = typeof(List<InFile>))]
+        public List<InFile> FileList
+        {
+            get { return FileList_; }
+            set { FileList_ = value; }
+        }
+
+        private List<ScriptFile> ScriptFileList_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "ScriptFileList", Type = typeof(List<ScriptFile>))]
+        public List<ScriptFile> ScriptFileList
+        {
+            get { return ScriptFileList_; }
+            set { ScriptFileList_ = value; }
+        }
+
+        private List<Connection> connectionList_ = new List<Connection>();
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "ConnectionList", Type = typeof(List<Connection>))]
+        public List<Connection> connectionList
+        {
+            get { return connectionList_; }
+            set
+            {
+                connectionList_ = value;
+
+                modificationApear();
+            }
+        }
+
+        private List<Device> DevicesList_ = new List<Device>();
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "DeviceList", Type = typeof(List<Device>))]
+        public List<Device> DevicesList
+        {
+            get { return DevicesList_; }
+            set
+            {
+                DevicesList_ = value;
+                modificationApear();
+            }
+        }
+
+        private List<Tag> tagsList_ = new List<Tag>();
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "TagList", Type = typeof(List<Tag>))]
+        public List<Tag> tagsList
+        {
+            get { return tagsList_; }
+            set { tagsList_ = value; modificationApear(); }
+        }
+
+        private List<InTag> InTagsList_ = new List<InTag>();
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "InternalTagList", Type = typeof(List<InTag>))]
+        public List<InTag> InTagsList
+        {
+            get { return InTagsList_; }
+            set { InTagsList_ = value; modificationApear(); }
+        }
+
+        private ScriptsDriver ScriptEng_;
+
+        [Browsable(false)]
+        [XmlElement(ElementName = "ScriptEngine")]
+        public ScriptsDriver ScriptEng
+        {
+            get { return ScriptEng_; }
+            set { ScriptEng_ = value; }
+        }
+
+        private InternalTagsDriver InternalTags_;
+
+        [Browsable(false)]
+        [ComVisible(false)]
+        [XmlElement(ElementName = "IntTagsEngine")]
+        public InternalTagsDriver InternalTagsDrv
+        {
+            get { return InternalTags_; }
+            set { InternalTags_ = value; }
+        }
+
+        string ITreeViewModel.Name
+        {
+            get
+            {
+                return projectName;
+            }
+
+            set
+            {
+                projectName = value;
+            }
+        }
+
+        bool ITreeViewModel.IsLive
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        bool ITreeViewModel.IsBlocked
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
+
+        public Project()
+        {
+        }
+
+        public Project(ProjectContainer prcn, string projectName, string autor, string company, string describe)
+        {
+            //Parametry
+            this.projectName = projectName;
+            this.autor = autor;
+            this.company = company;
+            this.describe = describe;
+            this.createTime_ = DateTime.Now;
+            this.modifeTime = DateTime.Now;
+            this.modMarks = true;
+
+            //Formaty
+            longDT = "yyyy-MM-dd HH:mm:ss.fff";
+
+            //Wersja pliku
+            fileVer_ = Assembly.GetExecutingAssembly().GetName().Version;
+
+            //ProjectCon
+            this.PrCon_ = prcn;
+
+            //Skrypte
+            ScriptCon = new MSScriptControl.ScriptControl();
+            ScriptCon.Language = "VBScript";
+            ScriptCon.AddObject("Project", this, true);
+
+            //ServerHttp
+            WebServer1_ = new WebServer(null);
+
+            //Scripts Files
+            ScriptFileList_ = new List<ScriptFile>();
+
+            //Scrypt Engine
+            ScriptEng_ = new ScriptsDriver(this);
+            ScriptEng_.Proj = this;
+
+            //Parametr dla TreeView
+            IsExpand = true;
+
+            //Inicjalizacja ID
+            objId = Guid.NewGuid();
+
+            //Internals Tags
+            InternalTags_ = new InternalTagsDriver(this);
+            FileList_ = new List<InFile>();
+
+            TreeViewChildren_ = new ObservableCollection<object>();
+            TreeViewChildren_.Add(WebServer1_);
+            TreeViewChildren_.Add(ScriptEng_);
+            TreeViewChildren_.Add(InternalTags_);
+            Db = new DatabaseModel();
+            TreeViewChildren_.Add(Db);
+
+            ((ITreeViewModel)WebServer1_).Children = new ObservableCollection<object>(FileList_);
+            ((ITreeViewModel)ScriptEng_).Children = new ObservableCollection<object>(ScriptFileList_);
+            ((ITreeViewModel)InternalTagsDrv).Children = new ObservableCollection<object>(InTagsList_);
+
+            DriverChildren_ = new ObservableCollection<IDriverModel>();
+            DriverChildren_.Add((IDriverModel)ScriptEng);
+            DriverChildren_.Add((IDriverModel)InternalTagsDrv);
+
+            foreach (var cn in connectionList_)
+            {
+                //Do projektu
+                TreeViewChildren_.Add(cn);
+
+                //Device do Poloczenia
+                ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
+            }
+
+            foreach (var dev in DevicesList_)
+                ((ITreeViewModel)dev).Children = new ObservableCollection<object>(from x in tagsList_ where x.parentId == dev.objId select x);
+
+            TagChildren = new ObservableCollection<ITag>();
+
+            //Konfiguracja ChartView
+            this.ChartConf = new ChartViewConf();
+            ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
+        }
+
+        private void Project_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            modificationApear();
+        }
+
+        [ComVisible(false)]
+        private void modificationApear()
+        {
+            modifeTime = DateTime.Now;
+            modMarks = true;
+        }
+
+        [ComVisible(false)]
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            //Skrypte
+            ScriptCon = new MSScriptControl.ScriptControl();
+            ScriptCon.Language = "VBScript";
+            ScriptCon.AddObject("Project", this, true);
+
+            //Dodanie refernecji projektu
+            InternalTags_.Proj = this;
+
+            if (string.IsNullOrEmpty(longDT))
+                longDT = "yyyy-MM-dd HH:mm:ss.fff";
+
+            if (ScriptEng_ == null)
+                ScriptEng_ = new ScriptsDriver(this);
+
+            if (ScriptFileList_ == null)
+                ScriptFileList_ = new List<ScriptFile>();
+
+            //Konfiguracja ChartView
+            ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
+
+            //Podlaczenie
+            TreeViewChildren_ = new ObservableCollection<object>();
+            TreeViewChildren_.Add(this.WebServer1_);
+            TreeViewChildren_.Add(this.ScriptEng_);
+            TreeViewChildren_.Add(this.InternalTags_);
+            if (Db == null)
+                Db = new DatabaseModel();
+            TreeViewChildren_.Add(this.Db);
+
+            DirectoryInfo gt = new DirectoryInfo(Path.GetDirectoryName(this.path) + "\\Http");
+
+            if (gt.Exists)
+            {
+                var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
+                SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
+                ((ITreeViewModel)WebServer1_).Children = new ObservableCollection<object>(SubDir);
+                FileList.Clear();
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(this.path) + "\\Http");
+                var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
+                SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
+                ((ITreeViewModel)WebServer1_).Children = new ObservableCollection<object>(SubDir);
+                FileList.Clear();
+            }
+
+            ((ITreeViewModel)ScriptEng_).Children = new ObservableCollection<object>(ScriptFileList_);
+            ((ITreeViewModel)InternalTagsDrv).Children = new ObservableCollection<object>(InTagsList_);
+
+            foreach (var cn in connectionList_)
+            {
+                //Do projektu
+                TreeViewChildren_.Add(cn);
+
+                //Device do Poloczenia
+                ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
+                ((ITableView)cn).Children = new ObservableCollection<ITag>((from x in tagsList where x.connId == cn.objId select x).Union<ITag>(InTagsList));
+            }
+
+            foreach (var dev in DevicesList_)
+            {
+                ((ITreeViewModel)dev).Children = new ObservableCollection<object>(from x in tagsList_ where x.parentId == dev.objId select x);
+                ((ITableView)dev).Children = new ObservableCollection<ITag>((from x in tagsList where x.parentId == dev.objId select x).Union<ITag>(InTagsList));
+            }
+
+            //Tagi
+            var query = tagsList.Union<ITag>(InTagsList);
+            TagChildren = new ObservableCollection<ITag>(query);
+        }
+
+        public void OnDeserializedXML()
+        {
+            //Skrypte
+            ScriptCon = new MSScriptControl.ScriptControl();
+            ScriptCon.Language = "VBScript";
+            ScriptCon.AddObject("Project", this, true);
+
+            //Dodanie refernecji projektu
+            InternalTags_.Proj = this;
+
+            if (string.IsNullOrEmpty(longDT))
+                longDT = "yyyy-MM-dd HH:mm:ss.fff";
+
+            if (ScriptEng_ == null)
+                ScriptEng_ = new ScriptsDriver(this);
+
+            if (ScriptFileList_ == null)
+                ScriptFileList_ = new List<ScriptFile>();
+
+            //Konfiguracja ChartView
+            ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
+
+            //Podlaczenie
+            TreeViewChildren_ = new ObservableCollection<object>();
+            TreeViewChildren_.Add(this.WebServer1_);
+            TreeViewChildren_.Add(this.ScriptEng_);
+            TreeViewChildren_.Add(this.InternalTags_);
+            if (Db == null)
+                Db = new DatabaseModel();
+            TreeViewChildren_.Add(this.Db);
+
+            DirectoryInfo gt = new DirectoryInfo(Path.GetDirectoryName(this.path) + "\\Http");
+
+            if (gt.Exists)
+            {
+                var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
+                SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
+                ((ITreeViewModel)WebServer1_).Children = new ObservableCollection<object>(SubDir);
+                FileList.Clear();
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(this.path) + "\\Http");
+                var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
+                SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
+                ((ITreeViewModel)WebServer1_).Children = new ObservableCollection<object>(SubDir);
+                FileList.Clear();
+            }
+
+            ((ITreeViewModel)ScriptEng_).Children = new ObservableCollection<object>(ScriptFileList_);
+            ((ITreeViewModel)InternalTagsDrv).Children = new ObservableCollection<object>(InTagsList_);
+
+            foreach (var cn in connectionList_)
+            {
+                //Do projektu
+                TreeViewChildren_.Add(cn);
+
+                //Device do Poloczenia
+                ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
+                ((ITableView)cn).Children = new ObservableCollection<ITag>((from x in tagsList where x.connId == cn.objId select x).Union<ITag>(InTagsList));
+            }
+
+            foreach (var dev in DevicesList_)
+            {
+                ((ITreeViewModel)dev).Children = new ObservableCollection<object>(from x in tagsList_ where x.parentId == dev.objId select x);
+                ((ITableView)dev).Children = new ObservableCollection<ITag>((from x in tagsList where x.parentId == dev.objId select x).Union<ITag>(InTagsList));
+            }
+
+            //Tagi
+            var query = tagsList.Union<ITag>(InTagsList);
+            TagChildren = new ObservableCollection<ITag>(query);
+        }
+
+        [ComVisible(false)]
+        public object Clone()
+        {
+            //Klonowanie w pamieci
+            MemoryStream ms = new MemoryStream();
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(ms, this);
+            ms.Position = 0;
+
+            //Utworzenie kopi
+            Project Pr1 = (Project)bf.Deserialize(ms);
+            ms.Close();
+
+            //Nowy Projekt
+            Pr1.objId_ = Guid.NewGuid();
+            Pr1.connectionList_.Clear();
+            Pr1.DevicesList_.Clear();
+            Pr1.tagsList_.Clear();
+
+            Pr1.modifeTime_ = DateTime.Now;
+            Pr1.createTime_ = DateTime.Now;
+            Pr1.path_ = "";
+            Pr1.TagChildren = new ObservableCollection<ITag>();
+            Pr1.DriverChildren_ = new ObservableCollection<IDriverModel>();
+            Pr1.TreeViewChildren_ = new ObservableCollection<object>();
+
+            return Pr1;
+        }
+
+        //Skrypty VBA
+
+        [ComVisible(true)]
+        public object GetTag(string s)
+        {
+            try
+            {
+                Tag tg = tagsList_.Find(x => x.tagName == s);
+                if (tg != null)
+                    return tg.value;
+                else
+                {
+                    InTag tgs = InTagsList_.Find(x => x.tagName == s);
+                    if (tgs != null)
+                        return tgs.value;
+                    else
+                        return 0;
+                }
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return 0;
+            }
+        }
+
+        [ComVisible(true)]
+        public Object SetTag(string s, object val)
+        {
+            try
+            {
+                Tag tg = tagsList_.Find(x => x.tagName == s);
+                if (tg != null)
+                {
+                    tg.setValueMethod(val);
+                    return tg.value;
+                }
+                else
+                {
+                    InTag tgs = InTagsList_.Find(x => x.tagName == s);
+                    if (tgs != null)
+                    {
+                        tgs.value = val;
+                        return tgs.value;
+                    }
+                    else return null;
+                }
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return 0;
+            }
+        }
+
+        public void Write(object sender, string s)
+        {
+            PrCon_.ApplicationError?.Invoke(sender, new ProjectEventArgs(new Information(s)));
+        }
+
+        #region Scripts for Web
+
+        [ComVisible(true)]
+        public string SetTagValue(string s, object val)
+        {
+            try
+            {
+                Tag tg = tagsList_.Find(x => x.tagName == s);
+
+                if (tg != null)
+                {
+                    tg.setValueMethod(val);
+                    return tg.value.ToString();
+                }
+                else
+                {
+                    InTag tgs = InTagsList_.Find(x => x.tagName == s);
+                    if (tgs != null)
+                    {
+                        tgs.value = val;
+                        return tgs.value.ToString();
+                    }
+                    else return tgs.value.ToString();
+                }
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return string.Empty;
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetTagValue(string s)
+        {
+            try
+            {
+                Tag tg = tagsList_.Find(x => x.tagName == s);
+                if (tg != null)
+                {
+                    return tg.value.ToString();
+                }
+                else
+                {
+                    InTag tgs = InTagsList_.Find(x => x.tagName == s);
+                    if (tgs != null)
+                    {
+                        return tgs.value.ToString();
+                    }
+                    else return tgs.value.ToString();
+                }
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetTimerValue(string s)
+        {
+            try
+            {
+                return DateTime.Now.ToString();
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetUserValue(string s)
+        {
+            try
+            {
+                return "User";
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetMachineValue(string s)
+        {
+            try
+            {
+                return Environment.MachineName;
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetTagsAll(string name)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(PrCon_.GetAllITags(objId, objId, false, false));
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        [ComVisible(true)]
+        public string GetConnectionsAll(string name)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(connectionList.ToArray());
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return "Empty";
+            }
+        }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    WebServer1_.Dispose();
+                    connectionList_.Clear();
+                    DevicesList_.Clear();
+                    tagsList_.Clear();
+                    InTagsList_.Clear();
+                    FileList_.Clear();
+                    ScriptFileList_.Clear();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~Project()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Support
+
+        #endregion Scripts for Web
+    }
+}

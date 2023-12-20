@@ -1,21 +1,11 @@
-﻿using ProjectDataLib;
+﻿using MahApps.Metro.Controls;
+using ProjectDataLib;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using wf = System.Windows.Forms;
 using io = System.IO;
-using MahApps.Metro.Controls;
+using wf = System.Windows.Forms;
 
 namespace FenixWPF
 {
@@ -24,8 +14,8 @@ namespace FenixWPF
     /// </summary>
     public partial class AddProject : MetroWindow
     {
-        ProjectContainer PrCon;
-        Project Pr;
+        private ProjectContainer PrCon;
+        private Project Pr;
 
         public AddProject(ProjectContainer prCon)
         {
@@ -39,7 +29,6 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
@@ -88,7 +77,6 @@ namespace FenixWPF
         {
             try
             {
-
                 //Dialog zapisu
                 wf.SaveFileDialog sfd = new wf.SaveFileDialog();
                 sfd.Filter = "Fenix files (*.psx)|*.psx|All files (*.*)|*.*";
@@ -99,7 +87,6 @@ namespace FenixWPF
                         //Dodanie projektu
                         Pr.path = sfd.FileName;
                         PrCon.addProject(Pr);
-                        
 
                         //Dodaj pliki szablonowe jesli sfdjest aktywna opcja
                         if ((bool)ChkHttpTemplates.IsChecked)
@@ -127,7 +114,7 @@ namespace FenixWPF
                             //Kopiowanie pliku do dolferu
                             io.File.Copy(f, TarDir + "\\" + nName, true);
 
-                            //Utworzenie pliku  
+                            //Utworzenie pliku
                             ScriptFile file = new ScriptFile(TarDir + "\\" + nName);
 
                             //Dodanie do bufora
@@ -140,9 +127,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex)); ;
-
             }
         }
 

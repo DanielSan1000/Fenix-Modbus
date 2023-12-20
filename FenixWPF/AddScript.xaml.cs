@@ -13,11 +13,10 @@ namespace FenixWPF
     /// </summary>
     public partial class AddScript : MetroWindow
     {
-
-        ProjectContainer PrCon { get; set; }
-        Project Pr { get; set; }
-        Guid Sel { get; set; }
-        ElementKind ElKind { get; set; }
+        private ProjectContainer PrCon { get; set; }
+        private Project Pr { get; set; }
+        private Guid Sel { get; set; }
+        private ElementKind ElKind { get; set; }
 
         //Ctor
         public AddScript(ProjectContainer pc, Project pr, Guid sel, ElementKind elKind)
@@ -30,7 +29,6 @@ namespace FenixWPF
                 Pr = pr;
                 Sel = sel;
                 ElKind = elKind;
-
             }
             catch (Exception Ex)
             {
@@ -64,11 +62,9 @@ namespace FenixWPF
         {
             try
             {
-
-                //Nowy          
+                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
-
                     if (string.IsNullOrEmpty(TbNewFile.Text))
                     {
                         MessageBox.Show("Please fill File(s) name(s)!");
@@ -99,7 +95,6 @@ namespace FenixWPF
                 //intniejący
                 else
                 {
-
                     if (string.IsNullOrEmpty(TbAddFile.Text))
                     {
                         MessageBox.Show("Please fill File(s) name(s)!");
@@ -122,12 +117,11 @@ namespace FenixWPF
                         io.File.Copy(s, TarDir + "\\" + nName, true);
 
                         //Plik InFile
-                        PrCon.AddScriptFile(Pr.objId, new ScriptFile(TarDir + "\\" + nName));                   
+                        PrCon.AddScriptFile(Pr.objId, new ScriptFile(TarDir + "\\" + nName));
                     }
 
                     Close();
                 }
-
             }
             catch (Exception Ex)
             {

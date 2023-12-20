@@ -10,15 +10,15 @@
         mc:Ignorable="d"
         Title="Add Connection" Height="460" Width="300" WindowStartupLocation="CenterScreen" GlowBrush="{DynamicResource MahApps.Brushes.Accent}">
     <StackPanel>
-        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/Connection.png" HorizontalAlignment="Left"/>
+        <Image Width="25" Height="25"  Margin="5" Source="pack://application:,,,/TreeImage/Connection.png" HorizontalAlignment="Left" />
         <TextBlock Margin="5" FontWeight="Bold" >Connection Name</TextBlock>
-        <TextBox Margin="5" Name="TbConnName" Text="{Binding connectionName }"/>
+        <TextBox Margin="5" Name="TbConnName" Text="{Binding connectionName }" />
         <TextBlock Margin="5">Driver Name</TextBlock>
         <ComboBox Margin="5" Name="CbDrivers" SelectionChanged="CbDrivers_SelectionChanged" />
-        <xctk:PropertyGrid Margin="10" Name="PgDrvProps" ShowSearchBox="False"  Height="200" ShowSortOptions="False" ShowTitle="False" ShowSummary="False"/>
-        
+        <xctk:PropertyGrid Margin="10" Name="PgDrvProps" ShowSearchBox="False"  Height="200" ShowSortOptions="False" ShowTitle="False" ShowSummary="False" />
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="5" Width="50" 
+            <Button Margin="5" Width="50"
                     IsEnabled="{Binding ElementName=TbConnName, Path=Text.Length}" Click="Button_Save_Click">Ok</Button>
             <Button Margin="5" Width="50" Click="Button_Close_Click">Close</Button>
         </StackPanel>

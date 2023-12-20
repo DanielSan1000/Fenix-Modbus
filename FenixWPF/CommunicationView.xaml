@@ -1,17 +1,17 @@
 ﻿<UserControl x:Class="FenixWPF.CommunicationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:PrCon="clr-namespace:ProjectDataLib;assembly=ProjectDataLib"
              xmlns:local="clr-namespace:FenixWPF"
              xmlns:src="clr-namespace:FenixWPF.CommunicationViewFilters"
              xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" 
-             BorderBrush="{DynamicResource MahApps.Brushes.Accent}" 
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
              BorderThickness="1">
-    
+
     <UserControl.Resources>
         <local:DataBytes x:Key="DataBytesConv" />
         <local:ColorConverter x:Key="ColorConv" />
@@ -27,79 +27,76 @@
         </Style>
 
         <ControlTemplate x:Key="IntegerFilter">
-            <src:IntegerGreatherThanFilterControl 
+            <src:IntegerGreatherThanFilterControl
                 Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}" />
         </ControlTemplate>
 
         <!--Dane pomocnidze dla data grid-->
-        <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}"/>
-        
+        <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}" />
     </UserControl.Resources>
 
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition  Height="25"/>
-            <RowDefinition  Height="*"/>
-            <RowDefinition  Height="30"/>
+            <RowDefinition  Height="25" />
+            <RowDefinition  Height="*" />
+            <RowDefinition  Height="30" />
         </Grid.RowDefinitions>
 
         <ToolBar Grid.Row="0">
-            <ToggleButton  Content="Scroll" IsChecked="{Binding mScroll, Mode=TwoWay}"/>
+            <ToggleButton  Content="Scroll" IsChecked="{Binding mScroll, Mode=TwoWay}" />
             <Separator />
             <Button Content="Save CSV" Click="SaveCSV" />
             <Separator />
             <Button Content="Copy to Clipboard" Click="Clipbord" />
             <Separator />
-            <Button Content="Clear" Click="Button_Clr_Click"/>
+            <Button Content="Clear" Click="Button_Clr_Click" />
             <Separator />
         </ToolBar>
 
-        <DataGrid x:Name="View" 
-                  AutoGenerateColumns="False" 
-                  Grid.Row="1"                 
-                  RowStyle="{StaticResource rwStyle}" 
-                  dgx:DataGridFilter.IsAutoFilterEnabled="True" 
+        <DataGrid x:Name="View"
+                  AutoGenerateColumns="False"
+                  Grid.Row="1"
+                  RowStyle="{StaticResource rwStyle}"
+                  dgx:DataGridFilter.IsAutoFilterEnabled="True"
                   CanUserSortColumns="False">
 
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <CheckBox Content="Name" IsChecked="{Binding Pr.ChartConf.CvCol7, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Type" IsChecked="{Binding Pr.ChartConf.CvCol1, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Date and Time" IsChecked="{Binding Pr.ChartConf.CvCol2, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Data [Hex]" IsChecked="{Binding Pr.ChartConf.CvCol3, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Time Diff. [ms]" IsChecked="{Binding Pr.ChartConf.CvCol4, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Description" IsChecked="{Binding Pr.ChartConf.CvCol5, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
-                    <CheckBox Content="Tags" IsChecked="{Binding Pr.ChartConf.CvCol6, Mode=TwoWay, Converter={StaticResource BoolNeg}}"/>
+                    <CheckBox Content="Name" IsChecked="{Binding Pr.ChartConf.CvCol7, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Type" IsChecked="{Binding Pr.ChartConf.CvCol1, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Date and Time" IsChecked="{Binding Pr.ChartConf.CvCol2, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Data [Hex]" IsChecked="{Binding Pr.ChartConf.CvCol3, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Time Diff. [ms]" IsChecked="{Binding Pr.ChartConf.CvCol4, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Description" IsChecked="{Binding Pr.ChartConf.CvCol5, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
+                    <CheckBox Content="Tags" IsChecked="{Binding Pr.ChartConf.CvCol6, Mode=TwoWay, Converter={StaticResource BoolNeg}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
 
                 <DataGridTextColumn Header="Name"
-                                    Width="*" 
+                                    Width="*"
                                     Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol7,
-                                    Converter={StaticResource BoolVis}, 
+                                    Converter={StaticResource BoolVis},
                                     Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                                     ClipboardContentBinding="{Binding Name}"
                                     Binding="{Binding Name}"
                                     IsReadOnly="True">
-                    
                 </DataGridTextColumn>
-                               
-                <DataGridTextColumn Header="Type" 
-                                        Width="*" 
-                                        Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol1, 
+
+                <DataGridTextColumn Header="Type"
+                                        Width="*"
+                                        Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol1,
                                         Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                                         ClipboardContentBinding="{Binding Sender}"
                                         Binding="{Binding Sender}"
                                         IsReadOnly="True">
-                            
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Date and Time" 
-                                    Width="*" 
-                                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol2, 
+                <DataGridTextColumn Header="Date and Time"
+                                    Width="*"
+                                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol2,
                                     Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
 
@@ -116,13 +113,12 @@
                             <Binding Path="Pr" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
-                 
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header=" Data [Hex]" 
-                                    Width="*" 
-                                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol3, 
-                                    Converter={StaticResource BoolVis}, 
+                <DataGridTextColumn Header=" Data [Hex]"
+                                    Width="*"
+                                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol3,
+                                    Converter={StaticResource BoolVis},
                                     Source={StaticResource ProxyElement} , Mode=TwoWay}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
 
@@ -130,8 +126,8 @@
                         <MultiBinding Converter="{StaticResource DataBytesConv}">
                             <Binding Path="Sender" />
                             <Binding Path="Dane" />
-                            <Binding Path="Info"/>
-                            <Binding Path="Type"/>
+                            <Binding Path="Info" />
+                            <Binding Path="Type" />
                         </MultiBinding>
                     </DataGridTextColumn.ClipboardContentBinding>
 
@@ -139,51 +135,45 @@
                         <MultiBinding Converter="{StaticResource DataBytesConv}">
                             <Binding Path="Sender" />
                             <Binding Path="Dane" />
-                            <Binding Path="Info"/>
-                            <Binding Path="Type"/>
+                            <Binding Path="Info" />
+                            <Binding Path="Type" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
-                    
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Header="Time Diff. [ms]" 
-                    Width="*" 
-                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol4, 
+                <DataGridTextColumn Header="Time Diff. [ms]"
+                    Width="*"
+                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol4,
                     Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                     ClipboardContentBinding="{Binding RefTime}"
                                     Binding="{Binding RefTime}"
                                     IsReadOnly="True"
-                                    dgx:DataGridFilterColumn.Template="{StaticResource  IntegerFilter}"/>
+                                    dgx:DataGridFilterColumn.Template="{StaticResource  IntegerFilter}" />
 
-                <DataGridTextColumn Header="Description" 
-                                        Width="2*" 
-                                        Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol5, 
+                <DataGridTextColumn Header="Description"
+                                        Width="2*"
+                                        Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol5,
                                         Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                                         ClipboardContentBinding="{Binding Info}"
-                                        Binding="{Binding Info}" 
-                                        IsReadOnly="True"/>
+                                        Binding="{Binding Info}"
+                                        IsReadOnly="True" />
 
-                <DataGridTextColumn Header="Tags" 
-                    Width="4*" 
-                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol6, Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}" 
+                <DataGridTextColumn Header="Tags"
+                    Width="4*"
+                    Visibility="{Binding Path=DataContext.Pr.ChartConf.CvCol6, Converter={StaticResource BoolVis}, Source={StaticResource ProxyElement} ,Mode=TwoWay}"
                     Binding="{Binding Converter={StaticResource TgConv}}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
 
                     <DataGridTextColumn.ClipboardContentBinding>
-                        <Binding  Converter="{StaticResource TgConv}"/>
+                        <Binding  Converter="{StaticResource TgConv}" />
                     </DataGridTextColumn.ClipboardContentBinding>
-                                    
                 </DataGridTextColumn>
-
             </DataGrid.Columns>
-            
         </DataGrid>
 
         <StatusBar Grid.Row="2" Background="White">
             <Label >Records: </Label>
             <Label Content="{Binding ElementName=View , Path=Items.Count}" />
         </StatusBar>
-
     </Grid>
-    
 </UserControl>
