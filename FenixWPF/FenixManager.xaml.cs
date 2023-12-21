@@ -258,7 +258,7 @@ namespace FenixWPF
                                 break;
 
                             case "Database":
-                                args.Content = new DbExplorer(null);
+                                //args.Content = new DbExplorer(null);
                                 break;
 
                             case "TableView":
@@ -2229,6 +2229,7 @@ namespace FenixWPF
                     return;
 
                 LayoutAnchorable laTableView = new LayoutAnchorable();
+                laTableView.CanClose = true;
                 laTableView.ContentId = "TableView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
                 TableView tbView = new TableView(PrCon, Pr.objId, SelGuid, actualKindElement, laTableView);
                 laTableView.Closed += LaCtrl_Closed;
@@ -2253,6 +2254,7 @@ namespace FenixWPF
             try
             {
                 LayoutAnchorable laChartView = new LayoutAnchorable();
+                laChartView.CanClose = true;
                 laChartView.ContentId = "ChartView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
                 ChartView chartView = new ChartView(PrCon, Pr.objId, SelGuid, actualKindElement, laChartView);
                 laChartView.Closed += LaCtrl_Closed;
@@ -2276,6 +2278,7 @@ namespace FenixWPF
             try
             {
                 LayoutAnchorable laCommView = new LayoutAnchorable();
+                laCommView.CanClose = true;
                 laCommView.ContentId = "CommView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
                 CommunicationView commView = new CommunicationView(PrCon, Pr.objId, SelGuid, actualKindElement, laCommView);
 
@@ -2301,6 +2304,7 @@ namespace FenixWPF
                 if (actualKindElement == ElementKind.InFile)
                 {
                     LayoutAnchorable laEdit = new LayoutAnchorable();
+                    laEdit.CanClose = true;
                     laEdit.ContentId = "Editor;" + ((CusFile)tvMain.View.SelectedItem).FullName + ";" + actualKindElement.ToString();
                     Editor edit = new Editor(PrCon, Pr.objId, ((CusFile)tvMain.View.SelectedItem).FullName, actualKindElement, laEdit);
                     laEdit.Closed += LaCtrl_Closed; ;
