@@ -334,7 +334,7 @@ namespace ProjectDataLib
         private string ReadScript_;
 
         [CusEventProperty]
-        [Category("04 Script"), DisplayName("Read"), Browsable(true)]
+        [Category("04 Script"), DisplayName("Execute After Read"), Browsable(true)]
         [Editor(typeof(ScEditor), typeof(UITypeEditor))]
         [JsonIgnore]
         public string ReadScript
@@ -346,7 +346,7 @@ namespace ProjectDataLib
         private string WriteScript_;
 
         [CusEventProperty]
-        [Category("04 Script"), DisplayName("Write"), Browsable(true)]
+        [Category("04 Script"), DisplayName("Execute Before Write"), Browsable(true)]
         [Editor(typeof(ScEditor), typeof(UITypeEditor))]
         [JsonIgnore]
         public string WriteScript
