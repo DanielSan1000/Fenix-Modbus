@@ -263,6 +263,7 @@ namespace FenixWPF
 
                             case "TableView":
                                 LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
+                                laTableView.CanClose = true;
                                 TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
                                 laTableView.Closed += LaCtrl_Closed;
                                 args.Content = tbView;
@@ -270,6 +271,7 @@ namespace FenixWPF
 
                             case "ChartView":
                                 LayoutAnchorable laChartView = (LayoutAnchorable)args.Model;
+                                laChartView.CanClose = true;
                                 ChartView chView = new ChartView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laChartView);
                                 laChartView.Closed += LaCtrl_Closed;
                                 args.Content = chView;
@@ -277,6 +279,7 @@ namespace FenixWPF
 
                             case "CommView":
                                 LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
+                                laCommView.CanClose = true;
                                 CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
                                 laCommView.Closed += LaCtrl_Closed;
                                 args.Content = comView;
@@ -284,6 +287,7 @@ namespace FenixWPF
 
                             case "Editor":
                                 LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
+                                laEditorView.CanClose = true;
 
                                 //Zabezpieczenie
                                 if (File.Exists(param[1]))
@@ -511,7 +515,7 @@ namespace FenixWPF
 
         public FenixMenager()
         {
-            //Tu by poloczyc obiekty przed utworzeniem
+            //Tu by połączyć obiekty przed utworzeniem
             InitializeComponent();
 
             this.DataContext = this;
@@ -532,7 +536,7 @@ namespace FenixWPF
             laTvMain.ContentId = "Solution";
             LeftPan.Children.Add(laTvMain);
 
-            //wyjatki
+            //Wyjątki
             frOutput = new Output(PrCon, exList);
             laOutput.Title = "Output";
             laOutput.Content = frOutput;
@@ -550,7 +554,7 @@ namespace FenixWPF
             //Project
             PrCon.addProjectEv += new EventHandler<ProjectEventArgs>(addProjectEvent);
 
-            //Bledy z roznuch okien
+            //Błędy z rozruch okien
             PrCon.ApplicationError += new EventHandler(Error);
 
             //Sprawdzenie czy jest admin
@@ -562,7 +566,7 @@ namespace FenixWPF
                     Title = Title + " (Administrator)";
             }
 
-            //Ustawianie dostepności Menu
+            //Ustawianie dostępności Menu
             checkAccess();
 
             //Otwarcie pliku

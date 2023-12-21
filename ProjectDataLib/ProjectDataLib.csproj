@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationObjects\IoDriverParam.cs" />
+    <Compile Include="Models\ColorsManager.cs" />
     <Compile Include="Models\CusFile.cs" />
     <Compile Include="Models\CustomException.cs" />
     <Compile Include="Models\Information.cs" />
