@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -220,6 +221,275 @@ namespace FenixWPF
 
         private object thLock = new object();
 
+        #region External Events
+
+        //PROJECT
+
+        private void addProjectEvent(object sender, ProjectEventArgs ev)
+        {
+            try
+            {
+
+                Project pr = (Project)ev.element;
+                this.Pr = pr;
+
+                #region Sprawdzenie czy istnieje zapisany layout
+
+                if (File.Exists(Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile))
+                {
+                    Project pp = (Project)sender;
+                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
+
+                    serializer.LayoutSerializationCallback += (s, args) =>
+                    {
+                        string[] param = args.Model.ContentId.Split(';');
+                        switch (param[0])
+                        {
+                            case "Properties":
+                                args.Content = propManag;
+                                break;
+
+                            case "Solution":
+                                args.Content = tvMain;
+                                break;
+
+                            case "Output":
+                                args.Content = frOutput;
+                                break;
+
+                            case "Database":
+                                args.Content = new DbExplorer(null);
+                                break;
+
+                            case "TableView":
+                                LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
+                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
+                                laTableView.Closed += LaCtrl_Closed;
+                                args.Content = tbView;
+                                break;
+
+                            case "ChartView":
+                                LayoutAnchorable laChartView = (LayoutAnchorable)args.Model;
+                                ChartView chView = new ChartView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laChartView);
+                                laChartView.Closed += LaCtrl_Closed;
+                                args.Content = chView;
+                                break;
+
+                            case "CommView":
+                                LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
+                                CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
+                                laCommView.Closed += LaCtrl_Closed;
+                                args.Content = comView;
+                                break;
+
+                            case "Editor":
+                                LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
+
+                                //Zabezpieczenie
+                                if (File.Exists(param[1]))
+                                {
+                                    Editor edView = new Editor(PrCon, pp.objId, param[1], (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laEditorView);
+                                    laEditorView.Closed += LaCtrl_Closed;
+                                    args.Content = edView;
+                                }
+                                else
+                                {
+                                    laEditorView.Close();
+                                }
+
+                                break;
+
+                            default:
+                                args.Content = new System.Windows.Controls.TextBox() { Text = args.Model.ContentId };
+                                break;
+                        }
+                    };
+
+                    string ss = Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile;
+                    serializer.Deserialize(ss);
+                }
+
+                #endregion Sprawdzenie czy istnieje zapisany layout
+
+                tvMain.View.DataContext = ((ITreeViewModel)PrCon).Children;
+                tvMain.View.ItemsSource = ((ITreeViewModel)PrCon).Children;
+
+                //Zaznaczenie elementu
+                TreeViewItem PrNode = FindTviFromObjectRecursive(tvMain.View, pr);
+                if (PrNode != null) PrNode.IsSelected = true;
+
+                if (!io.Directory.Exists(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog))
+                    io.Directory.CreateDirectory(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
+
+                FsWatcher = new io.FileSystemWatcher(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
+                FsWatcher.IncludeSubdirectories = true;
+                FsWatcher.Created += FsWatch_Changed;
+                FsWatcher.Deleted += FsWatch_Changed;
+                FsWatcher.Renamed += FsWatch_Changed;
+                FsWatcher.EnableRaisingEvents = true;
+
+                //Sciazka dostpy
+                lbPathProject.Content = Pr.path;
+
+                //Zapis do rejestru
+                Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
+
+                checkAccess();
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        //Zmiana pliku w katalogu Http
+        private void FsWatch_Changed(object sender, io.FileSystemEventArgs e)
+        {
+            try
+            {
+                #region Renamed
+
+                if (e.ChangeType == io.WatcherChangeTypes.Renamed)
+                {
+                    io.RenamedEventArgs k = (io.RenamedEventArgs)e;
+                    ITreeViewModel m = Pr.WebServer1.DirSearch(k.OldFullPath, Pr.WebServer1);
+
+                    if (m != null)
+                        ((CusFile)m).FullName = k.FullPath;
+                }
+
+                #endregion Renamed
+
+                #region Creted
+
+                else if (e.ChangeType == io.WatcherChangeTypes.Created)
+                {
+                    //Sprawdzamy czy to plik
+                    if (io.File.Exists(e.FullPath))
+                    {
+                        string dir = io.Path.GetDirectoryName(e.FullPath);
+                        if (dir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                ((ITreeViewModel)Pr.WebServer1).Children.Add(new CusFile(new io.FileInfo(e.FullPath)));
+                            }));
+                        }
+                        else
+                        {
+                            ITreeViewModel tm = Pr.WebServer1.DirSearch(dir, Pr.WebServer1);
+                            if (tm != null)
+                            {
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    tm.Children.Add(new CusFile(new io.FileInfo(e.FullPath)));
+                                }));
+                            }
+                        }
+                    }
+                    //Directory
+                    else
+                    {
+                        string rDir = io.Directory.GetParent(e.FullPath).FullName;
+                        if (rDir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                ((ITreeViewModel)Pr.WebServer1).Children.Add(new CusFile(new io.DirectoryInfo(e.FullPath)));
+                            }));
+                        }
+                        else
+                        {
+                            ITreeViewModel tm = Pr.WebServer1.DirSearch(rDir, Pr.WebServer1);
+                            if (tm != null)
+                            {
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    tm.Children.Add(new CusFile(new io.DirectoryInfo(e.FullPath)));
+                                }));
+                            }
+                        }
+                    }
+                }
+
+                #endregion Creted
+
+                #region Delete
+
+                if (e.ChangeType == System.IO.WatcherChangeTypes.Deleted)
+                {
+                    string sDir = io.Directory.GetParent(e.FullPath).FullName;
+                    if (sDir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
+                    {
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            var rem = ((ITreeViewModel)Pr.WebServer1).Children.ToList().Where(x => ((CusFile)x).FullName == e.FullPath).First();
+                            ((ITreeViewModel)Pr.WebServer1).Children.Remove(rem);
+                        }));
+                    }
+                    else
+                    {
+                        ITreeViewModel tm = Pr.WebServer1.DirSearch(e.FullPath, Pr.WebServer1);
+                        ITreeViewModel par = Pr.WebServer1.DirSearch(sDir, Pr.WebServer1);
+
+                        if (tm != null)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                (par).Children.Remove((CusFile)tm);
+                            }));
+                        }
+                    }
+                }
+
+                #endregion Delete
+            }
+            catch (Exception Ex)
+            {
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        //Application Error
+        private void Error(object sender, EventArgs ev)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                ProjectEventArgs e = (ProjectEventArgs)ev;
+
+                if (e.element is Exception)
+                    exList.Add(new CustomException(sender, (Exception)e.element));
+                else if (e.element2 is Exception)
+                    exList.Add(new CustomException(sender, (Exception)e.element2));
+                else
+                    exList.Add(new CustomException(sender, new Exception(e.element1.ToString())));
+
+                //Pokaz Alert
+                LayoutAnchorable lpAnchor = dockManager.Layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.Title == "Output").First();
+                lpAnchor.IsActive = true;
+            });
+        }
+
+        //Przeszukiwanie TreeView
+        public static TreeViewItem FindTviFromObjectRecursive(ItemsControl ic, object o)
+        {
+            //Search for the object model in first level children (recursively)
+            TreeViewItem tvi = ic.ItemContainerGenerator.ContainerFromItem(o) as TreeViewItem;
+            if (tvi != null) return tvi;
+            //Loop through user object models
+            foreach (object i in ic.Items)
+            {
+                //Get the TreeViewItem associated with the iterated object model
+                TreeViewItem tvi2 = ic.ItemContainerGenerator.ContainerFromItem(i) as TreeViewItem;
+                tvi = FindTviFromObjectRecursive(tvi2, o);
+                if (tvi != null) return tvi;
+            }
+            return null;
+        }
+
+        #endregion External Events
+
         private PropertyChangedEventHandler propChanged_;
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
@@ -312,9 +582,6 @@ namespace FenixWPF
 
         #region Internal Commands
 
-        /// <summary>
-        /// Blokowanie Menu w zlaezności od ustawien projektu
-        /// </summary>
         private void checkAccess()
         {
             try
@@ -1254,12 +1521,6 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Pytanie o update
-        /// </summary>
-        /// <param name="newVersion"></param>
-        /// <param name="url"></param>
-        /// <param name="automatic"></param>
         private void checkVersion(Version newVersion, string url, bool automatic)
         {
             // get the running version
@@ -2176,7 +2437,7 @@ namespace FenixWPF
                 if (Pr != null)
                 {
                     XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Serialize(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
+                    serializer.Serialize(Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
                 }
 
                 lbPathProject.Content = string.Empty;
@@ -2261,7 +2522,6 @@ namespace FenixWPF
             }
         }
 
-        //TreeView Selected item changed
         private void View_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             try
@@ -2402,7 +2662,6 @@ namespace FenixWPF
             }
         }
 
-        //Zmiana wartosci dla PropGrid
         private void FenixMenager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -2415,7 +2674,6 @@ namespace FenixWPF
             }));
         }
 
-        //Show Databse
         private void MenuItem_ShowDbFile_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2431,7 +2689,6 @@ namespace FenixWPF
             }
         }
 
-        //Show all database content
         private void MenuItem_ShowDatabse_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2459,7 +2716,6 @@ namespace FenixWPF
             }
         }
 
-        //Save Databse
         private void MenuItem_SaveDatabeCSV_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2496,276 +2752,5 @@ namespace FenixWPF
         }
 
         #endregion Internal Events
-
-        #region External Events
-
-        //PROJECT
-
-        private void addProjectEvent(object sender, ProjectEventArgs ev)
-        {
-            try
-            {
-                //Pobranie proejktu
-                Project pr = (Project)ev.element;
-                this.Pr = pr;
-
-                #region Sprawdzenie czy istnieje zapisany layout
-
-                if (System.IO.File.Exists(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile))
-                {
-                    Project pp = (Project)sender;
-                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-
-                    serializer.LayoutSerializationCallback += (s, args) =>
-                    {
-                        string[] param = args.Model.ContentId.Split(';');
-                        switch (param[0])
-                        {
-                            case "Properties":
-                                args.Content = propManag;
-                                break;
-
-                            case "Solution":
-                                args.Content = tvMain;
-                                break;
-
-                            case "Output":
-                                args.Content = frOutput;
-                                break;
-
-                            case "Database":
-                                args.Content = new DbExplorer(null);
-                                break;
-
-                            case "TableView":
-                                LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
-                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
-                                laTableView.Closed += LaCtrl_Closed;
-                                args.Content = tbView;
-                                break;
-
-                            case "ChartView":
-                                LayoutAnchorable laChartView = (LayoutAnchorable)args.Model;
-                                ChartView chView = new ChartView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laChartView);
-                                laChartView.Closed += LaCtrl_Closed;
-                                args.Content = chView;
-                                break;
-
-                            case "CommView":
-                                LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
-                                CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
-                                laCommView.Closed += LaCtrl_Closed;
-                                args.Content = comView;
-                                break;
-
-                            case "Editor":
-                                LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
-
-                                //Zabezpieczenie
-                                if (System.IO.File.Exists(param[1]))
-                                {
-                                    Editor edView = new Editor(PrCon, pp.objId, param[1], (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laEditorView);
-                                    laEditorView.Closed += LaCtrl_Closed;
-                                    args.Content = edView;
-                                }
-                                else
-                                {
-                                    laEditorView.Close();
-                                }
-
-                                break;
-
-                            default:
-                                args.Content = new System.Windows.Controls.TextBox() { Text = args.Model.ContentId };
-                                break;
-                        }
-                    };
-
-                    //Deserializacja
-                    string ss = System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile;
-                    serializer.Deserialize(ss);
-                }
-
-                #endregion Sprawdzenie czy istnieje zapisany layout
-
-                tvMain.View.DataContext = ((ITreeViewModel)PrCon).Children;
-                tvMain.View.ItemsSource = ((ITreeViewModel)PrCon).Children;
-
-                //Zaznaczenie elementu
-                TreeViewItem PrNode = FindTviFromObjectRecursive(tvMain.View, pr);
-                if (PrNode != null) PrNode.IsSelected = true;
-
-                if (!io.Directory.Exists(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog))
-                    io.Directory.CreateDirectory(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
-
-                FsWatcher = new io.FileSystemWatcher(io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog);
-                FsWatcher.IncludeSubdirectories = true;
-                FsWatcher.Created += FsWatch_Changed;
-                FsWatcher.Deleted += FsWatch_Changed;
-                FsWatcher.Renamed += FsWatch_Changed;
-                FsWatcher.EnableRaisingEvents = true;
-
-                //Sciazka dostpy
-                lbPathProject.Content = Pr.path;
-
-                //Zapis do rejestru
-                Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
-
-                checkAccess();
-            }
-            catch (Exception Ex)
-            {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        //Zmiana pliku w katalogu Http
-        private void FsWatch_Changed(object sender, io.FileSystemEventArgs e)
-        {
-            try
-            {
-                #region Renamed
-
-                if (e.ChangeType == io.WatcherChangeTypes.Renamed)
-                {
-                    io.RenamedEventArgs k = (io.RenamedEventArgs)e;
-                    ITreeViewModel m = Pr.WebServer1.DirSearch(k.OldFullPath, Pr.WebServer1);
-
-                    if (m != null)
-                        ((CusFile)m).FullName = k.FullPath;
-                }
-
-                #endregion Renamed
-
-                #region Creted
-
-                else if (e.ChangeType == io.WatcherChangeTypes.Created)
-                {
-                    //Sprawdzamy czy to plik
-                    if (io.File.Exists(e.FullPath))
-                    {
-                        string dir = io.Path.GetDirectoryName(e.FullPath);
-                        if (dir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                ((ITreeViewModel)Pr.WebServer1).Children.Add(new CusFile(new io.FileInfo(e.FullPath)));
-                            }));
-                        }
-                        else
-                        {
-                            ITreeViewModel tm = Pr.WebServer1.DirSearch(dir, Pr.WebServer1);
-                            if (tm != null)
-                            {
-                                Dispatcher.Invoke(new Action(() =>
-                                {
-                                    tm.Children.Add(new CusFile(new io.FileInfo(e.FullPath)));
-                                }));
-                            }
-                        }
-                    }
-                    //Directory
-                    else
-                    {
-                        string rDir = io.Directory.GetParent(e.FullPath).FullName;
-                        if (rDir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                ((ITreeViewModel)Pr.WebServer1).Children.Add(new CusFile(new io.DirectoryInfo(e.FullPath)));
-                            }));
-                        }
-                        else
-                        {
-                            ITreeViewModel tm = Pr.WebServer1.DirSearch(rDir, Pr.WebServer1);
-                            if (tm != null)
-                            {
-                                Dispatcher.Invoke(new Action(() =>
-                                {
-                                    tm.Children.Add(new CusFile(new io.DirectoryInfo(e.FullPath)));
-                                }));
-                            }
-                        }
-                    }
-                }
-
-                #endregion Creted
-
-                #region Delete
-
-                if (e.ChangeType == System.IO.WatcherChangeTypes.Deleted)
-                {
-                    string sDir = io.Directory.GetParent(e.FullPath).FullName;
-                    if (sDir == io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog)
-                    {
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            var rem = ((ITreeViewModel)Pr.WebServer1).Children.ToList().Where(x => ((CusFile)x).FullName == e.FullPath).First();
-                            ((ITreeViewModel)Pr.WebServer1).Children.Remove(rem);
-                        }));
-                    }
-                    else
-                    {
-                        ITreeViewModel tm = Pr.WebServer1.DirSearch(e.FullPath, Pr.WebServer1);
-                        ITreeViewModel par = Pr.WebServer1.DirSearch(sDir, Pr.WebServer1);
-
-                        if (tm != null)
-                        {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                (par).Children.Remove((CusFile)tm);
-                            }));
-                        }
-                    }
-                }
-
-                #endregion Delete
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        //Application Error
-        private void Error(object sender, EventArgs ev)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                ProjectEventArgs e = (ProjectEventArgs)ev;
-
-                if (e.element is Exception)
-                    exList.Add(new CustomException(sender, (Exception)e.element));
-                else if (e.element2 is Exception)
-                    exList.Add(new CustomException(sender, (Exception)e.element2));
-                else
-                    exList.Add(new CustomException(sender, new Exception(e.element1.ToString())));
-
-                //Pokaz Alert
-                LayoutAnchorable lpAnchor = dockManager.Layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.Title == "Output").First();
-                lpAnchor.IsActive = true;
-            });
-        }
-
-        //Przeszukiwanie TreeView
-        public static TreeViewItem FindTviFromObjectRecursive(ItemsControl ic, object o)
-        {
-            //Search for the object model in first level children (recursively)
-            TreeViewItem tvi = ic.ItemContainerGenerator.ContainerFromItem(o) as TreeViewItem;
-            if (tvi != null) return tvi;
-            //Loop through user object models
-            foreach (object i in ic.Items)
-            {
-                //Get the TreeViewItem associated with the iterated object model
-                TreeViewItem tvi2 = ic.ItemContainerGenerator.ContainerFromItem(i) as TreeViewItem;
-                tvi = FindTviFromObjectRecursive(tvi2, o);
-                if (tvi != null) return tvi;
-            }
-            return null;
-        }
-
-        #endregion External Events
-
     }
 }
