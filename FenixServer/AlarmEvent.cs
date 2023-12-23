@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectDataLib
+namespace FenixServer
 {
     /// <summary>
     /// Klasa jednego alarmu

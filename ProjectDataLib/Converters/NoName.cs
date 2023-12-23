@@ -9,7 +9,7 @@ namespace ProjectDataLib
     internal class NoName : ExpandableObjectConverter
     {
         /// <summary>
-        /// Zmiana wyswietlaniej nazwy
+        /// Zmiana wyświetlanej nazwy
         /// </summary>
         /// <param name="context"></param>
         /// <param name="culture"></param>

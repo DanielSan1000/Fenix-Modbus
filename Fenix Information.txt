@@ -156,4 +156,10 @@ Fenix 3.2.0
 - Update Newtonsoft.Json	9.0.1	-> 9.0.2
 - Added folder with logs for catching information about anhandled uxception [Fenix Directory]\\Logs
 
+Fenix 3.3.0
+- Move to .NET framework 4.8
+- Update all libraries
+- Add better color selecteing in tags range
+- Code Refactor
+
 

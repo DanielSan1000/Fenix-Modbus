@@ -110,12 +110,14 @@
     <Compile Include="AboutMe.Designer.cs">
       <DependentUpon>AboutMe.cs</DependentUpon>
     </Compile>
+    <Compile Include="AlarmEvent.cs" />
     <Compile Include="EventManag.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="EventManag.Designer.cs">
       <DependentUpon>EventManag.cs</DependentUpon>
     </Compile>
+    <Compile Include="GraphElement.cs" />
     <Compile Include="GridManager.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -254,17 +254,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationObjects\IoDriverParam.cs" />
-    <Compile Include="Models\ColorsManager.cs" />
     <Compile Include="Models\CusFile.cs" />
-    <Compile Include="Models\CustomException.cs" />
-    <Compile Include="Models\Information.cs" />
+    <Compile Include="Helpers\CustomException.cs" />
+    <Compile Include="Helpers\Information.cs" />
     <Compile Include="Interfaces\IDriversMagazine.cs" />
     <Compile Include="Interfaces\ITableView.cs" />
     <Compile Include="Interfaces\ITreeViewModel.cs" />
-    <Compile Include="Models\DatabaseValues.cs" />
+    <Compile Include="Helpers\DatabaseValues.cs" />
     <Compile Include="Enums\EventType.cs" />
-    <Compile Include="Models\EventElement.cs" />
-    <Compile Include="Models\AlarmEvent.cs" />
+    <Compile Include="Helpers\EventElement.cs" />
     <Compile Include="Converters\BlockAdressVisibility.cs" />
     <Compile Include="Converters\BlockAuthConverter.cs" />
     <Compile Include="Converters\BlockConverter.cs" />
@@ -278,10 +276,9 @@
     <Compile Include="Converters\FormatValueConv.cs" />
     <Compile Include="Converters\InTagsTimers.cs" />
     <Compile Include="Converters\MemoryAreaModbus.cs" />
-    <Compile Include="Models\GraphElement.cs" />
     <Compile Include="Interfaces\IEditorData.cs" />
     <Compile Include="Interfaces\ITag.cs" />
-    <Compile Include="Models\MemoryAreaInfo.cs" />
+    <Compile Include="Helpers\MemoryAreaInfo.cs" />
     <Compile Include="Models\InFile.cs" />
     <Compile Include="Models\InTag.cs" />
     <Compile Include="Models\Connection.cs" />
@@ -293,9 +290,10 @@
     <Compile Include="Models\ProjectContainer.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Converters\NoName.cs" />
-    <Compile Include="Models\PO.cs" />
-    <Compile Include="Models\XmlTimeSpan.cs" />
-    <Compile Include="Models\ProjectEventArgs.cs" />
+    <Compile Include="ConfigurationObjects\PO.cs" />
+    <Compile Include="Helpers\WindowsStatus.cs" />
+    <Compile Include="Serialization\XmlTimeSpan.cs" />
+    <Compile Include="Helpers\ProjectEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\ScriptsDriver.cs" />
@@ -304,14 +302,13 @@
     <Compile Include="Enums\TypeData.cs" />
     <Compile Include="Converters\ScriptFileTimers.cs" />
     <Compile Include="Converters\TagSecendaryAdress.cs" />
-    <Compile Include="Models\TagAdress.cs" />
+    <Compile Include="Helpers\TagAdress.cs" />
     <Compile Include="Models\UserClass.cs" />
     <Compile Include="Models\WebServer.cs" />
-    <Compile Include="Models\WindowsStatus.cs" />
     <Compile Include="ConfigurationObjects\S7DriverParam.cs" />
     <Compile Include="ConfigurationObjects\TcpDriverParam.cs" />
-    <Compile Include="Models\XmlColor.cs" />
-    <Compile Include="Models\XMLVersion.cs" />
+    <Compile Include="Serialization\XmlColor.cs" />
+    <Compile Include="Serialization\XMLVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSScriptControl">

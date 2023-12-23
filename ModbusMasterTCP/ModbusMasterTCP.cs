@@ -714,7 +714,7 @@ namespace nmDriver
 
                         if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrameSizeCO)
                         {
-                            //Jestemy w miejscu Taga trzeba podac koniec
+                            //Jesteśmy w miejscu Taga trzeba podac koniec
                             Tag halfTag = coilsTag.Where(x => x.startData <= i && (x.startData + x.coreData.Length) > i).ToList()[0];
                             if (halfTag != null)
                             {

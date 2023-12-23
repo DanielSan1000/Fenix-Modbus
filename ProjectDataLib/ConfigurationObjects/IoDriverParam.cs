@@ -7,9 +7,6 @@ namespace ProjectDataLib
     [Serializable]
     public class IoDriverParam
     {
-        /// <summary>
-        /// Nazwa Portu COM
-        /// </summary>
         private string PortName_;
 
         [Category("COM Settings")]

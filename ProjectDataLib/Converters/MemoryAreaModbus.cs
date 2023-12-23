@@ -11,7 +11,7 @@ namespace ProjectDataLib
     public class MemoryAreaModbus : StringConverter
     {
         /// <summary>
-        /// Wlasciwość wyswietla dane w zaleznoci od rodzaju sterownika
+        /// Właściwość wyświetla dane w zależności od rodzaju sterownika
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -20,7 +20,7 @@ namespace ProjectDataLib
             //Pobranie interfejsu sterownika
             IDriverModel idrv = ((Tag)context.Instance).idrv;
 
-            //Wyswietlenie dostępnych obszarow pamieci dla Taga
+            //Wyświetlenie dostępnych obszarów pamięci dla Taga
             return new StandardValuesCollection(idrv.MemoryAreaInf.Select(x => x.Name).ToArray());
         }
 

@@ -12,7 +12,7 @@ namespace ProjectDataLib
     public class ScriptFileTimers : StringConverter
     {
         /// <summary>
-        /// Wlasciwość wyswietla dane w zaleznoci od rodzaju sterownika
+        /// Właściwość wyświetla dane w zależności od rodzaju sterownika
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -21,7 +21,7 @@ namespace ProjectDataLib
             //Pobranie interfejsu sterownika
             ScriptFile tag = ((ScriptFile)context.Instance);
 
-            //Dodanie wyswitlanych warotosci
+            //Dodanie wyświetlanych wartości
             List<String> buff = new List<string>() { String.Empty };
             buff.AddRange(tag.Proj.ScriptEng.Timers.Select(x => x.Name));
 
@@ -30,7 +30,7 @@ namespace ProjectDataLib
         }
 
         /// <summary>
-        /// Mozliwosc edycji wartosci w polu
+        /// Możliwość edycji wartości w polu
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace ProjectDataLib
         }
 
         /// <summary>
-        /// Wlaczenie parametru
+        /// Włączenie parametru
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

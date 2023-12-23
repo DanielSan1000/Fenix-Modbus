@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataLib.Models
+namespace FenixWPF
 {
     public static class ColorsManager
     {
@@ -30,26 +30,8 @@ namespace ProjectDataLib.Models
             new RGB(0, 100, 0), 
             new RGB(0, 0, 128),
             new RGB(139, 0, 0), 
-            new RGB(255, 255, 0), new RGB(169, 169, 169)
+            new RGB(255, 255, 0), 
+            new RGB(169, 169, 169)
         };
-    }
-
-    public struct RGB
-    {
-        public byte Red { get; set; }
-        public byte Green { get; set; }
-        public byte Blue { get; set; }
-
-        public RGB(byte red, byte green, byte blue)
-        {
-            Red = red;
-            Green = green;
-            Blue = blue;
-        }
-
-        public override string ToString()
-        {
-            return $"RGB({Red}, {Green}, {Blue})";
-        }
     }
 }

@@ -224,6 +224,8 @@
     <Compile Include="EditorSearch.xaml.cs">
       <DependentUpon>EditorSearch.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ColorsManager.cs" />
+    <Compile Include="Helpers\RGB.cs" />
     <Compile Include="Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
@@ -521,6 +523,7 @@
   <ItemGroup>
     <Resource Include="TreeImage\Fenix.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

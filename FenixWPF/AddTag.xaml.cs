@@ -1,7 +1,6 @@
 ﻿using ControlzEx.Standard;
 using MahApps.Metro.Controls;
 using ProjectDataLib;
-using ProjectDataLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

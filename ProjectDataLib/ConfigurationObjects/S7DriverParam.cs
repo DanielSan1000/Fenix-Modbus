@@ -14,7 +14,7 @@ namespace ProjectDataLib
         private IPAddress Ip_;
 
         [Category("Target")]
-        [DisplayName("Adress Ip")]
+        [DisplayName("Address Ip")]
         public String Ip
         {
             get { return Ip_.ToString(); }
@@ -75,9 +75,6 @@ namespace ProjectDataLib
             set { ReplyTime_ = value; }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
         public S7DriverParam()
         {
             Ip_ = IPAddress.Parse("127.0.0.1");

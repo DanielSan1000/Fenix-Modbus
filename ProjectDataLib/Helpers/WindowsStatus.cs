@@ -2,9 +2,6 @@
 
 namespace ProjectDataLib
 {
-    /// <summary>
-    /// Klasa zarzadnia zamykaniem poloczen
-    /// </summary>
     [Serializable]
     public class WindowsStatus
     {
@@ -12,12 +9,6 @@ namespace ProjectDataLib
         public Boolean Visible;
         public Boolean Live;
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        /// <param name="ind"></param>
-        /// <param name="vis"></param>
-        /// <param name="liv"></param>
         public WindowsStatus(int ind, Boolean vis, Boolean liv)
         {
             this.index = ind;
@@ -27,6 +18,7 @@ namespace ProjectDataLib
 
         public WindowsStatus()
         {
+
         }
     }
 }
