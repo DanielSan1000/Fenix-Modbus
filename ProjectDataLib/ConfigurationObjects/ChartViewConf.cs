@@ -90,7 +90,7 @@ namespace ProjectDataLib
         }
 
         private bool PanelIsExpand_;
-
+        [Obsolete("Removed form chart")]
         public bool PanelIsExpand
         {
             get { return PanelIsExpand_; }
@@ -160,6 +160,7 @@ namespace ProjectDataLib
 
         private bool histData_;
 
+        [Obsolete("Removed form chart")]
         [XmlElement(ElementName = "ChartDatabaseMode")]
         public bool histData
         {

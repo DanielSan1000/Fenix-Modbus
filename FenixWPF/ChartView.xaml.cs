@@ -13,9 +13,6 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace FenixWPF
 {
-    /// <summary>
-    /// Interaction logic for ChartView.xaml
-    /// </summary>
     public partial class ChartView : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
         private int index;
@@ -81,15 +78,12 @@ namespace FenixWPF
             }
         }
 
-        //Rzutnia
         public PlotModel plotModel { get; private set; }
 
-        //Os X
         public LinearAxis AxY1 { get; set; }
 
         public DateTimeAxis AxX1 { get; set; }
 
-        //Konstruktor
         public ChartView(ProjectContainer prCon, Guid projId, Guid sel, ElementKind elkind, LayoutAnchorable win)
         {
             try
@@ -103,22 +97,18 @@ namespace FenixWPF
 
                 InitializeComponent();
 
-                #region Selekcja Elementu
-
-                //wybur obiektu
+                // Wybór obiektu
                 if (ElKind == ElementKind.Project)
                 {
                     ITagList = ((ITableView)Pr).Children;
                     IDriverList = ((IDriversMagazine)Pr).Children;
 
                     //Collection
-
                     ((ITableView)Pr).Children.CollectionChanged += ITagList_CollectionChanged;
                     ((ITreeViewModel)Pr).Children.CollectionChanged += Project_ChildrenChanged;
                     ((IDriversMagazine)Pr).Children.CollectionChanged += IDriver_CollectionChanged;
 
                     //Properties
-
                     ((INotifyPropertyChanged)Pr).PropertyChanged += Project_PropertyChanged;
                     ((INotifyPropertyChanged)Pr.ChartConf).PropertyChanged += ChartConf_PropertyChanged;
 
@@ -145,14 +135,10 @@ namespace FenixWPF
                         ITagList = ((ITableView)Con).Children;
                         IDriverList = ((IDriversMagazine)Con).Children;
 
-                        //Collection
-
                         ((ITableView)Pr).Children.CollectionChanged += ITagList_CollectionChanged;
                         ((ITreeViewModel)Pr).Children.CollectionChanged += Project_ChildrenChanged;
                         ((ITreeViewModel)Con).Children.CollectionChanged += Device_CollectionChanged;
                         ((IDriversMagazine)Con).Children.CollectionChanged += IDriver_CollectionChanged;
-
-                        //Properties
 
                         ((INotifyPropertyChanged)Pr).PropertyChanged += Project_PropertyChanged;
                         ((INotifyPropertyChanged)Pr.ChartConf).PropertyChanged += ChartConf_PropertyChanged;
@@ -214,24 +200,10 @@ namespace FenixWPF
                     }
                 }
 
-                #endregion Selekcja Elementu
-
-                #region Plot Series
-
                 //Inne dane
-                X1.Value = new DateTime();
-                X1.FormatString = Pr.longDT;
-                X1.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
-
-                X0.Value = new DateTime();
-                X0.FormatString = Pr.longDT;
-                X0.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
-
-                From.FormatString = Pr.longDT;
-                From.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
-
-                To.FormatString = Pr.longDT;
-                To.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
+                X1.DateTime = new DateTime();
+                //X1.FormatString = Pr.longDT;
+                //X1.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
 
                 //Osie
                 AxY1 = new LinearAxis { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Dash };
@@ -244,7 +216,7 @@ namespace FenixWPF
                 plotModel.Axes.Add(AxY1);
                 View.Model = plotModel;
 
-                //Obieg tagow
+                //Obieg tagów
                 foreach (ITag t in ITagList.Where(x => x.GrEnable))
                 {
                     if (t.GrEnable)
@@ -264,10 +236,6 @@ namespace FenixWPF
                     }
                 }
 
-                #endregion Plot Series
-
-
-
                 RefreshObservablePath();
 
                 index = PrCon.winManagment.Count;
@@ -282,28 +250,24 @@ namespace FenixWPF
             }
         }
 
-        //Project Properties
         private void Project_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Connection.connectionName))
                 RefreshObservablePath();
         }
 
-        //Connection Properties
         private void Connection_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Connection.connectionName))
                 RefreshObservablePath();
         }
 
-        //Device Properties
         private void Device_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Device.name))
                 RefreshObservablePath();
         }
 
-        //ITag Properties
         private void ITag_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             try
@@ -365,7 +329,6 @@ namespace FenixWPF
             }
         }
 
-        //ChartConf Properties
         private void ChartConf_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             try
@@ -428,7 +391,6 @@ namespace FenixWPF
             }
         }
 
-        //Device changed
         private void Device_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             try
@@ -455,7 +417,6 @@ namespace FenixWPF
             }
         }
 
-        //ITag Collection
         private void ITagList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             try
@@ -513,7 +474,6 @@ namespace FenixWPF
             }
         }
 
-        //IDriver Collection
         private void IDriver_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
@@ -526,7 +486,6 @@ namespace FenixWPF
             }
         }
 
-        //Odswierz Opisy Okna
         private void RefreshObservablePath()
         {
             try
@@ -555,23 +514,15 @@ namespace FenixWPF
             }
         }
 
-        //Driver cycle invoked
         public void driverRefreshed(object sender, EventArgs e)
         {
             try
             {
-                //Obsluga wymiany miedzywatkami
                 View.Dispatcher.InvokeAsync(new Action(() =>
-                {
-                    //Blokada
-                    if (Pr.ChartConf.histData)
-                        return;
-
-                    //sELEKCJA
+                {              
                     if (sender is ScriptsDriver || sender is InternalTagsDriver)
                     {
-                        #region Script Etc.
-
+                       
                         foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is InTag))
                         {
                             if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
@@ -610,13 +561,12 @@ namespace FenixWPF
 
                         plotModel.InvalidatePlot(true);
 
-                        #endregion Script Etc.
+                     
                     }
                     else
                     {
                         #region CommDriver
 
-                        //Odswierzenie Tag
                         foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is Tag && ((IDriverModel)sender).ObjId == ((IDriverModel)x).ObjId))
                         {
                             if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
@@ -683,7 +633,6 @@ namespace FenixWPF
             }
         }
 
-        //Reset widoku
         private void Button_Reset_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -695,10 +644,10 @@ namespace FenixWPF
                 Y0.Value = double.NaN;
 
                 AxX1.Maximum = double.NaN;
-                X1.Value = new DateTime();
+                X1.DateTime = DateTime.MinValue;
 
                 AxX1.Minimum = double.NaN;
-                X0.Value = new DateTime();
+                X0.DateTime = DateTime.MinValue;
 
                 plotModel.ResetAllAxes();
                 plotModel.InvalidatePlot(true);
@@ -709,36 +658,6 @@ namespace FenixWPF
             }
         }
 
-        //Zaladuj dana
-        private void Button_Load_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                foreach (ITag tg in ITagList.Where(x => x.GrEnable))
-                {
-                    if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
-                    {
-                        //Seria danych
-                        var ser = (LineSeries)(from x in plotModel.Series where x.Title == tg.Name select x).First();
-                        ser.Points.Clear();
-
-                        DatabaseValues buff = Pr.Db.GetRange(tg, Pr.ChartConf.From, Pr.ChartConf.To);
-
-                        for (int i = 0; i < buff.TimePts.Count; i++)
-                            ser.Points.Add(new DataPoint(buff.TimePts[i], buff.ValPts[i]));
-                    }
-                }
-
-                //Reset Widoku
-                Button_Reset_Click(null, null);
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        //Wyczysc dane
         private void Button_Clear_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -754,7 +673,6 @@ namespace FenixWPF
             }
         }
 
-        //Ustawienie bierzacego czasu dla From
         private void Button_SetFrom_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -767,7 +685,6 @@ namespace FenixWPF
             }
         }
 
-        //Ustawienie bierzacego czasu dla To
         private void Button_SetTo_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -780,7 +697,6 @@ namespace FenixWPF
             }
         }
 
-        //Y1
         private void Button_Y1_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -808,7 +724,6 @@ namespace FenixWPF
             }
         }
 
-        //Y0
         private void Button_Y0_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -836,21 +751,20 @@ namespace FenixWPF
             }
         }
 
-        //X0
         private void Button_X0_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (X0.Value.HasValue && ((DateTime)X0.Value).Ticks > 0)
+                if (X0.DateTime.HasValue && ((DateTime)X0.DateTime).Ticks > 0)
                 {
                     if (Double.IsNaN(AxX1.Maximum))
                     {
-                        AxX1.Minimum = ((DateTime)X0.Value).ToOADate();
+                        AxX1.Minimum = ((DateTime)X0.DateTime).ToOADate();
                     }
                     else
                     {
-                        if ((DateTime)X0.Value < DateTime.FromOADate(AxX1.Maximum))
-                            AxX1.Minimum = ((DateTime)X0.Value).ToOADate();
+                        if ((DateTime)X0.DateTime < DateTime.FromOADate(AxX1.Maximum))
+                            AxX1.Minimum = ((DateTime)X0.DateTime).ToOADate();
                         else
                             throw new Exception("Minimum must be lower then maximum!");
                     }
@@ -864,21 +778,20 @@ namespace FenixWPF
             }
         }
 
-        //X1
         private void Button_X1_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (X1.Value.HasValue && ((DateTime)X1.Value).Ticks > 0)
+                if (X1.DateTime.HasValue && ((DateTime)X1.DateTime ).Ticks > 0)
                 {
                     if (Double.IsNaN(AxX1.Minimum))
                     {
-                        AxX1.Maximum = ((DateTime)X1.Value).ToOADate();
+                        AxX1.Maximum = ((DateTime)X1.DateTime).ToOADate();
                     }
                     else
                     {
-                        if (((DateTime)X1.Value) > DateTime.FromOADate(AxX1.Minimum))
-                            AxX1.Maximum = ((DateTime)X1.Value).ToOADate();
+                        if (((DateTime)X1.DateTime) > DateTime.FromOADate(AxX1.Minimum))
+                            AxX1.Maximum = ((DateTime)X1.DateTime).ToOADate();
                         else
                             throw new Exception("Maximum must be grather then minumum!");
                     }
@@ -891,34 +804,6 @@ namespace FenixWPF
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
-
-        //Ustawienie Now dla X0
-        private void Button_X0Now_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                X0.Value = DateTime.Now;
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        //Ustawienie Now dla X1
-        private void Button_X1Now_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                X1.Value = DateTime.Now;
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        //Zamykanie okna
         private void Win_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
