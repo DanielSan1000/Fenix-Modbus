@@ -4,7 +4,6 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-               xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
                xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                xmlns:local="clr-namespace:FenixWPF"
                mc:Ignorable="d"
@@ -29,14 +28,6 @@
                     </Binding>
                 </xctk:TimeSpanUpDown.Value>
             </xctk:TimeSpanUpDown>
-
-            <TextBlock Text="X0:" VerticalAlignment="Center" />
-            <syncfusion:DateTimeEdit Name="X0" DropDownView="Combined" Pattern="SortableDateTime" DateTime="{Binding Path=Pr.ChartConf.minimumX, Mode=TwoWay}" />
-            <Button Content="SET" Click="Button_X0_Click" Margin="0,0,15,0"/>
-
-            <TextBlock Text="X1:" VerticalAlignment="Center" />
-            <syncfusion:DateTimeEdit Name="X1" DropDownView="Combined" Pattern="SortableDateTime" DateTime="{Binding Path=Pr.ChartConf.maximumX, Mode=TwoWay}" />
-            <Button Content="SET" Click="Button_X1_Click" Margin="0,0,15,0" />
 
             <TextBlock Text="Y0:" VerticalAlignment="Center" />
             <xctk:DoubleUpDown Value="{Binding Path=Pr.ChartConf.minimumY}" Name="Y0" FormatString="F" />

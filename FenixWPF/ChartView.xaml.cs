@@ -200,11 +200,6 @@ namespace FenixWPF
                     }
                 }
 
-                //Inne dane
-                X1.DateTime = new DateTime();
-                //X1.FormatString = Pr.longDT;
-                //X1.Format = Xceed.Wpf.Toolkit.DateTimeFormat.Custom;
-
                 //Osie
                 AxY1 = new LinearAxis { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Dash };
                 AxX1 = new DateTimeAxis { Position = AxisPosition.Bottom, MajorGridlineStyle = LineStyle.Dash };
@@ -644,10 +639,9 @@ namespace FenixWPF
                 Y0.Value = double.NaN;
 
                 AxX1.Maximum = double.NaN;
-                X1.DateTime = DateTime.MinValue;
 
                 AxX1.Minimum = double.NaN;
-                X0.DateTime = DateTime.MinValue;
+
 
                 plotModel.ResetAllAxes();
                 plotModel.InvalidatePlot(true);
@@ -751,59 +745,6 @@ namespace FenixWPF
             }
         }
 
-        private void Button_X0_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (X0.DateTime.HasValue && ((DateTime)X0.DateTime).Ticks > 0)
-                {
-                    if (Double.IsNaN(AxX1.Maximum))
-                    {
-                        AxX1.Minimum = ((DateTime)X0.DateTime).ToOADate();
-                    }
-                    else
-                    {
-                        if ((DateTime)X0.DateTime < DateTime.FromOADate(AxX1.Maximum))
-                            AxX1.Minimum = ((DateTime)X0.DateTime).ToOADate();
-                        else
-                            throw new Exception("Minimum must be lower then maximum!");
-                    }
-
-                    plotModel.InvalidatePlot(true);
-                }
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        private void Button_X1_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (X1.DateTime.HasValue && ((DateTime)X1.DateTime ).Ticks > 0)
-                {
-                    if (Double.IsNaN(AxX1.Minimum))
-                    {
-                        AxX1.Maximum = ((DateTime)X1.DateTime).ToOADate();
-                    }
-                    else
-                    {
-                        if (((DateTime)X1.DateTime) > DateTime.FromOADate(AxX1.Minimum))
-                            AxX1.Maximum = ((DateTime)X1.DateTime).ToOADate();
-                        else
-                            throw new Exception("Maximum must be grather then minumum!");
-                    }
-
-                    plotModel.InvalidatePlot(true);
-                }
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
         private void Win_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
