@@ -23,9 +23,6 @@ using wf = System.Windows.Forms;
 
 namespace FenixWPF
 {
-    /// <summary>
-    /// Interaction logic for FenixMenager.xaml
-    /// </summary>
     public partial class FenixMenager : MetroWindow, INotifyPropertyChanged
     {
         #region Visibilty
@@ -213,17 +210,15 @@ namespace FenixWPF
         private LayoutAnchorable laOutput = new LayoutAnchorable();
         private Output frOutput;
 
-        //Wszystkie Wyjatki
+        //Wszystkie Wyjątki
         private ObservableCollection<CustomException> exList = new ObservableCollection<CustomException>();
 
-        //Obserwacja plikow Http
+        //Obserwacja plików Http
         private io.FileSystemWatcher FsWatcher;
 
         private object thLock = new object();
 
         #region External Events
-
-        //PROJECT
 
         private void addProjectEvent(object sender, ProjectEventArgs ev)
         {
@@ -232,88 +227,6 @@ namespace FenixWPF
 
                 Project pr = (Project)ev.element;
                 this.Pr = pr;
-
-                #region Sprawdzenie czy istnieje zapisany layout
-
-                if (File.Exists(Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile))
-                {
-                    Project pp = (Project)sender;
-                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-
-                    serializer.LayoutSerializationCallback += (s, args) =>
-                    {
-                        string[] param = args.Model.ContentId.Split(';');
-                        switch (param[0])
-                        {
-                            case "Properties":
-                                args.Content = propManag;
-                                break;
-
-                            case "Solution":
-                                args.Content = tvMain;
-                                break;
-
-                            case "Output":
-                                args.Content = frOutput;
-                                break;
-
-                            case "Database":
-                                //args.Content = new DbExplorer(null);
-                                break;
-
-                            case "TableView":
-                                LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
-                                laTableView.CanClose = true;
-                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
-                                laTableView.Closed += LaCtrl_Closed;
-                                args.Content = tbView;
-                                break;
-
-                            case "ChartView":
-                                LayoutAnchorable laChartView = (LayoutAnchorable)args.Model;
-                                laChartView.CanClose = true;
-                                ChartView chView = new ChartView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laChartView);
-                                laChartView.Closed += LaCtrl_Closed;
-                                args.Content = chView;
-                                break;
-
-                            case "CommView":
-                                LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
-                                laCommView.CanClose = true;
-                                CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
-                                laCommView.Closed += LaCtrl_Closed;
-                                args.Content = comView;
-                                break;
-
-                            case "Editor":
-                                LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
-                                laEditorView.CanClose = true;
-
-                                //Zabezpieczenie
-                                if (File.Exists(param[1]))
-                                {
-                                    Editor edView = new Editor(PrCon, pp.objId, param[1], (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laEditorView);
-                                    laEditorView.Closed += LaCtrl_Closed;
-                                    args.Content = edView;
-                                }
-                                else
-                                {
-                                    laEditorView.Close();
-                                }
-
-                                break;
-
-                            default:
-                                args.Content = new System.Windows.Controls.TextBox() { Text = args.Model.ContentId };
-                                break;
-                        }
-                    };
-
-                    string ss = Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile;
-                    serializer.Deserialize(ss);
-                }
-
-                #endregion Sprawdzenie czy istnieje zapisany layout
 
                 tvMain.View.DataContext = ((ITreeViewModel)PrCon).Children;
                 tvMain.View.ItemsSource = ((ITreeViewModel)PrCon).Children;
@@ -455,7 +368,6 @@ namespace FenixWPF
             }
         }
 
-        //Application Error
         private void Error(object sender, EventArgs ev)
         {
             this.Dispatcher.Invoke(() =>
@@ -1422,12 +1334,6 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// usun element
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="id"></param>
-        /// <param name="elKind"></param>
         private void DeleteElementMethod(Guid projId, Guid id, ElementKind elKind)
         {
             try
@@ -1452,7 +1358,7 @@ namespace FenixWPF
             }
         }
 
-        [Obsolete("Trzeba to zmienic")]
+        [Obsolete("Trzeba to zmienić")]
         private void updateSoftware(object sender)
         {
             //Zmienne
@@ -1753,13 +1659,6 @@ namespace FenixWPF
         {
             try
             {
-                //Zapisanie layoutu
-                if (Pr != null)
-                {
-                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Serialize(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
-                }
-
                 //Zamkniecie edytorow
                 var docs = dockManager.Layout.Descendents()
                     .OfType<LayoutAnchorable>()
@@ -2442,12 +2341,6 @@ namespace FenixWPF
         {
             try
             {
-                if (Pr != null)
-                {
-                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Serialize(Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
-                }
-
                 lbPathProject.Content = string.Empty;
                 Pr = null;
             }
@@ -2753,7 +2646,6 @@ namespace FenixWPF
             }
         }
 
-        //Nazwa Obiektu
         public override string ToString()
         {
             return "Fenix Manager";
