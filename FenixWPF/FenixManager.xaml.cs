@@ -216,8 +216,6 @@ namespace FenixWPF
         //Obserwacja plików Http
         private io.FileSystemWatcher FsWatcher;
 
-        private object thLock = new object();
-
         #region External Events
 
         private void addProjectEvent(object sender, ProjectEventArgs ev)
@@ -2594,9 +2592,9 @@ namespace FenixWPF
         {
             try
             {
-                DataTable tb = Pr.Db.GetAll();
-
+                var tb = Pr.Db.GetAllObservableCollection();
                 LayoutAnchorable laTableView = new LayoutAnchorable();
+                laTableView.CanClose = true;
                 laTableView.ContentId = "Database";
                 DbExplorer db = new DbExplorer(tb);
                 laTableView.Closed += LaCtrl_Closed;

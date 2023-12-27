@@ -215,6 +215,29 @@ namespace ProjectDataLib
             return tb;
         }
 
+        public ObservableCollection<TagDTO> GetAllObservableCollection()
+        {
+
+            ObservableCollection<TagDTO> observableCollection = new ObservableCollection<TagDTO>();
+            string sql = "select * from tags";
+            SQLiteCommand command = new SQLiteCommand(sql, DbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                TagDTO tag = new TagDTO()
+                {
+                    Name = reader["name"].ToString(),
+                    Stamp = DateTime.Parse(reader["stamp"].ToString()),
+                    Value = double.Parse(reader["value"].ToString())
+                };
+
+                observableCollection.Add(tag);
+            }
+
+            return observableCollection;
+        }
+
         //GetRange
         public DatabaseValues GetRange(ITag tg, DateTime from, DateTime to)
         {

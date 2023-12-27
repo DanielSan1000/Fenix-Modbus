@@ -206,8 +206,10 @@ namespace Controls
         /// <returns></returns>
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            UIScript ui = new UIScript();
-            ui.Dock = DockStyle.Fill;
+            UIScript ui = new UIScript
+            {
+                Dock = DockStyle.Fill
+            };
 
             if (value != null)
                 ui.editor.Text = value.ToString();

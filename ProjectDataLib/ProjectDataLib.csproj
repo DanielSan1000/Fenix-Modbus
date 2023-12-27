@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationObjects\IoDriverParam.cs" />
+    <Compile Include="Helpers\TagDTO.cs" />
     <Compile Include="Models\CusFile.cs" />
     <Compile Include="Helpers\CustomException.cs" />
     <Compile Include="Helpers\Information.cs" />
