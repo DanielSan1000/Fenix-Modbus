@@ -2217,6 +2217,7 @@ namespace FenixWPF
                 if (actualKindElement == ElementKind.ScriptFile)
                 {
                     LayoutAnchorable laEdit = new LayoutAnchorable();
+                    laEdit.CanClose = true;
                     laEdit.ContentId = "Editor;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
                     ScriptFile file = PrCon.GetScriptFile(Pr.objId, SelGuid);
                     Editor edit = new Editor(PrCon, Pr.objId, file.FilePath, actualKindElement, laEdit);
