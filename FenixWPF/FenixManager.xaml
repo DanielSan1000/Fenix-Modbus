@@ -94,6 +94,7 @@
         <ContextMenu x:Key="CtxDatabse">
             <MenuItem Header="Show File" IsEnabled="{Binding mDbShowFile}" Click="MenuItem_ShowDbFile_Click" />
             <MenuItem Header="Show Database" IsEnabled="{Binding mShowDb}" Click="MenuItem_ShowDatabse_Click" />
+            <MenuItem Header="Show Trend" IsEnabled="{Binding mShowTrendDb}" Click="MenuItem_ShowTrendDb_Click" />
             <Separator />
             <MenuItem Header="Save CSV" IsEnabled="{Binding mSaveCSV}" Click="MenuItem_SaveDatabeCSV_Click" />
             <Separator />

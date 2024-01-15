@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -17,7 +16,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Xceed.Wpf.AvalonDock.Layout;
-using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using io = System.IO;
 using wf = System.Windows.Forms;
 
@@ -75,6 +73,7 @@ namespace FenixWPF
         private Boolean mDbShowFile_;
         private Boolean mDbReset_;
         private Boolean mShowDb_;
+        private Boolean mShowTrendDb_;
         private Boolean mSaveCSV_;
 
         private Boolean mHelp_;
@@ -84,104 +83,148 @@ namespace FenixWPF
 
         public Boolean mFile
         { get { return mFile_; } set { mFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFile")); } }
+
         public Boolean mNew
         { get { return mNew_; } set { mNew_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mNew")); } }
+
         public Boolean mOpen
         { get { return mOpen_; } set { mOpen_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOpen")); } }
+
         public Boolean mAdd
         { get { return mAdd_; } set { mAdd_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAdd")); } }
+
         public Boolean mConnection
         { get { return mConnection_; } set { mConnection_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mConnection")); } }
+
         public Boolean mDevice
         { get { return mDevice_; } set { mDevice_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDevice")); } }
+
         public Boolean mTag
         { get { return mTag_; } set { mTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTag")); } }
+
         public Boolean mIntTag
         { get { return mIntTag_; } set { mIntTag_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mIntTag")); } }
+
         public Boolean mScriptFile
         { get { return mScriptFile_; } set { mScriptFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScriptFile")); } }
+
         public Boolean mFolder
         { get { return mFolder_; } set { mFolder_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mFolder")); } }
+
         public Boolean mInFile
         { get { return mInFile_; } set { mInFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mInFile")); } }
+
         public Boolean mClosePr
         { get { return mClosePr_; } set { mClosePr_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mClosePr")); } }
+
         public Boolean mSave
         { get { return mSave_; } set { mSave_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSave")); } }
+
         public Boolean mSaveAs
         { get { return mSaveAs_; } set { mSaveAs_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveAs")); } }
+
         public Boolean mExit
         { get { return mExit_; } set { mExit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mExit")); } }
 
         public Boolean mEdit
         { get { return mEdit_; } set { mEdit_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEdit")); } }
+
         public Boolean mCut
         { get { return mCut_; } set { mCut_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCut")); } }
+
         public Boolean mCopy
         { get { return mCopy_; } set { mCopy_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCopy")); } }
+
         public Boolean mPaste
         { get { return mPaste_; } set { mPaste_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mPaste")); } }
+
         public Boolean mDelete
         { get { return mDelete_; } set { mDelete_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDelete")); } }
 
         public Boolean mView
         { get { return mView_; } set { mView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mView")); } }
+
         public Boolean mSolution
         { get { return mSolution_; } set { mSolution_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSolution")); } }
+
         public Boolean mProperties
         { get { return mProperties_; } set { mProperties_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mProperties")); } }
+
         public Boolean mOutput
         { get { return mOutput_; } set { mOutput_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mOutput")); } }
+
         public Boolean mTable
         { get { return mTable_; } set { mTable_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTable")); } }
+
         public Boolean mChart
         { get { return mChart_; } set { mChart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mChart")); } }
+
         public Boolean mCommView
         { get { return mCommView_; } set { mCommView_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mCommView")); } }
+
         public Boolean mEditor
         { get { return mEditor_; } set { mEditor_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mEditor")); } }
 
         public Boolean mDriversSt
         { get { return mDriversSt_; } set { mDriversSt_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDriversSt")); } }
+
         public Boolean mStart
         { get { return mStart_; } set { mStart_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStart")); } }
+
         public Boolean mStop
         { get { return mStop_; } set { mStop_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStop")); } }
+
         public Boolean mStartAll
         { get { return mStartAll_; } set { mStartAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStartAll")); } }
+
         public Boolean mStopAll
         { get { return mStopAll_; } set { mStopAll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mStopAll")); } }
 
         public Boolean mTools
         { get { return mTools_; } set { mTools_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mTools")); } }
+
         public Boolean mBlock
         { get { return mBlock_; } set { mBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mBlock")); } }
+
         public Boolean mUnBlock
         { get { return mUnBlock_; } set { mUnBlock_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUnBlock")); } }
+
         public Boolean mSimulate
         { get { return mSimulate_; } set { mSimulate_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSimulate")); } }
+
         public Boolean mShowLoc
         { get { return mShowLoc_; } set { mShowLoc_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowLoc")); } }
+
         public Boolean mDrivers
         { get { return mDrivers_; } set { mDrivers_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDrivers")); } }
 
         public Boolean mDatabase
         { get { return mDatabase_; } set { mDatabase_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDatabase")); } }
+
         public Boolean mDbShowFile
         { get { return mDbShowFile_; } set { mDbShowFile_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbShowFile")); } }
+
         public Boolean mDbReset
         { get { return mDbReset_; } set { mDbReset_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mDbReset")); } }
+
         public Boolean mShowDb
         { get { return mShowDb_; } set { mShowDb_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowDb")); } }
+
+        public Boolean mShowTrendDb
+        { get { return mShowTrendDb_; } set { mShowTrendDb_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mShowTrendDb")); } }
+
         public Boolean mSaveCSV
         { get { return mSaveCSV_; } set { mSaveCSV_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mSaveCSV")); } }
 
         public Boolean mHelp
         { get { return mHelp_; } set { mHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mHelp")); } }
+
         public Boolean mUpdates
         { get { return mUpdates_; } set { mUpdates_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mUpdates")); } }
+
         public Boolean mAbout
         { get { return mAbout_; } set { mAbout_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mAbout")); } }
+
         public Boolean mViewHelp
         { get { return mViewHelp_; } set { mViewHelp_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mViewHelp")); } }
 
@@ -222,7 +265,6 @@ namespace FenixWPF
         {
             try
             {
-
                 Project pr = (Project)ev.element;
                 this.Pr = pr;
 
@@ -552,6 +594,7 @@ namespace FenixWPF
                     mDbShowFile = false;
                     mDbReset = false;
                     mShowDb = false;
+                    mShowTrendDb = false;
                     mSaveCSV = false;
 
                     mHelp = true;
@@ -614,6 +657,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -676,6 +720,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -740,6 +785,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -804,6 +850,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -868,6 +915,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -932,6 +980,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -996,6 +1045,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -1058,6 +1108,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -1122,6 +1173,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -1184,6 +1236,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -1248,6 +1301,7 @@ namespace FenixWPF
                     mDbShowFile = true;
                     mDbReset = true;
                     mShowDb = true;
+                    mShowTrendDb = true;
                     mSaveCSV = true;
 
                     mHelp = true;
@@ -1315,6 +1369,7 @@ namespace FenixWPF
                     mDbShowFile = false;
                     mDbReset = false;
                     mShowDb = false;
+                    mShowTrendDb = false;
                     mSaveCSV = false;
 
                     mHelp = true;
@@ -2606,6 +2661,32 @@ namespace FenixWPF
                 MiddlePan1.Children.Add(laTableView);
                 laTableView.IsActive = true;
                 laTableView.Title = "Database";
+
+                checkAccess();
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        private void MenuItem_ShowTrendDb_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LayoutAnchorable laTableView = new LayoutAnchorable();
+                laTableView.CanClose = true;
+                laTableView.ContentId = "TrendDatabase";
+                ChartViewDatabase chart = new ChartViewDatabase(Pr);
+                laTableView.Closed += LaCtrl_Closed;
+                laTableView.Content = chart;
+
+                var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
+
+                MiddlePan1.Children.Add(laTableView);
+                laTableView.IsActive = true;
+                laTableView.Title = "Chart Database";
 
                 checkAccess();
             }

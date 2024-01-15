@@ -201,6 +201,9 @@
     <Compile Include="ChartView.xaml.cs">
       <DependentUpon>ChartView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ChartViewDatabase.xaml.cs">
+      <DependentUpon>ChartViewDatabase.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CheckVersion.xaml.cs">
       <DependentUpon>CheckVersion.xaml</DependentUpon>
     </Compile>
@@ -278,6 +281,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ChartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChartViewDatabase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
