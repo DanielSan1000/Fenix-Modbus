@@ -735,6 +735,32 @@ namespace ProjectDataLib
         }
 
         [ComVisible(true)]
+        public ITag GetITag(string s)
+        {
+            try
+            {
+                Tag tg = tagsList_.Find(x => x.tagName == s);
+                if (tg != null)
+                    return tg;
+                else
+                {
+                    InTag tgs = InTagsList_.Find(x => x.tagName == s);
+                    if (tgs != null)
+                        return tgs;
+                    else
+                        return null;
+                }
+            }
+            catch (Exception Ex)
+            {
+                if (PrCon.ApplicationError != null)
+                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+
+                return null;
+            }
+        }
+
+        [ComVisible(true)]
         public Object SetTag(string s, object val)
         {
             try
