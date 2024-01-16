@@ -80,9 +80,6 @@ namespace FenixServer
         {
             get
             {
-                //RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                //string value  =  (string) rkApp.GetValue("FenixServer");
-
                 using (TaskService ts = new TaskService())
                 {
                     if (ts.GetTask(PrCon.TaskName) == null)
@@ -94,10 +91,6 @@ namespace FenixServer
             {
                 if (value)
                 {
-                    //AutoStart
-                    // RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    // rkApp.SetValue("FenixServer", Application.ExecutablePath.ToString()+" -r");
-
                     using (TaskService ts = new TaskService())
                     {
                         if (ts.GetTask(PrCon.TaskName) == null)
@@ -131,9 +124,6 @@ namespace FenixServer
                             ts.RootFolder.DeleteTask(PrCon.TaskName);
                         }
                     }
-
-                    //RegistryKey rkApp = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    // rkApp.DeleteValue("FenixServer");
                 }
             }
         }
@@ -148,6 +138,8 @@ namespace FenixServer
             try
             {
                 InitializeComponent();
+
+                dockPan.Theme = new VS2015LightTheme();
 
                 //Elementy dock
                 prManag = new PropManager();
