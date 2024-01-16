@@ -19,61 +19,26 @@ namespace FenixServer
     {
         #region Fields
 
-        //Watcher plikow
         private FileSystemWatcher fsWatcher;
-
-        //Projekt kontener
         private ProjectContainer PrCon = new ProjectContainer();
-
-        //sciezka projektu synlulacyjego
         private string simPath;
-
-        /// Project
         private Project Pr;
-
-        /// Alarmy
         public List<AlarmEvent> alarmList = new List<AlarmEvent>();
-
         public List<GraphElement> graphList = new List<GraphElement>();
-
-        /// Pusta tablica bytes
         private byte[] EmptyBytes = new byte[] { 0 };
-
-        /// Licznik wyslanych bajtów
         private int sendBytes = 0;
-
-        /// Licznik otrzymanych bajtow
         private int reciveBytes = 0;
-
-        //Rzadania ze strony serwerowe
         private int WebSend = 0;
-
         private int WebRecive = 0;
-
-        //Stale nazwa
         private string AuthPage = "\\auth.html";
-
-        //Stala nazwa strony
         private string IndexPage = "index.html";
-
-        //panel wlasciwosi
         private PropManager prManag;
-
         private GridManager grManag;
         private EventManag evManag;
-
-        //Znacznik zamkniecia
-        private Boolean closeMarker;
-
-        private Boolean shoudHided;
-
-        //Zadanie
+        private bool closeMarker;
+        private bool shoudHided;
         private TaskDefinition td;
-
-        //Ilość probek
         private int ProbeCounter = 100;
-
-        //Autostart
         private Boolean IsAutoStart;
 
         public Boolean Autostart
@@ -132,7 +97,6 @@ namespace FenixServer
 
         #region Konstruktor
 
-        /// Konstruktor
         public ManagerView(string[] args)
         {
             try
@@ -247,14 +211,11 @@ namespace FenixServer
 
         #region Internal Method
 
-        /// Dane
         public byte[] SendResponse(HttpListenerContext context)
         {
             try
             {
                 #region DodatkoweDane
-
-                //Informacja na temat danych
 
                 grManag.Invoke(new System.Action(() =>
                 {
@@ -270,7 +231,6 @@ namespace FenixServer
 
                 #endregion DodatkoweDane
 
-                //Obroba sciezki zadania klienta
                 string reqPath = context.Request.RawUrl;
 
                 #region Autoryzacja
@@ -304,7 +264,6 @@ namespace FenixServer
 
                         else
                         {
-                            /////////==============================obsluga po autoryzacji
                             //Metody GET plikowe
                             if (context.Request.HttpMethod == "GET")
                             {

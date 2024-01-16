@@ -15,6 +15,7 @@ namespace FenixServer
 
         public DateTime Tm { get; set; }
         public String Mess { get; set; }
+
         public string frDateTime
         { get { return Tm.ToShortDateString() + " " + Tm.ToShortTimeString(); } }
     }
