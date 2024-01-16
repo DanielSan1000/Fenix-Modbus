@@ -6,11 +6,10 @@
              xmlns:local="clr-namespace:FenixWPF"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1">
-    
-    
+
     <Grid>
-        <DataGrid x:Name="myDataGrid" 
-                  VirtualizingStackPanel.IsVirtualizing="True" 
+        <DataGrid x:Name="myDataGrid"
+                  VirtualizingStackPanel.IsVirtualizing="True"
           VirtualizingStackPanel.VirtualizationMode="Standard"
           EnableRowVirtualization="True"
           EnableColumnVirtualization="True"

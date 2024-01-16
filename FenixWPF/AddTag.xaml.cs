@@ -1,13 +1,10 @@
-﻿using ControlzEx.Standard;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using ProjectDataLib;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 
 namespace FenixWPF
 {
@@ -335,7 +332,7 @@ namespace FenixWPF
                         Tag tg = new Tag(nm, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, Idrv, Con.objId, DbAdress);
                         tg.BlockAdress = DbAdress;
 
-                        if(i < colors.Length)
+                        if (i < colors.Length)
                         {
                             tg.Clr = System.Drawing.Color.FromArgb(colors[i].Red, colors[i].Green, colors[i].Blue);
                         }
@@ -361,6 +358,7 @@ namespace FenixWPF
 
             Close();
         }
+
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();

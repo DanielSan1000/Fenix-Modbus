@@ -90,6 +90,7 @@ namespace ProjectDataLib
         }
 
         private bool PanelIsExpand_;
+
         [Obsolete("Removed form chart")]
         public bool PanelIsExpand
         {

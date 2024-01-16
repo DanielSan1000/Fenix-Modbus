@@ -217,7 +217,6 @@ namespace ProjectDataLib
 
         public ObservableCollection<TagDTO> GetAllObservableCollection()
         {
-
             ObservableCollection<TagDTO> observableCollection = new ObservableCollection<TagDTO>();
             string sql = "select * from tags";
             SQLiteCommand command = new SQLiteCommand(sql, DbConnection);

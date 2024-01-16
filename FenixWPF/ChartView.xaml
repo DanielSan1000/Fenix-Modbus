@@ -33,13 +33,12 @@
             <xctk:DoubleUpDown Value="{Binding Path=Pr.ChartConf.minimumY}" Name="Y0" FormatString="F" />
             <Button Content="S" Click="Button_Y0_Click" />
 
-            <TextBlock Text="Y1:" VerticalAlignment="Center"  />
+            <TextBlock Text="Y1:" VerticalAlignment="Center" />
             <xctk:DoubleUpDown Value="{Binding Path=Pr.ChartConf.maximumY}" Name="Y1" FormatString="F" />
-            <Button Content="S" Click="Button_Y1_Click" Margin="0,0,15,0"  />
+            <Button Content="S" Click="Button_Y1_Click" Margin="0,0,15,0" />
 
             <Button Content="Reset View" Click="Button_Reset_Click" />
             <Button Content="Clear" Click="Button_Clear_Click" />
-
         </StackPanel>
 
         <oxy:PlotView  DockPanel.Dock="Bottom" x:Name="View" />

@@ -31,6 +31,7 @@ namespace FenixWPF
         }
 
         private bool mScroll_ = true;
+
         public Boolean mScroll
         { get { return mScroll_; } set { mScroll_ = value; propChanged_?.Invoke(this, new PropertyChangedEventArgs("mScroll")); } }
 

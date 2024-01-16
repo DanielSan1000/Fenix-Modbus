@@ -514,10 +514,9 @@ namespace FenixWPF
             try
             {
                 View.Dispatcher.InvokeAsync(new Action(() =>
-                {              
+                {
                     if (sender is ScriptsDriver || sender is InternalTagsDriver)
                     {
-                       
                         foreach (ITag tg in ITagList.Where(x => x.GrEnable && x is InTag))
                         {
                             if (plotModel.Series.ToList().Exists(x => x.Title == tg.Name))
@@ -555,8 +554,6 @@ namespace FenixWPF
                         }
 
                         plotModel.InvalidatePlot(true);
-
-                     
                     }
                     else
                     {
@@ -641,7 +638,6 @@ namespace FenixWPF
                 AxX1.Maximum = double.NaN;
 
                 AxX1.Minimum = double.NaN;
-
 
                 plotModel.ResetAllAxes();
                 plotModel.InvalidatePlot(true);

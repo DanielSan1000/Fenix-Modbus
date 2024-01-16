@@ -436,7 +436,6 @@
                     <ad:LayoutAnchorSide x:Name="BottomPan">
                     </ad:LayoutAnchorSide>
                 </ad:LayoutRoot.BottomSide>
-                
             </ad:LayoutRoot>
         </ad:DockingManager>
 

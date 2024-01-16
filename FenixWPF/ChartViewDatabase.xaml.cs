@@ -3,7 +3,6 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using ProjectDataLib;
 using System;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Controls;
 
