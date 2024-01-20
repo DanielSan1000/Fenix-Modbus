@@ -287,7 +287,6 @@ namespace ProjectDataLib
                 IsExpand_ = value;
                 modificationApear();
 
-                //ITreeViewModel
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("IsExpand"));
             }
         }
@@ -440,7 +439,6 @@ namespace ProjectDataLib
 
         public Project(ProjectContainer prcn, string projectName, string autor, string company, string describe)
         {
-            //Parametry
             this.projectName = projectName;
             this.autor = autor;
             this.company = company;
@@ -449,37 +447,27 @@ namespace ProjectDataLib
             this.modifeTime = DateTime.Now;
             this.modMarks = true;
 
-            //Formaty
             longDT = "yyyy-MM-dd HH:mm:ss.fff";
 
-            //Wersja pliku
             fileVer_ = Assembly.GetExecutingAssembly().GetName().Version;
 
-            //ProjectCon
             this.PrCon_ = prcn;
 
-            //Skrypte
             ScriptCon = new MSScriptControl.ScriptControl();
             ScriptCon.Language = "VBScript";
             ScriptCon.AddObject("Project", this, true);
 
-            //ServerHttp
             WebServer1_ = new WebServer(null);
 
-            //Scripts Files
             ScriptFileList_ = new List<ScriptFile>();
 
-            //Scrypt Engine
             ScriptEng_ = new ScriptsDriver(this);
             ScriptEng_.Proj = this;
 
-            //Parametr dla TreeView
             IsExpand = true;
 
-            //Inicjalizacja ID
             objId = Guid.NewGuid();
 
-            //Internals Tags
             InternalTags_ = new InternalTagsDriver(this);
             FileList_ = new List<InFile>();
 
@@ -500,10 +488,8 @@ namespace ProjectDataLib
 
             foreach (var cn in connectionList_)
             {
-                //Do projektu
                 TreeViewChildren_.Add(cn);
 
-                //Device do Poloczenia
                 ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
             }
 
@@ -512,7 +498,6 @@ namespace ProjectDataLib
 
             TagChildren = new ObservableCollection<ITag>();
 
-            //Konfiguracja ChartView
             this.ChartConf = new ChartViewConf();
             ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
         }
@@ -533,12 +518,10 @@ namespace ProjectDataLib
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            //Skrypte
             ScriptCon = new MSScriptControl.ScriptControl();
             ScriptCon.Language = "VBScript";
             ScriptCon.AddObject("Project", this, true);
 
-            //Dodanie refernecji projektu
             InternalTags_.Proj = this;
 
             if (string.IsNullOrEmpty(longDT))
@@ -550,10 +533,8 @@ namespace ProjectDataLib
             if (ScriptFileList_ == null)
                 ScriptFileList_ = new List<ScriptFile>();
 
-            //Konfiguracja ChartView
             ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
 
-            //Podlaczenie
             TreeViewChildren_ = new ObservableCollection<object>();
             TreeViewChildren_.Add(this.WebServer1_);
             TreeViewChildren_.Add(this.ScriptEng_);
@@ -585,10 +566,8 @@ namespace ProjectDataLib
 
             foreach (var cn in connectionList_)
             {
-                //Do projektu
                 TreeViewChildren_.Add(cn);
 
-                //Device do Poloczenia
                 ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
                 ((ITableView)cn).Children = new ObservableCollection<ITag>((from x in tagsList where x.connId == cn.objId select x).Union<ITag>(InTagsList));
             }
@@ -599,19 +578,16 @@ namespace ProjectDataLib
                 ((ITableView)dev).Children = new ObservableCollection<ITag>((from x in tagsList where x.parentId == dev.objId select x).Union<ITag>(InTagsList));
             }
 
-            //Tagi
             var query = tagsList.Union<ITag>(InTagsList);
             TagChildren = new ObservableCollection<ITag>(query);
         }
 
         public void OnDeserializedXML()
         {
-            //Skrypte
             ScriptCon = new MSScriptControl.ScriptControl();
             ScriptCon.Language = "VBScript";
             ScriptCon.AddObject("Project", this, true);
 
-            //Dodanie refernecji projektu
             InternalTags_.Proj = this;
 
             if (string.IsNullOrEmpty(longDT))
@@ -623,10 +599,8 @@ namespace ProjectDataLib
             if (ScriptFileList_ == null)
                 ScriptFileList_ = new List<ScriptFile>();
 
-            //Konfiguracja ChartView
             ((INotifyPropertyChanged)ChartConf).PropertyChanged += Project_PropertyChanged;
 
-            //Podlaczenie
             TreeViewChildren_ = new ObservableCollection<object>();
             TreeViewChildren_.Add(this.WebServer1_);
             TreeViewChildren_.Add(this.ScriptEng_);
@@ -658,10 +632,8 @@ namespace ProjectDataLib
 
             foreach (var cn in connectionList_)
             {
-                //Do projektu
                 TreeViewChildren_.Add(cn);
 
-                //Device do Poloczenia
                 ((ITreeViewModel)cn).Children = new ObservableCollection<object>(from x in DevicesList_ where x.parentId == cn.objId select x);
                 ((ITableView)cn).Children = new ObservableCollection<ITag>((from x in tagsList where x.connId == cn.objId select x).Union<ITag>(InTagsList));
             }
@@ -672,7 +644,6 @@ namespace ProjectDataLib
                 ((ITableView)dev).Children = new ObservableCollection<ITag>((from x in tagsList where x.parentId == dev.objId select x).Union<ITag>(InTagsList));
             }
 
-            //Tagi
             var query = tagsList.Union<ITag>(InTagsList);
             TagChildren = new ObservableCollection<ITag>(query);
         }
@@ -680,17 +651,14 @@ namespace ProjectDataLib
         [ComVisible(false)]
         public object Clone()
         {
-            //Klonowanie w pamieci
             MemoryStream ms = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(ms, this);
             ms.Position = 0;
 
-            //Utworzenie kopi
             Project Pr1 = (Project)bf.Deserialize(ms);
             ms.Close();
 
-            //Nowy Projekt
             Pr1.objId_ = Guid.NewGuid();
             Pr1.connectionList_.Clear();
             Pr1.DevicesList_.Clear();
@@ -705,8 +673,6 @@ namespace ProjectDataLib
 
             return Pr1;
         }
-
-        //Skrypty VBA
 
         [ComVisible(true)]
         public object GetTag(string s)
@@ -941,7 +907,7 @@ namespace ProjectDataLib
 
         #region IDisposable Support
 
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false;     
 
         protected virtual void Dispose(bool disposing)
         {
@@ -949,7 +915,6 @@ namespace ProjectDataLib
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
                     WebServer1_.Dispose();
                     connectionList_.Clear();
                     DevicesList_.Clear();
@@ -959,26 +924,18 @@ namespace ProjectDataLib
                     ScriptFileList_.Clear();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
                 disposedValue = true;
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
         ~Project()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
 

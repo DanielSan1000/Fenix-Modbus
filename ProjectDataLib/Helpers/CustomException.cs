@@ -2,7 +2,6 @@
 
 namespace ProjectDataLib
 {
-    //Klasa sluzy do zbierania danych w FenixManagerWPF
     public class CustomException
     {
         public DateTime Czas { get; set; }

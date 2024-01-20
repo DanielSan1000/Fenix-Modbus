@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace ProjectDataLib
 {
-    //Dodatkowy element
     public class CusFile : ITreeViewModel, INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
@@ -43,7 +42,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Ctor1
         public CusFile(DirectoryInfo d)
         {
             FullName = d.FullName;
@@ -52,7 +50,6 @@ namespace ProjectDataLib
             Children_ = new ObservableCollection<object>(SubDir);
         }
 
-        //Ctor2
         public CusFile(FileInfo f)
         {
             IsFile = true;
@@ -60,7 +57,6 @@ namespace ProjectDataLib
             FullName = f.FullName;
         }
 
-        //Kolekcja
         private ObservableCollection<Object> Children_;
 
         ObservableCollection<object> ITreeViewModel.Children

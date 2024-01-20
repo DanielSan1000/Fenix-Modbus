@@ -24,9 +24,6 @@ namespace ProjectDataLib
         [JsonIgnore]
         private ProjectContainer projCon_;
 
-        /// <summary>
-        /// Kontener projektowy
-        /// </summary>
         [Browsable(false)]
         [JsonIgnore]
         [XmlIgnore]
@@ -70,9 +67,6 @@ namespace ProjectDataLib
         [field: NonSerialized]
         public event EventHandler dataRecived;
 
-        /// <summary>
-        /// Projekt w ktorym znajduje sie tag
-        /// </summary>
         [field: NonSerialized]
         private Project Proj_;
 
@@ -89,9 +83,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Interfejs
-        /// </summary>
         [NonSerialized]
         private IDriverModel idrv_;
 
@@ -110,9 +101,6 @@ namespace ProjectDataLib
 
         private string Format_;
 
-        /// <summary>
-        ///Formatowanie danych
-        /// </summary>
         [Category("04 Appearance"), DisplayName("Format Value")]
         [JsonIgnore]
         [TypeConverter(typeof(FormatValueConv))]
@@ -126,9 +114,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Id rodzica
-        /// </summary>
         private Guid parentId_;
 
         [Browsable(false)]
@@ -144,9 +129,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Identyfikator obiektu
-        /// </summary>
         private Guid objId_;
 
         [Browsable(false)]
@@ -162,9 +144,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Dane identyfikacyjne
-        /// </summary>
         private string tagName_;
 
         [Category("01 Design"), DisplayName("Tag Name")]
@@ -188,9 +167,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Typ danych
-        /// </summary>
         private TypeData TypeData_;
 
         [Category("02 Data"), DisplayName("Data Type")]
@@ -219,9 +195,6 @@ namespace ProjectDataLib
             set { WriteScript_ = value; }
         }
 
-        /// <summary>
-        /// Opis Taga
-        /// </summary>
         private string describe_;
 
         [Category("01 Design"), DisplayName("Description")]
@@ -239,9 +212,6 @@ namespace ProjectDataLib
 
         private string TimerName_;
 
-        /// <summary>
-        /// Nazwa Timera
-        /// </summary>
         [TypeConverter(typeof(InTagsTimers))]
         [Category("03 Script"), DisplayName("Trigger"), Browsable(true)]
         [JsonIgnore]
@@ -251,9 +221,6 @@ namespace ProjectDataLib
             set { TimerName_ = value; }
         }
 
-        /// <summary>
-        /// Wartość danych
-        /// </summary>
         private Object value_;
 
         [Category("02 Data"), DisplayName("Value")]
@@ -291,40 +258,24 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        /// <param name="tagName"></param>
-        /// <param name="areaData"></param>
-        /// <param name="startData"></param>
-        /// <param name="desribe"></param>
-        /// <param name="_TypeData"></param>
         public InTag(ProjectContainer prCon, Project pr, string tagName, string desribe, TypeData typeData, string initVal)
         {
             try
             {
-                //Podstawowe Dane
                 this.tagName_ = tagName;
 
-                //Typ danych
                 this.TypeData_ = typeData;
 
-                //popis
                 this.describe_ = desribe;
 
-                //Inicjalizacja ID
                 objId = Guid.NewGuid();
 
-                //Dodanie projektu
                 this.Proj_ = pr;
 
-                //Dodanie
                 this.projCon_ = prCon;
 
-                //Formatowanie
                 Format_ = "{0:0.00}";
 
-                //TypyDanych
                 switch (this.TypeData_)
                 {
                     case TypeData.BIT:
@@ -372,22 +323,17 @@ namespace ProjectDataLib
                         break;
                 }
 
-                //Kolor
-                //Poczatkowy kolor
                 Random random = new Random();
                 Clr_ = Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
 
-                //Grubosc
                 Width_ = 2;
 
-                //Enebla dla graph
                 GrEnable_ = true;
 
                 GrVisible_ = true;
 
                 GrVisibleTab_ = true;
 
-                //Reset Value
                 ResetValue();
             }
             catch (Exception Ex)
@@ -400,11 +346,6 @@ namespace ProjectDataLib
         {
         }
 
-        /// <summary>
-        /// Pobiera wielkość elementu w Byte na podstawie typu
-        /// </summary>
-        /// <param name="typeData"></param>
-        /// <returns></returns>
         public int getSize()
         {
             try
@@ -454,11 +395,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobiera type danych Taga
-        /// </summary>
-        /// <param name="typeData"></param>
-        /// <returns></returns>
         public Type getOwnType()
         {
             try
@@ -508,11 +444,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Porownanie
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj is ITag)
@@ -520,31 +451,18 @@ namespace ProjectDataLib
             return false;
         }
 
-        /// <summary>
-        /// Porownanie
-        /// </summary>
-        /// <returns></returns>
         public override int GetHashCode()
         {
             return this.objId.GetHashCode();
         }
 
-        /// <summary>
-        /// Metoda do sorotwania
-        /// </summary>
-        /// <param name="b"></param>
-        /// <returns></returns>
         public int CompareTo(Tag b)
         {
-            // Alphabetic sort name[A to Z]
             return this.tagName_.CompareTo(b.tagName);
         }
 
         private Color Clr_;
 
-        /// <summary>
-        /// Color for Editors
-        /// </summary>
         [Category("05 Graph"), DisplayName("Color")]
         [JsonIgnore]
         [XmlElement(ElementName = "Color", Type = typeof(XmlColor))]
@@ -617,7 +535,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Dodatkowa Dana Dla JSON
         [Browsable(false)]
         public string formattedValue
         {
@@ -643,10 +560,6 @@ namespace ProjectDataLib
         public string description
         { get { return describe; } }
 
-        /// <summary>
-        /// Funckja Resetuje Wartosc
-        /// </summary>
-        /// <returns></returns>
         private Boolean ResetValue()
         {
             try
@@ -713,10 +626,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Desarializacja obiektu
-        /// </summary>
-        /// <param name="context"></param>
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
@@ -729,10 +638,6 @@ namespace ProjectDataLib
             ResetValue();
         }
 
-        /// <summary>
-        /// Klonowanie obiektu
-        /// </summary>
-        /// <returns></returns>
         public object Clone()
         {
             MemoryStream ms = new MemoryStream();
@@ -745,7 +650,6 @@ namespace ProjectDataLib
             return Tg1;
         }
 
-        //Interfejsc
         Guid ITag.Id
         {
             get { return objId; }
@@ -1075,8 +979,6 @@ namespace ProjectDataLib
             }
         }
 
-        //IDriverModel
-
         bool IDriverModel.activateCycle(List<ITag> tagsList)
         {
             return idrv.activateCycle(tagsList);
@@ -1164,7 +1066,6 @@ namespace ProjectDataLib
             set
             {
                 idrv.isAlive = value;
-                //zdarzenia
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("isAlive"));
             }
         }

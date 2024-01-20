@@ -121,13 +121,11 @@ namespace ProjectDataLib
             this.Proj_ = pr;
             this.objId_ = new Guid("33333333-3333-3333-3333-333333333333");
 
-            //Domysly Timer
             Timers_ = new List<CustomTimer>();
             Timers_.Add(new CustomTimer());
 
             Enable_ = true;
 
-            //Referencje
             CSScript.Evaluator.ReferenceAssembly(Assembly.GetAssembly(typeof(ProjectDataLib.Project)));
             CSScript.Evaluator.ReferenceAssembly(Assembly.GetAssembly(typeof(System.Windows.Forms.MessageBox)));
         }
@@ -168,24 +166,16 @@ namespace ProjectDataLib
         [field: NonSerialized]
         private EventHandler reciveLogInfoEv;
 
-        //Informacja o aktywnosci odczytu
         private Boolean isLive;
 
-        //Script
         [field: NonSerialized]
         private List<dynamic> scripts = new List<dynamic>();
 
-        /// <summary>
-        /// Nazwa Sterownika
-        /// </summary>
         string IDriverModel.driverName
         {
             get { return "Scripts"; }
         }
 
-        /// <summary>
-        /// Parametry Steronika
-        /// </summary>
         object IDriverModel.setDriverParam
         {
             get
@@ -198,26 +188,18 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Aktywacja sterownika
-        /// </summary>
-        /// <param name="tagsList"></param>
-        /// <returns></returns>
         bool IDriverModel.activateCycle(List<ITag> tagsList)
         {
             try
             {
-                //Wylaczenie danych
                 if (!Enable_)
                     return false;
 
-                //Ustawienia silnika
                 CSScript.Evaluator.Reset();
                 CSScript.Evaluator.ReferenceAssembly(Assembly.GetAssembly(typeof(ProjectDataLib.Project)));
                 CSScript.Evaluator.ReferenceAssembly(Assembly.GetAssembly(typeof(System.Windows.Forms.MessageBox)));
                 CSScript.EvaluatorConfig.Engine = EvaluatorEngine.Mono;
 
-                //Script inicjalizacja
                 scripts.Clear();
                 BckTimers.Clear();
                 foreach (ScriptFile f in Proj_.ScriptFileList)
@@ -229,13 +211,11 @@ namespace ProjectDataLib
                         scripts.Last().Init(Proj_, f.Name);
                         scripts.Last().Start();
 
-                        //Timery
                         CustomTimer ti = Proj_.ScriptEng.Timers.Find(x => x.Name == f.TimerName);
                         BckTimers.Add(new System.Threading.Timer(TimerTask, (object)scripts.Last(), ti.Delay, ti.Time));
                     }
                 }
 
-                //Znacznik komunikacji
                 isLive = true;
                 return true;
             }
@@ -247,11 +227,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Dodanie tagow do komunikacji podczas pracy sterownika
-        /// </summary>
-        /// <param name="tagList"></param>
-        /// <returns></returns>
         bool IDriverModel.addTagsComm(List<ITag> tagList)
         {
             try
@@ -267,11 +242,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usuniecie tagow z komunikacji podczas dzialania sterownika
-        /// </summary>
-        /// <param name="tagList"></param>
-        /// <returns></returns>
         bool IDriverModel.removeTagsComm(List<ITag> tagList)
         {
             try
@@ -287,10 +257,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Rekonfiguruj dane
-        /// </summary>
-        /// <returns></returns>
         bool IDriverModel.reConfig()
         {
             try
@@ -306,23 +272,16 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Zatrzymaj komunikacji
-        /// </summary>
-        /// <returns></returns>
         bool IDriverModel.deactivateCycle()
         {
             try
             {
-                //Wylaczenie danych
                 if (!Enable_)
                     return false;
 
-                //Zablokowanie
                 foreach (var tm in BckTimers)
                     tm.Dispose();
 
-                //Script
                 foreach (dynamic sc in scripts)
                 {
                     sc.Stop();
@@ -342,10 +301,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Obieg timerow
-        /// </summary>
-        /// <param name="StateObj"></param>
         private void TimerTask(object StateObj)
         {
             try
@@ -361,93 +316,57 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Informacja o zakonczeniu cyklu komunikacyjnego
-        /// </summary>
         event EventHandler IDriverModel.refreshedCycle
         {
             add { refreshCycleEv += value; }
             remove { refreshCycleEv -= value; }
         }
 
-        /// <summary>
-        /// Informacja o zakonczeniu jakiejs czesci cyklu podstawowego
-        /// </summary>
         event EventHandler IDriverModel.refreshedPartial
         {
             add { refreshedPartial += value; }
             remove { refreshedPartial -= value; }
         }
 
-        /// <summary>
-        /// Informcja o bledzie
-        /// </summary>
         event EventHandler IDriverModel.error
         {
             add { errorSendEv += value; }
             remove { errorSendEv -= value; }
         }
 
-        /// <summary>
-        /// Informacja ogolna
-        /// </summary>
         event EventHandler IDriverModel.information
         {
             add { sendInfoEv += value; }
             remove { sendInfoEv -= value; }
         }
 
-        /// <summary>
-        /// Informacja o wyslaniu danych
-        /// </summary>
         event EventHandler IDriverModel.dataSent
         {
             add { sendLogInfoEv += value; }
             remove { sendLogInfoEv -= value; }
         }
 
-        /// <summary>
-        /// Informacja o odebraniu danych
-        /// </summary>
         event EventHandler IDriverModel.dataRecived
         {
             add { reciveLogInfoEv += value; }
             remove { reciveLogInfoEv -= value; }
         }
 
-        /// <summary>
-        /// Odstepne obszary komunikacji dla sterownika
-        /// </summary>
         MemoryAreaInfo[] IDriverModel.MemoryAreaInf
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Formatowanie logu
-        /// </summary>
-        /// <param name="frame"></param>
-        /// <param name="num"></param>
-        /// <returns></returns>
         string IDriverModel.FormatFrameRequest(byte[] frame, NumberStyles num)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Formatowanie logu
-        /// </summary>
-        /// <param name="frame"></param>
-        /// <param name="num"></param>
-        /// <returns></returns>
         string IDriverModel.FormatFrameResponse(byte[] frame, NumberStyles num)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Zwraca czy komunikacja trwa
-        /// </summary>
         bool IDriverModel.isAlive
         {
             get { return isLive; }
@@ -458,9 +377,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Zwraca czy komunikacja zakonczyla sie
-        /// </summary>
         bool IDriverModel.isBusy
         {
             get
@@ -469,36 +385,21 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Stara zaszlosc
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         byte[] IDriverModel.sendBytes(byte[] data)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// W Przeszlosci mialy to byc plaginy
-        /// </summary>
         object[] IDriverModel.plugins
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Rozne informacje dla edytorow
-        /// </summary>
         bool[] IDriverModel.AuxParam
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Desarializacja obiektu
-        /// </summary>
-        /// <param name="context"></param>
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
@@ -507,9 +408,6 @@ namespace ProjectDataLib
             isLive = false;
         }
 
-        /// <summary>
-        /// Nowy Interfejsc
-        /// </summary>
         Guid IDriverModel.ObjId
         {
             get

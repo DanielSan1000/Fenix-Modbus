@@ -59,7 +59,6 @@ namespace ProjectDataLib
             get { return parentId_; }
             set
             {
-                //Przypisanie
                 parentId_ = value;
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("parentId"));
             }
@@ -74,8 +73,6 @@ namespace ProjectDataLib
             get { return objId_; }
             set
             {
-                //Zmiana potomokow
-
                 if (PrCon != null)
                 {
                     var tgs = from tx in prCon_.getProject(projId_).tagsList where tx.parentId == objId_ select tx;
@@ -142,10 +139,8 @@ namespace ProjectDataLib
             get { return adress_; }
             set
             {
-                //Adres
                 adress_ = value;
 
-                //Wyslanie zdarzenia do klasy nadrzednej
                 if (adressChanged != null)
                     adressChanged(this, new ProjectEventArgs(adress_));
 
@@ -256,22 +251,16 @@ namespace ProjectDataLib
 
         public Device(string name, ushort adresss, ProjectContainer projCon, Guid projId1)
         {
-            //nazwa
             this.name = name;
 
-            //Project
             this.projId_ = projId1;
 
-            //Adres urzadenia
             this.adress_ = adresss;
 
-            //Kontener projektowy
             this.prCon_ = projCon;
 
-            //identyfikator
             objId = Guid.NewGuid();
 
-            //Dzieci
             _Children = new ObservableCollection<object>();
             ChildrenTags = new ObservableCollection<ITag>();
             Children_ = new ObservableCollection<IDriverModel>();
@@ -281,23 +270,16 @@ namespace ProjectDataLib
         {
         }
 
-        /// <summary>
-        /// Klonowanie obiektu
-        /// </summary>
-        /// <returns></returns>
         public object Clone()
         {
-            //Strumieniowanie
             MemoryStream ms = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(ms, this);
             ms.Position = 0;
 
-            //Kopia Elementu
             Device Dv1 = (Device)bf.Deserialize(ms);
             ms.Close();
 
-            //Dane
             Dv1.objId_ = Guid.NewGuid();
             Dv1.projId_ = Guid.Empty;
             Dv1.parentId_ = Guid.Empty;
@@ -309,10 +291,6 @@ namespace ProjectDataLib
             return Dv1;
         }
 
-        /// <summary>
-        /// Zdarzenia po serilaizacji
-        /// </summary>
-        /// <param name="context"></param>
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {

@@ -49,7 +49,6 @@ namespace ProjectDataLib
             {
                 Name_ = value;
 
-                //Zmiana nazwy pliku  na dysku podczas edycji w programie
                 File.Move(FilePath, Path.GetDirectoryName(FilePath) + "\\" + value);
                 FilePath = Path.GetDirectoryName(FilePath) + "\\" + value;
 
@@ -115,7 +114,6 @@ namespace ProjectDataLib
             }
             set
             {
-                //propChanged?.Invoke(this, new PropertyChangedEventArgs("IsLive"));
             }
         }
 
@@ -136,9 +134,6 @@ namespace ProjectDataLib
             set { }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
         public InFile(string path)
         {
             this.FilePath_ = path;

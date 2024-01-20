@@ -126,24 +126,18 @@ namespace ProjectDataLib
             get { return TypeData_; }
             set
             {
-                //Zmiana Tablic na skutek zmiany typu danych
                 TypeData_ = value;
 
                 if (idrv != null)
                 {
-                    //Pobieram informacje o obszarze pamieci
                     MemoryAreaInfo mInf = idrv_?.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                    //Tworzenie pierwotnych danych zmiennych ODCZYT
                     this.coreData_ = new Boolean[getSize() < mInf.AdresSize ? mInf.AdresSize : getSize()];
 
-                    //Tworzenie pierwotnych danych zmiennych ZAPIS
                     this.coreDataSend_ = new Boolean[coreData_.Length];
 
-                    //Bezposredni adres bitowy
                     this.bitAdres_ = (this.startData_ * mInf.AdresSize);
 
-                    //Sprawdzenie SecendAdress
                     int[] war = this.getScAdressPos();
                     if (!war.Contains(this.scAdres_))
                         this.scAdres_ = war[0];
@@ -185,19 +179,14 @@ namespace ProjectDataLib
 
                 if (idrv != null)
                 {
-                    //Pobieram informacje o obszarze pamieci
                     MemoryAreaInfo mInf = idrv_.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                    //Tworzenie pierwotnych danych zmiennych ODCZYT
                     this.coreData_ = new Boolean[getSize() < mInf.AdresSize ? mInf.AdresSize : getSize()];
 
-                    //Tworzenie pierwotnych danych zmiennych ZAPIS
                     this.coreDataSend_ = new Boolean[coreData_.Length];
 
-                    //Bezposredni adres bitowy
                     this.bitAdres_ = (this.startData_ * mInf.AdresSize);
 
-                    //Sprawdzenie SecendAdress
                     int[] war = this.getScAdressPos();
                     if (!war.Contains(this.scAdres_))
                         this.scAdres_ = war[0];
@@ -221,10 +210,8 @@ namespace ProjectDataLib
 
                 if (idrv != null)
                 {
-                    //Pobieram informacje o obszarze pamieci
                     MemoryAreaInfo mInf = idrv_.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                    //Bezposredni adres bitowy
                     this.bitAdres_ = (this.startData_ * mInf.AdresSize);
                 }
 
@@ -267,10 +254,8 @@ namespace ProjectDataLib
             get { return scAdres_; }
             set
             {
-                //Sprawdzenie
                 scAdres_ = value;
 
-                //Sprawdzenie SecendAdress
                 int[] war = getScAdressPos();
 
                 if (war != null)
@@ -397,69 +382,49 @@ namespace ProjectDataLib
         {
             try
             {
-                //Podstawowe Dane
                 this.tagName_ = tagName;
 
-                //Obszar pamieci
                 this.areaData_ = areaData;
 
-                //Adres startowy1
                 this.startData_ = startData;
 
-                //Adres startowy 2
                 this.scAdres_ = secondAdress;
 
-                //Adress Blokowu dla DB
                 this.BlockAdress_ = blAdres;
 
-                //porzadek
                 this.bytesOrder_ = bOrder;
 
-                //Typ danych
                 this.TypeData_ = typeData;
 
-                //popis
                 this.describe_ = desribe;
 
-                //Id poloczenia
                 this.connId_ = connId;
 
-                //Inicjalizacja ID
                 objId = Guid.NewGuid();
 
-                //Marker modyfikacji
                 setMod = false;
 
-                //Pobieram informacje o obszarze pamieci
                 MemoryAreaInfo aInfo = idr.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                //Tworzenie pierwotnych danych zmiennych ODCZYT
                 this.coreData_ = new Boolean[getSize() < aInfo.AdresSize ? aInfo.AdresSize : getSize()];
 
-                //Tworzenie pierwotnych danych zmiennych ZAPIS
                 this.coreDataSend_ = new Boolean[coreData_.Length];
 
-                //Bezposredni adres bitowy
                 this.bitAdres_ = (this.startData_ * aInfo.AdresSize);
 
-                //Ustawienie formatowanie
                 Format_ = "{0:0.00}";
 
-                //Poczatkowy kolor
                 Random random = new Random();
                 Clr_ = Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
 
-                //Widoscznosc w Graph
                 Width_ = 2;
 
-                //Enebla dla graph
                 GrEnable_ = true;
 
                 GrVisible_ = true;
 
                 GrVisibleTab_ = true;
 
-                //Reset
                 ResetValue();
             }
             catch (Exception Ex)
@@ -556,7 +521,6 @@ namespace ProjectDataLib
 
         public int CompareTo(Tag b)
         {
-            // Alphabetic sort name[A to Z]
             return this.startData.CompareTo(b.startData);
         }
 
@@ -564,17 +528,13 @@ namespace ProjectDataLib
         {
             try
             {
-                //Ustawienie kolejności bitów wg. BytesOrder
                 Boolean[] dane1 = OrderBytesFct(this.bytesOrder_, ref coreData_);
 
-                //Konwersja
                 byte[] arrByte = new byte[dane1.Length / 8 == 0 ? 1 : dane1.Length / 8];
                 BitArray btAr = new BitArray(dane1);
 
-                //Konwersja na byte[]
                 btAr.CopyTo(arrByte, 0);
 
-                //Gdy nie ustawimy skryptu
                 Boolean ScriptMark = false;
                 if (!String.IsNullOrEmpty(ReadScript_))
                 {
@@ -591,7 +551,6 @@ namespace ProjectDataLib
                 else
                     ScriptMark = false;
 
-                //Konwersja
                 switch (this.TypeData_)
                 {
                     case ProjectDataLib.TypeData.BIT:
@@ -749,15 +708,12 @@ namespace ProjectDataLib
                 if (obj == null)
                     return;
 
-                //Znacznik modyfikacji
                 setMod = true;
 
-                //Przekopiowanie tablic
                 Array.Copy(coreData_, coreDataSend_, coreData_.Length);
                 BitArray biArr;
                 byte[] btArr;
 
-                //Testowanie scryptu
                 Boolean ScriptMark = false;
                 if (!String.IsNullOrEmpty(WriteScript_))
                 {
@@ -772,7 +728,6 @@ namespace ProjectDataLib
                     }
                 }
 
-                //Selekcja Danych
                 switch (TypeData_)
                 {
                     case ProjectDataLib.TypeData.BIT:
@@ -793,7 +748,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToByte(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -814,7 +768,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToSByte(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -825,7 +778,6 @@ namespace ProjectDataLib
                         btArr = new byte[biArr.Length / 8];
                         biArr.CopyTo(btArr, 0);
 
-                        //kopiowanie sbyte to byte table (nie można przypisać byte to sbyte)
                         Buffer.BlockCopy(new sbyte[] { (sbyte)obj }, 0, btArr, scAdres_, 1);
 
                         biArr = new BitArray(btArr);
@@ -846,7 +798,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToDouble(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -861,7 +812,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToSingle(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -877,7 +827,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToInt32(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -892,7 +841,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToUInt32(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -907,7 +855,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToInt16(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -922,7 +869,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToUInt16(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -937,7 +883,6 @@ namespace ProjectDataLib
                         if (obj.GetType() == typeof(string))
                             obj = Convert.ToDouble(obj);
 
-                        //Obsluga scryptu
                         if (ScriptMark)
                         {
                             string code = WriteScript_.Replace("x", String.Format("{0:0}", obj)).Replace(',', '.');
@@ -949,7 +894,6 @@ namespace ProjectDataLib
                         break;
                 }
 
-                //Zmiana Order
                 this.coreDataSend_ = OrderBytesFct(this.bytesOrder_, ref coreDataSend_);
             }
         }
@@ -958,10 +902,8 @@ namespace ProjectDataLib
         {
             try
             {
-                //Pobieram informacje o obszarze pamieci
                 MemoryAreaInfo mInf = idrv_.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                //Wybór elementu
                 switch (this.TypeData_)
                 {
                     case TypeData.BIT:
@@ -1040,16 +982,13 @@ namespace ProjectDataLib
 
         public int[] getScAdressPos()
         {
-            //Zwracana tablica
             List<int> buffor = new List<int>();
 
             if (idrv == null)
                 return null;
 
-            //Pobranie obszaru danych
             MemoryAreaInfo info = idrv_?.MemoryAreaInf.Where(x => x.Name == this.areaData_).ToList()[0];
 
-            //Obliczenia
             switch (this.TypeData_)
             {
                 case TypeData.BIT:
@@ -1103,7 +1042,6 @@ namespace ProjectDataLib
                     break;
             }
 
-            //Zabezpieczenie
             if (buffor.Count == 0)
                 buffor.Add(0);
 
@@ -1181,16 +1119,12 @@ namespace ProjectDataLib
                         {
                             for (int i = 0; i < data.Length; i = i + 16)
                             {
-                                //Pobranie 1 bajta
                                 Boolean[] b1 = data.ToList().GetRange(i, 8).ToArray();
 
-                                //Pobranie drugiego bajta
                                 Boolean[] b2 = data.ToList().GetRange(i + 8, 8).ToArray();
 
-                                //Pierwszy  bajt na miejsce drugiego
                                 Array.Copy(b2, 0, data, i, 8);
 
-                                //Drugi  bajt na miejsce pierwszego
                                 Array.Copy(b1, 0, data, i + 8, 8);
                             }
 
@@ -1203,13 +1137,11 @@ namespace ProjectDataLib
                         return data;
 
                     case BytesOrder.DCBA:
-                        //Zamiana na byte[]
                         byte[] dDane = new byte[data.Length / 8 == 1 ? 1 : data.Length / 8];
                         BitArray btArr = new BitArray(data);
                         btArr.CopyTo(dDane, 0);
                         dDane = dDane.Reverse().ToArray();
 
-                        //Powrót do Bit
                         btArr = new BitArray(dDane);
                         btArr.CopyTo(data, 0);
                         return data;
@@ -1358,19 +1290,14 @@ namespace ProjectDataLib
 
                 if (idrv != null)
                 {
-                    //Pobieram informacje o obszarze pamieci
                     MemoryAreaInfo mInf = idrv_?.MemoryAreaInf.Where(x => x.Name.Equals(this.areaData_)).ToArray()[0];
 
-                    //Tworzenie pierwotnych danych zmiennych ODCZYT
                     this.coreData_ = new Boolean[getSize() < mInf.AdresSize ? mInf.AdresSize : getSize()];
 
-                    //Tworzenie pierwotnych danych zmiennych ZAPIS
                     this.coreDataSend_ = new Boolean[coreData_.Length];
 
-                    //Bezposredni adres bitowy
                     this.bitAdres_ = (this.startData_ * mInf.AdresSize);
 
-                    //Sprawdzenie SecendAdress
                     int[] war = this.getScAdressPos();
                     if (!war.Contains(this.scAdres_))
                         this.scAdres_ = war[0];
@@ -1466,7 +1393,6 @@ namespace ProjectDataLib
             return Tg1;
         }
 
-        //Interfejsc
         Guid ITag.Id
         {
             get { return objId; }
@@ -1761,8 +1687,6 @@ namespace ProjectDataLib
             }
         }
 
-        //IDriverModel
-
         bool IDriverModel.activateCycle(List<ITag> tagsList)
         {
             return idrv.activateCycle(tagsList);
@@ -1850,7 +1774,6 @@ namespace ProjectDataLib
             set
             {
                 idrv.isAlive = value;
-                //zdarzenia
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("isAlive"));
             }
         }

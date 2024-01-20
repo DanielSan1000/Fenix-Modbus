@@ -11,9 +11,6 @@ using System.Xml.Serialization;
 
 namespace ProjectDataLib
 {
-    /// <summary>
-    /// Webserver
-    /// </summary>
     [Serializable]
     public class WebServer : IDisposable, ITreeViewModel, INotifyPropertyChanged
     {
@@ -179,7 +176,6 @@ namespace ProjectDataLib
             get { return Active_; }
         }
 
-        //Wszystkie pliki
         [field: NonSerialized]
         private ObservableCollection<object> _Children;
 
@@ -244,32 +240,22 @@ namespace ProjectDataLib
             set { }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        /// <param name="prefixes"></param>
-        /// <param name="method"></param>
         public WebServer(Func<HttpListenerContext, byte[]> method)
         {
             if (!HttpListener.IsSupported)
                 throw new NotSupportedException(
                     "WebServer.Coinstr  - Needs Windows XP SP2, Server 2003 or later.");
 
-            //Przypisanie
             ObjId_ = new Guid("11111111-1111-1111-1111-111111111111");
 
-            //Utworzenie Serwera i utworzenie standardowych paramatrow
             _listener = new HttpListener();
             Prefixes_.Add("http://+:80/");
             _listener.Prefixes.Add("http://+:80/");
 
-            //Autoryzacja
             Auth = AuthenticationSchemes.Anonymous;
 
-            //
             _Children = new ObservableCollection<object>();
 
-            //Przypisanie metody odbiorczej
             if (method != null)
                 _responderMethod = method;
         }
@@ -278,12 +264,8 @@ namespace ProjectDataLib
         {
         }
 
-        /// <summary>
-        /// Start
-        /// </summary>
         public void Run()
         {
-            //Start
             _listener.Start();
             Active_ = true;
 
@@ -303,22 +285,18 @@ namespace ProjectDataLib
                                 ctx.Response.ContentLength64 = buf.Length;
                                 ctx.Response.OutputStream.Write(buf, 0, buf.Length);
                             }
-                            catch { Active_ = false; } // suppress any exceptions
+                            catch { Active_ = false; }    
                             finally
                             {
-                                // always close the stream
                                 ctx.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
                     }
                 }
-                catch { } // suppress any exceptions
+                catch { }    
             });
         }
 
-        /// <summary>
-        /// Stop
-        /// </summary>
         public void Stop()
         {
             try
@@ -331,10 +309,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Metoda wywolana po serializacji
-        /// </summary>
-        /// <param name="context"></param>
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
@@ -342,16 +316,12 @@ namespace ProjectDataLib
                 throw new NotSupportedException(
                     "WebServer.Coinstr  - Needs Windows XP SP2, Server 2003 or later.");
 
-            //Init
             ObjId_ = new Guid("11111111-1111-1111-1111-111111111111");
 
-            //Utworzenie obiektu
             _listener = new HttpListener();
 
-            //Zapisanie auth
             _listener.AuthenticationSchemes = Auth_;
 
-            //Zabezpiecznie gdy jest pusty
             if (Prefixes_ == null)
             {
                 Prefixes_ = new List<string>();
@@ -375,7 +345,7 @@ namespace ProjectDataLib
 
         #region IDisposable Support
 
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false;     
 
         protected virtual void Dispose(bool disposing)
         {
@@ -397,12 +367,9 @@ namespace ProjectDataLib
             }
         }
 
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
         }
 
         #endregion IDisposable Support

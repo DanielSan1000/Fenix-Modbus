@@ -153,7 +153,6 @@ namespace ProjectDataLib
             }
             set
             {
-                //Zmiana nazwy sterownika
                 DriverName_ = value;
 
                 if (PrCon != null)
@@ -164,7 +163,6 @@ namespace ProjectDataLib
                     foreach (Device d in PrCon?.projectList?.First()?.DevicesList?.Where(x => x.parentId == objId))
                         ((IDriversMagazine)d)?.Children?.Remove(Idrv);
 
-                    //Zmiana sterownika
                     Idrv_ = gConf_?.newDrv(DriverName_);
 
                     ((IDriversMagazine)PrCon?.projectList?.First())?.Children.Add(Idrv);
@@ -173,7 +171,6 @@ namespace ProjectDataLib
                     foreach (Device d in PrCon?.projectList?.First()?.DevicesList?.Where(x => x.parentId == objId))
                         ((IDriversMagazine)d).Children.Add(Idrv);
 
-                    //Ustawienie nowego drivera
                     Parameters_ = Idrv_?.setDriverParam;
 
                     if (((ITableView)this).Children?.Count > 0)
@@ -303,36 +300,26 @@ namespace ProjectDataLib
 
         public Connection(GlobalConfiguration gC, ProjectContainer prCon, String DriverName_, string connectionName, Object driverParam)
         {
-            //Nazwa
             this.connectionName_ = connectionName;
 
-            //This
             this.Parameters_ = driverParam;
 
-            //Inicjalizacja ID
             objId_ = Guid.NewGuid();
 
-            //Gloablny konfigurator
             this.gConf_ = gC;
 
-            //Znacznik rozwiniecia
             IsExpand_ = true;
 
-            //Rodzaj sterownika
             this.DriverName_ = DriverName_;
 
-            //Zaladowanie sterownika
             Idrv_ = gC.newDrv(DriverName_);
 
-            //Przypisanie parametrow
             Idrv_.setDriverParam = Parameters_;
 
-            //Dzieci
             TreeViewChildren = new ObservableCollection<object>();
             TagChildren = new ObservableCollection<ITag>();
             DriverChildren = new ObservableCollection<IDriverModel>();
 
-            //Kontener projektowy
             PrCon = prCon;
         }
 
@@ -349,18 +336,14 @@ namespace ProjectDataLib
             Connection Cn1 = (Connection)bf.Deserialize(ms);
             ms.Close();
 
-            //Zmiana Danych
             Cn1.objId_ = Guid.NewGuid();
 
             Cn1.parentId_ = Guid.Empty;
 
-            //Dodanie Contenera
             Cn1.PrCon = PrCon;
 
-            //Dodanie swierzej kopii sterownika
             Cn1.Idrv_ = null;
 
-            //Rodzice
             Cn1.TreeViewChildren = new ObservableCollection<object>();
             Cn1.TagChildren = new ObservableCollection<ITag>();
             Cn1.DriverChildren = new ObservableCollection<IDriverModel>();
@@ -370,7 +353,6 @@ namespace ProjectDataLib
 
         public int CompareTo(Connection b)
         {
-            // Alphabetic sort name[A to Z]
             return this.connectionName.CompareTo(b.connectionName);
         }
 

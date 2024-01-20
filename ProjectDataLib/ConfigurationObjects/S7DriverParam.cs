@@ -8,9 +8,6 @@ namespace ProjectDataLib
     [Serializable]
     public class S7DriverParam
     {
-        /// <summary>
-        /// Nazwa Portu COM
-        /// </summary>
         private IPAddress Ip_;
 
         [Category("Target")]

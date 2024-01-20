@@ -77,12 +77,8 @@ namespace ProjectDataLib
             set { ReplyTime_ = value; }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
         public IoDriverParam()
         {
-            //Port Name
             PortName_ = "COM1";
             BaundRate_ = 9600;
             parity_ = Parity.None;

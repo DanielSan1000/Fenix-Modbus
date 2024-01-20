@@ -8,9 +8,6 @@ namespace ProjectDataLib
     [Serializable]
     public class TcpDriverParam
     {
-        /// <summary>
-        /// Nazwa Portu COM
-        /// </summary>
         private IPAddress Ip_;
 
         [Category("Target")]
@@ -55,9 +52,6 @@ namespace ProjectDataLib
             set { ReplyTime_ = value; }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
         public TcpDriverParam()
         {
             Ip_ = IPAddress.Parse("127.0.0.1");

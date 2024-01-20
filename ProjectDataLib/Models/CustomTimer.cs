@@ -6,9 +6,6 @@ namespace ProjectDataLib
     [Serializable]
     public class CustomTimer : IComparable<CustomTimer>
     {
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
         public CustomTimer()
         {
             Name_ = "Timer";
@@ -18,9 +15,6 @@ namespace ProjectDataLib
 
         private string Name_;
 
-        /// <summary>
-        /// Nazwa Timera
-        /// </summary>
         [Category("Design"), DisplayName("01 Timer Name")]
         public string Name
         {
@@ -30,9 +24,6 @@ namespace ProjectDataLib
 
         private int Time_;
 
-        /// <summary>
-        /// Czas zegara
-        /// </summary>
         [Category("Design"), DisplayName("02 Time [ms]")]
         public int Time
         {
@@ -42,9 +33,6 @@ namespace ProjectDataLib
 
         private int Delay_;
 
-        /// <summary>
-        /// Opoznienie startu
-        /// </summary>
         [Category("Design"), DisplayName("03 Delay [ms]")]
         public int Delay
         {
@@ -52,11 +40,6 @@ namespace ProjectDataLib
             set { Delay_ = value; }
         }
 
-        /// <summary>
-        /// Sortowanie
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
         int IComparable<CustomTimer>.CompareTo(CustomTimer other)
         {
             return this.Time_.CompareTo(other.Time_);

@@ -24,7 +24,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Osie wykresu
         private double maximumX_;
 
         [XmlElement(ElementName = "ChartX1", Type = typeof(DateTime))]
@@ -102,10 +101,8 @@ namespace ProjectDataLib
             }
         }
 
-        //Konstruktor
         public ChartViewConf()
         {
-            //Osie
             maximumX = DateTime.Now;
             minimumX = DateTime.Now;
 
@@ -118,7 +115,6 @@ namespace ProjectDataLib
             To = DateTime.Now;
         }
 
-        //ChartView
         [OptionalField]
         private TimeSpan TrackSpan_;
 
@@ -172,8 +168,6 @@ namespace ProjectDataLib
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("histData"));
             }
         }
-
-        //Communication View
 
         private bool CvCol1_;
 
@@ -265,8 +259,6 @@ namespace ProjectDataLib
                 propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol7"));
             }
         }
-
-        //Table View
 
         private bool TvCol1_;
 

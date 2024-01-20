@@ -88,10 +88,8 @@ namespace ProjectDataLib
 
             DbConnection = new SQLiteConnection("Data Source=" + Path.GetDirectoryName(Pr.path) + PrCon.Database + ";Version=3;");
 
-            //utworzenie bazy
             if (!File.Exists(Path.GetDirectoryName(Pr.path) + PrCon.Database))
             {
-                //Sprawdzamy czy istnieje
                 if (!Directory.Exists(Path.GetDirectoryName(Pr.path) + "\\" + "Database"))
                     Directory.CreateDirectory(Path.GetDirectoryName(Pr.path) + "\\" + "Database");
 
@@ -148,7 +146,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Dodaj element to bazy
         private void addDataElement(string name, string value, DateTime tm)
         {
             try
@@ -166,7 +163,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Remove element
         private void removeDataITagElement(string name)
         {
             try
@@ -184,7 +180,6 @@ namespace ProjectDataLib
             }
         }
 
-        //Reset
         public void Reset()
         {
             if (DbConnection != null)
@@ -202,7 +197,6 @@ namespace ProjectDataLib
             }
         }
 
-        //GetDataTable
         public DataTable GetAll()
         {
             string sql = "select * from tags";
@@ -237,7 +231,6 @@ namespace ProjectDataLib
             return observableCollection;
         }
 
-        //GetRange
         public DatabaseValues GetRange(ITag tg, DateTime from, DateTime to)
         {
             string sql = String.Format("select * from tags where stamp between '{0}' and '{1}' and name='{2}'", from.ToString("yyyy-MM-dd HH:mm:ss.fff"), to.ToString("yyyy-MM-dd HH:mm:ss.fff"), tg.Name);
@@ -248,7 +241,6 @@ namespace ProjectDataLib
 
             while (reader.Read())
             {
-                //Dane
                 double dtCurr = DateTime.ParseExact(reader.GetString(1), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture).ToOADate();
                 double value = Convert.ToDouble(reader["value"].ToString());
 
@@ -340,13 +332,10 @@ namespace ProjectDataLib
 
         public void OnDeserializedXML()
         {
-            //Baza danych
             DbConnection = new SQLiteConnection("Data Source=" + Path.GetDirectoryName(Pr.path) + PrCon.Database + ";Version=3;");
 
-            //utworzenie bazy
             if (!File.Exists(Path.GetDirectoryName(Pr.path) + PrCon.Database))
             {
-                //Sprawdzamy czy istnieje
                 if (!Directory.Exists(Path.GetDirectoryName(Pr.path) + "\\" + "Database"))
                     Directory.CreateDirectory(Path.GetDirectoryName(Pr.path) + "\\" + "Database");
 

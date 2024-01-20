@@ -1,11 +1,7 @@
 ﻿namespace ProjectDataLib
 {
-    /// <summary>
-    /// Klasa pomocnicza dla punktow
-    /// </summary>
     public class PO
     {
-        //Start
         private int X_;
 
         public int X
@@ -14,7 +10,6 @@
             get { return X_; }
         }
 
-        //Stop
         private int Y_;
 
         public int Y
@@ -31,7 +26,6 @@
             set { BlockNum_ = value; }
         }
 
-        //konstruktor
         public PO(int x, int y)
         {
             this.X_ = x;

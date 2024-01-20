@@ -3,9 +3,6 @@ using System.ComponentModel;
 
 namespace ProjectDataLib
 {
-    /// <summary>
-    /// Klasa inforujaca o danym obszarze pamięci w sterowniku
-    /// </summary>
     [Serializable]
     public class MemoryAreaInfo : INotifyPropertyChanged
     {
@@ -25,29 +22,17 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        /// <param name="name">Nazwa Obszaru pamięci</param>
-        /// <param name="moduleSizeReq">Rozmiar w bitach ządania</param>
-        /// <param name="moduleSizeRes">Odpowiedz w bitach sterownika</param>
         public MemoryAreaInfo(string name, int adresSize, int ctCode)
         {
-            //Nazwa
             Name = name;
 
-            //Rozmiar jednostkowego rejestru
             AdresSize = adresSize;
 
-            //Kod
             fctCode = ctCode;
         }
 
         private string Name_;
 
-        /// <summary>
-        /// Nazwa obszaru
-        /// </summary>
         public string Name
         {
             get { return Name_; }
@@ -60,9 +45,6 @@ namespace ProjectDataLib
 
         private int fctCode_;
 
-        /// <summary>
-        /// Kod fukcji danego bszaru
-        /// </summary>
         public int fctCode
         {
             get { return fctCode_; }
@@ -75,9 +57,6 @@ namespace ProjectDataLib
 
         private int AdresSize_;
 
-        /// <summary>
-        /// Rozmiar elementu zapytania
-        /// </summary>
         public int AdresSize
         {
             get { return AdresSize_; }

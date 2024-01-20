@@ -4,9 +4,6 @@ using System.Xml.Serialization;
 
 namespace ProjectDataLib
 {
-    /// <summary>
-    /// Klasa autoryzacyjna
-    /// </summary>
     [Serializable]
     public class UserClass : INotifyPropertyChanged
     {
@@ -28,9 +25,6 @@ namespace ProjectDataLib
 
         private string Name_;
 
-        /// <summary>
-        /// Nazwa
-        /// </summary>
         [Browsable(true), Category("Identy"), DisplayName("01 User Name")]
         [XmlElement(ElementName = "Login")]
         public string Name
@@ -45,9 +39,6 @@ namespace ProjectDataLib
 
         private string Pass_;
 
-        /// <summary>
-        /// Haslo
-        /// </summary>
         [Browsable(true), Category("Identy"), DisplayName("02 Password")]
         [XmlElement(ElementName = "Password")]
         [PasswordPropertyText(true)]
@@ -60,22 +51,12 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="pass"></param>
         public UserClass()
         {
             this.Name_ = "User";
             this.Pass_ = "Password";
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="pass"></param>
         public UserClass(string name, string pass)
         {
             this.Name_ = name;

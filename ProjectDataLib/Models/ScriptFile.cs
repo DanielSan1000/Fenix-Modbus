@@ -80,8 +80,6 @@ namespace ProjectDataLib
             {
                 Name_ = value;
 
-                //Zmiana nazwy pliku  na dysku podczas edycji w programie
-
                 if (!string.IsNullOrEmpty(FilePath))
                 {
                     File.Move(FilePath, Path.GetDirectoryName(FilePath) + "\\" + value);
