@@ -12,97 +12,52 @@ using System.Xml.Serialization;
 
 namespace ProjectDataLib
 {
-    /// <summary>
-    /// Kontener projektów obslugujący zarzadanie grupami projektów
-    /// </summary>
+
     [Synchronization]
     public class ProjectContainer : ITreeViewModel
     {
         #region Fields
 
-        /// <summary>
-        /// Project
-        /// </summary>
         public List<Project> projectList;
 
-        /// <summary>
-        /// Globalna konfiguracja Sterownikowa
-        /// </summary>
         public GlobalConfiguration gConf;
 
-        /// <summary>
-        /// Zarzadznie oknami
-        /// </summary>
         public List<WindowsStatus> winManagment;
 
-        /// <summary>
-        /// Symbol Serwera
-        /// </summary>
         public Guid ServerGuid = new Guid("11111111-1111-1111-1111-111111111111");
 
-        /// <summary>
-        /// Internals tag
-        /// </summary>
         public Guid IntTagsGuid = new Guid("22222222-2222-2222-2222-222222222222");
 
-        /// <summary>
-        /// Guid dla skryptow
-        /// </summary>
         public Guid ScriptGuid = new Guid("33333333-3333-3333-3333-333333333333");
 
-        //Plik
         public Guid HttpFileGuid = new Guid("44444444-4444-4444-4444-444444444444");
 
-        /// <summary>
-        /// Podkatalog dla serwera http
-        /// </summary>
         public string HttpCatalog = "\\Http";
 
-        /// <summary>
-        /// Podkatalog dla serwera Script
-        /// </summary>
         public string ScriptsCatalog = "\\Scripts";
 
-        /// <summary>
-        /// Podkatalog dla serwera http
-        /// </summary>
         public string TemplateCatalog = "\\Template";
 
-        /// <summary>
-        /// Path do bazy danych
-        /// </summary>
         public string Database = "\\Database\\ProjDatabase.sqlite";
 
-        /// <summary>
-        /// Registry Path
-        /// </summary>
         public string RegUserRoot = "HKEY_CURRENT_USER\\Software\\Fenix";
 
         public string LastPathKey = "LastPath";
 
-        /// <summary>
-        /// Task Scheduler Wraper
-        /// </summary>
         public string TaskName = "FenixServer";
 
         public string HelpWebSite = "http://sites.google.com/site/fenmods7/";
 
-        //Zapisanie layoutu
         public string LayoutFile = "Layout_.xml";
 
-        /// <summary>
-        /// Bledy wszystkich okienek
-        /// </summary>
         public EventHandler ApplicationError;
 
-        //Bufor kopiowanie
         public Guid SrcProject;
 
         public Guid SrcElement;
         public ElementKind SrcType = ElementKind.Empty;
         public Boolean cutMarks;
 
-        //Dodatkowe zdarzenie
         public EventHandler<ProjectEventArgs> addProjectEv;
 
         public EventHandler<ProjectEventArgs> pasteProjectEv;
@@ -222,20 +177,13 @@ namespace ProjectDataLib
 
         #region Project
 
-        /// <summary>
-        /// Dodaj Projekt do kontenera
-        /// </summary>
-        /// <param name="project"></param>
-        /// <returns></returns>
         public Guid addProject(Project project)
         {
             try
             {
-                //Dodanie projektu
                 projectList.Add(project);
                 _Children.Add(project);
 
-                //wyslanie zdarzenia
                 if (addProjectEv != null)
                     addProjectEv(project, new ProjectEventArgs(project));
 
@@ -248,19 +196,12 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobranie projektu na podstawie Id
-        /// </summary>
-        /// <param name="Id">Identyfikator Projektu</param>
-        /// <returns>Project</returns>
         public Project getProject(Guid Id)
         {
             try
             {
-                //Pobranie projektu
                 Project pr = projectList.Find(x => x.objId.Equals(Id));
 
-                //Sprawdzenie projektu
                 if (pr == null)
                     throw new ApplicationException(String.Format("Guid: {0} isn't sign project", Id));
 
@@ -273,16 +214,10 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Otworz dane
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public bool openProjects(string path)
         {
             try
             {
-                //zabezpieczenie przed pustym lancuchem
                 if (!File.Exists(path))
                     return false;
 
@@ -317,7 +252,6 @@ namespace ProjectDataLib
 
                 #endregion PSX (XML)
 
-                //Przypisanie sciezki dostępu
                 buff.path = path;
                 buff.PrCon = this;
 
@@ -327,12 +261,10 @@ namespace ProjectDataLib
                     buff.ChartConf.OnDeserializedXML();
                 }
 
-                //sprawdzenie czy projekt jest juz w buforze
                 foreach (Project pr in projectList)
                     if (pr.objId.Equals(buff.objId))
                         throw new ApplicationException(pr.projectName + ": " + "Project is alredy open.");
 
-                //Doloczenie danych
                 foreach (InTag tg in buff.InTagsList)
                 {
                     tg.Proj = buff;
@@ -340,16 +272,13 @@ namespace ProjectDataLib
                     tg.idrv = buff.InternalTagsDrv;
                 }
 
-                //Dodanie danych na temet projektu i buffora
                 buff.ScriptEng.Proj = buff;
 
                 List<string> deleteFiles = new List<string>();
                 foreach (ScriptFile scf in buff.ScriptFileList)
                 {
-                    //Sciezka
                     scf.FilePath = Path.GetDirectoryName(buff.path) + this.ScriptsCatalog + "\\" + scf.Name;
 
-                    //Sprawdzanie czy plik istnieje
                     if (!File.Exists(scf.FilePath))
                         deleteFiles.Add(scf.FilePath);
 
@@ -357,7 +286,6 @@ namespace ProjectDataLib
                     scf.PrCon = this;
                 }
 
-                //Usuniecie nieaktywnych plikow
                 foreach (string gp in deleteFiles)
                 {
                     ScriptFile fb = buff.ScriptFileList.Where(x => x.FilePath == gp).First();
@@ -368,49 +296,37 @@ namespace ProjectDataLib
                     buff.ScriptFileList.RemoveAll(x => x.FilePath == gp);
                 }
 
-                //wyszyszczenie listy
                 deleteFiles.Clear();
 
-                //Przepisanie sciezek
                 foreach (InFile fil in buff.FileList)
                 {
-                    //Sciezka
                     fil.FilePath = Path.GetDirectoryName(buff.path) + this.HttpCatalog + "\\" + fil.Name;
 
-                    //Sprawdzanie czy plik istnieje
                     if (!File.Exists(fil.FilePath))
                         deleteFiles.Add(fil.FilePath);
                 }
 
-                //Usuniecie nieaktywnych plikow
                 foreach (string gp in deleteFiles)
                     buff.FileList.RemoveAll(x => x.FilePath == gp);
 
-                //Dodanie wszystkich wartości nieserializowanych
                 foreach (Connection cn in buff.connectionList)
                 {
                     if (IsXml)
                         cn.OnDeserializedXML();
 
-                    //Konfigurator Globalny
                     cn.gConf = gConf;
 
                     cn.PrCon = this;
 
-                    //Dodanie Sterownika/ Blokada przez wyjątkiem
                     cn.Idrv = gConf?.newDrv(cn.DriverName);
 
-                    //Jezeli biblioteka nie jest zainstalowana w systemie to TRUE
                     cn.assemblyError = cn.Idrv == null ? true : false;
 
-                    //Dorzucenie IDRV do Tagów
                     foreach (Tag tg in buff.tagsList)
                     {
-                        //Jezeli poloczenie nalezy do Taga dodaj sterownik
                         if (tg.connId.Equals(cn.objId))
                             tg.idrv = cn.Idrv;
 
-                        //referencji do Kontenera
                         tg.PrCon = this;
                         tg.Proj = buff;
 
@@ -419,7 +335,6 @@ namespace ProjectDataLib
                     }
                 }
 
-                //Dodanie
                 ((IDriversMagazine)buff).Children = new ObservableCollection<IDriverModel>();
                 ((IDriversMagazine)buff).Children.Add(buff.InternalTagsDrv);
                 ((IDriversMagazine)buff).Children.Add(buff.ScriptEng);
@@ -444,19 +359,15 @@ namespace ProjectDataLib
                     ((IDriversMagazine)dx).Children.Add(dx.idrv);
                 }
 
-                //Dodanie projektu
                 buff.Db.Pr = buff;
                 buff.Db.PrCon = this;
                 buff.Db.OnDeserializedXML();
                 addProject(buff);
 
-                //Dodanie zdarzen do devices
                 foreach (Device dev in buff.DevicesList)
                 {
-                    //Dodanie zdarzen
                     dev.adressChanged += new EventHandler(DevicesAdressChange);
 
-                    //Dodnie kontenera
                     dev.PrCon = this;
                 }
 
@@ -472,12 +383,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Zapisz pojedynczy project
-        /// </summary>
-        /// <param name="proj"></param>
-        /// <param name="sfDialog"></param>
-        /// <returns></returns>
         public Boolean saveProject(Project proj, string path)
         {
             try
@@ -506,34 +411,26 @@ namespace ProjectDataLib
         {
             try
             {
-                //Czyszczenie pamieci
                 foreach (Project proj in projectList)
                 {
-                    //Devices
                     foreach (Device dev in proj.DevicesList)
                         ((ITreeViewModel)dev).Children.Clear();
 
-                    //Connection
                     foreach (Connection conn in proj.connectionList)
                         ((ITreeViewModel)conn).Children.Clear();
 
-                    //Scripts
                     ((ITreeViewModel)proj.ScriptEng).Children.Clear();
 
-                    //HttpServer
                     ((ITreeViewModel)proj.WebServer1).Children.Clear();
 
-                    //Projct
                     ((ITreeViewModel)proj).Children.Clear();
 
                     proj.Dispose();
                 }
 
-                //Projecty zostały zapisane
                 ((ITreeViewModel)this).Children.Clear();
                 projectList.Clear();
 
-                //wyslanie zdarzenia
                 clearProjectsEv?.Invoke(this, new ProjectEventArgs(null));
 
                 return true;
@@ -545,17 +442,10 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Kopiuj element
-        /// </summary>
-        /// <param name="idEl"></param>
-        /// <param name="elKind"></param>
-        /// <returns></returns>
         public Boolean copyCutElement(Guid projId, Guid idEl, ElementKind elKind, Boolean IsCut)
         {
             try
             {
-                //Zroda wyciecia
                 SrcProject = projId;
                 SrcElement = idEl;
                 cutMarks = IsCut;
@@ -569,10 +459,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Wklej z kopiowany element
-        /// </summary>
-        /// <returns></returns>
         public Boolean pasteElement(Guid TarProj, Guid TarElement)
         {
             try
@@ -590,22 +476,17 @@ namespace ProjectDataLib
 
                     case ElementKind.Connection:
 
-                        //Pobranie taga
                         Connection Cnn0 = getConnection(SrcProject, SrcElement);
 
-                        //Dodanie nowego taga
                         Connection Cnn1 = (Connection)Cnn0.Clone();
                         addConnection(TarProj, Cnn1);
 
-                        //Pobranie wszystkich Urzadzen
                         List<Device> Dvs0 = getProject(SrcProject).DevicesList.Where(x => x.parentId == Cnn0.objId).ToList();
                         foreach (Device Dv0 in Dvs0)
                         {
-                            //Dodanie urzadzenia
                             Device Dv1 = (Device)Dv0.Clone();
                             addDevice(TarProj, Cnn1.objId, Dv1);
 
-                            //Pobranie wsztstkich tagw
                             List<Tag> Tgs0 = getProject(SrcProject).tagsList.Where(x => x.parentId == Dv0.objId).ToList();
                             foreach (Tag Tg0 in Tgs0)
                             {
@@ -628,14 +509,11 @@ namespace ProjectDataLib
 
                     case ElementKind.Device:
 
-                        //Pobranie zrodla
                         Device Dvv0 = getDevice(SrcProject, SrcElement);
 
-                        //Dodanie urzadzenia
                         Device Dvv1 = (Device)Dvv0.Clone();
                         addDevice(TarProj, TarElement, Dvv1);
 
-                        //Peta
                         List<Tag> Tgs0_ = getProject(SrcProject).tagsList.Where(x => x.parentId == Dvv0.objId).ToList();
                         foreach (Tag Tg0 in Tgs0_)
                         {
@@ -660,7 +538,6 @@ namespace ProjectDataLib
                         Tag Tgg0 = (Tag)getTag(SrcProject, SrcElement);
                         Tag Tgg1 = (Tag)Tgg0.Clone();
 
-                        //Sprawdzenie czy tag nie pochodzi z innego sterownika
                         Device devTar = (Device)getElementById(TarProj, TarElement);
                         IDriverModel idvTar = getConnection(TarProj, devTar.parentId).Idrv;
 
@@ -697,12 +574,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usuń elementy
-        /// </summary>
-        /// <param name="idEl"></param>
-        /// <param name="elKind"></param>
-        /// <returns></returns>
         public Boolean deleteElement(Guid projId, Guid idEl, ElementKind elKind)
         {
             try
@@ -729,7 +600,6 @@ namespace ProjectDataLib
 
                 if (elKind == ElementKind.Connection)
                 {
-                    //Usuniecie elementu
                     removeConnection(projId, idEl);
                     cutMarks = false;
                     return true;
@@ -744,7 +614,6 @@ namespace ProjectDataLib
 
                 if (elKind == ElementKind.Tag)
                 {
-                    //Usuniecie Taga
                     removeTag(projId, idEl);
                     cutMarks = false;
                     return true;
@@ -767,63 +636,46 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobranie elementu na podstawie id
-        /// </summary>
-        /// <param name="proj"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public Object getElementById(Guid proj, Guid name)
         {
             try
             {
-                //Pobranie projektu
                 Project pr = getProject(proj);
 
-                //Object
                 Object obj = null;
 
-                //Project
                 if (proj == name)
                     return pr;
 
-                //Serwer
                 if (name == ServerGuid)
                     return pr.WebServer1;
 
                 if (name == ScriptGuid)
                     return pr.ScriptEng;
 
-                //File
                 obj = pr.FileList.Find(x => x.objId == name);
                 if (obj != null)
                     return obj;
 
-                //FileScript
                 obj = pr.ScriptFileList.Find(x => x.objId == name);
                 if (obj != null)
                     return obj;
 
-                //Internals Tag
                 if (name == IntTagsGuid)
                     return pr.InternalTagsDrv;
 
-                //InTag
                 obj = pr.InTagsList.Find(x => x.objId.Equals(name));
                 if (obj != null)
                     return obj;
 
-                //Connection
                 obj = pr.connectionList.Find(x => x.objId.Equals(name));
                 if (obj != null)
                     return obj;
 
-                //Device
                 obj = pr.DevicesList.Find(x => x.objId.Equals(name));
                 if (obj != null)
                     return obj;
 
-                //Tags
                 obj = pr.tagsList.Find(x => x.objId.Equals(name));
                 if (obj != null)
                     return obj;
@@ -837,68 +689,51 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Preszukuje wszystkie projekty w poszukiwanie elementow
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
         public Object getElementById(Guid name)
         {
             try
             {
-                //Przeszukiwnie projektów
                 foreach (Project pr in projectList)
                 {
-                    //Object
                     Object obj = null;
 
-                    //Project
                     if (pr.objId == name)
                         return pr;
 
-                    //Serwer
                     if (name == ServerGuid)
                         return pr.WebServer1;
 
                     if (name == ScriptGuid)
                         return pr.ScriptEng;
 
-                    //File
                     obj = pr.FileList.Find(x => x.objId == name);
                     if (obj != null)
                         return obj;
 
-                    //FileScript
                     obj = pr.ScriptFileList.Find(x => x.objId == name);
                     if (obj != null)
                         return obj;
 
-                    //Internals Tag
                     if (name == IntTagsGuid)
                         return pr.InternalTagsDrv;
 
-                    //InTag
                     obj = pr.InTagsList.Find(x => x.objId.Equals(name));
                     if (obj != null)
                         return obj;
 
-                    //Connection
                     obj = pr.connectionList.Find(x => x.objId.Equals(name));
                     if (obj != null)
                         return obj;
 
-                    //Device
                     obj = pr.DevicesList.Find(x => x.objId.Equals(name));
                     if (obj != null)
                         return obj;
 
-                    //Tags
                     obj = pr.tagsList.Find(x => x.objId.Equals(name));
                     if (obj != null)
                         return obj;
                 }
 
-                //Jesli aplikacja doszla tutaj to znaczy że nic nie zostało znalezione
                 return null;
             }
             catch (Exception Ex)
@@ -908,26 +743,16 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobiera wszystkie sterowniki z bierzacej pozycji bez InternalTagsDriver i ScriptDriver
-        /// </summary>
-        /// <param name="Pr_"></param>
-        /// <param name="Obj_"></param>
-        /// <returns></returns>
         public List<IDriverModel> GetAllDriversForSel(Guid Pr_, Guid Obj_)
         {
             try
             {
-                //Bufor na tagi
                 List<IDriverModel> IDriverList = new List<IDriverModel>();
 
-                //Sprawdz co zostalo wybrane
                 Type SelectedObject = getElementById(Pr_, Obj_) == null ? null : getElementById(Pr_, Obj_).GetType();
 
-                //Pobranie projektu
                 Project Pr = getProject(Pr_);
 
-                //Selekcja tego co zostalo wybrane
                 if (SelectedObject == typeof(Project))
                 {
                     IDriverList.AddRange((from dr in Pr.connectionList select dr.Idrv).ToList());
@@ -954,18 +779,12 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Sprawdznie czy trwa jakokolwiek komunikacja
-        /// </summary>
-        /// <returns></returns>
         public Boolean anyCommunication()
         {
             try
             {
-                //Pobranie aktywnych okien
                 foreach (Project pr in this.projectList)
                 {
-                    //Obieg dla poloczen
                     foreach (Connection cn in pr.connectionList)
                     {
                         if (cn.Idrv != null)
@@ -973,11 +792,9 @@ namespace ProjectDataLib
                                 return true;
                     }
 
-                    //Komunikacja dla internals tag trwa
                     if (((IDriverModel)pr.InternalTagsDrv).isAlive)
                         return true;
 
-                    //Komunikacja dla internals tag trwa
                     if (((IDriverModel)pr.ScriptEng).isAlive)
                         return true;
                 }
@@ -990,10 +807,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Funkcja zwaraca informacje czy jakieś okno zostało aktywowane
-        /// </summary>
-        /// <returns></returns>
         public Boolean anyWindowCommunication(int i)
         {
             try
@@ -1011,23 +824,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Zmieniono adres w device
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public void DevicesAdressChange(Object sender, EventArgs e)
         {
-            //Urządzenie
             try
             {
-                //urzedzenie
                 Device dev = (Device)sender;
 
-                //Tagi z folderu
                 List<Tag> tags = getAllTagsFromDevice(dev.projId, dev.objId);
 
-                //Zmiana parametru
                 if (tags.Count > 0)
                 {
                     foreach (Tag tg in tags)
@@ -1044,38 +848,25 @@ namespace ProjectDataLib
 
         #region Connection
 
-        /// <summary>
-        /// Dodanie nowego polączenia do Projektu
-        /// </summary>
-        /// <param name="projId">Id 'long' projektu</param>
-        /// <param name="con">Poloczenie do dodania</param>
-        /// <returns></returns>
         public Guid addConnection(Guid projId, Connection con)
         {
             try
             {
-                //Dodanie parentId
                 con.parentId = projId;
 
-                //Projekt
                 Project pr = getProject(projId);
 
-                //Pobranie poloczenia
                 pr.connectionList.Add(con);
                 ((ITreeViewModel)pr).Children.Add(con);
 
-                //Sterownik
                 if (con.Idrv == null)
                     con.Idrv = gConf.newDrv(con.DriverName);
 
-                //Dodanie
                 con.gConf = gConf;
 
-                //Dodanie driverów
                 ((IDriversMagazine)pr).Children.Add(con.Idrv);
                 ((IDriversMagazine)con).Children.Add(con.Idrv);
 
-                //Nie ma takiej samej nazwy poloczenia
                 if (addConnEv != null)
                     addConnEv(pr, new ProjectEventArgs(con));
 
@@ -1088,27 +879,18 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usuniecie poloczenia z proejktu
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public Boolean removeConnection(Guid proj, Guid id)
         {
             try
             {
-                //Pobranie projektu
                 Project pr = getProject(proj);
 
-                //Pobranie poloczenia
                 Connection cn = getConnection(proj, id);
 
-                //Usuniecie Devices
                 List<Device> devces = (from d in pr.DevicesList where d.parentId == cn.objId select d).ToList();
                 foreach (Device dev in devces)
                     removeDevice(proj, dev.objId);
 
-                //Usuniecie poloczenia
                 pr.connectionList.Remove(cn);
                 ((ITreeViewModel)pr).Children.Remove(cn);
                 ((IDriversMagazine)pr).Children.Remove(cn.Idrv);
@@ -1116,7 +898,6 @@ namespace ProjectDataLib
                 ((ITableView)cn).Children.Clear();
                 ((IDriversMagazine)cn).Children.Clear();
 
-                //Zdarzenia
                 if (removeConnEv != null)
                     removeConnEv(pr, new ProjectEventArgs(cn));
 
@@ -1129,22 +910,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobierz poloczenie na podtsawie id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public Connection getConnection(Guid proj, Guid cn)
         {
             try
             {
-                //Znajdz Projekt
                 Project pr = getProject(proj);
 
-                //Pobierz Connection
                 Connection cnn = pr.connectionList.Find(x => x.objId.Equals(cn));
 
-                //Zwroc poloczenie
                 return cnn;
             }
             catch (Exception Ex)
@@ -1154,23 +927,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobiersz wszystkie tagi z poloczenia
-        /// </summary>
-        /// <param name="proj"></param>
-        /// <param name="con"></param>
-        /// <returns></returns>
         public List<Tag> getAllTagsFromConnection(Guid proj, Guid con)
         {
             try
             {
-                //Project
                 Project pr = getProject(proj);
 
-                //Pobranie folderów
                 List<Device> tagFolder = pr.DevicesList.Where(x => x.parentId.Equals(con)).ToList();
 
-                //Pobranie
                 List<Tag> buff = new List<Tag>();
                 foreach (Device tF in tagFolder)
                 {
@@ -1191,43 +955,27 @@ namespace ProjectDataLib
 
         #region Device
 
-        /// <summary>
-        /// Dodaj folder tagów
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="connId"></param>
-        /// <param name="tF"></param>
-        /// <returns></returns>
         public Guid addDevice(Guid projId, Guid connId, Device tF)
         {
             try
             {
-                //wez projekt
                 Project pr = getProject(projId);
 
-                //Pobierz poloczenie
                 Connection cn = getConnection(projId, connId);
 
-                //ustawienie rodzica
                 tF.parentId = cn.objId;
 
-                //Dodanie IDRV
                 tF.idrv = cn.Idrv;
 
-                //Project
                 tF.projId = projId;
 
-                //Podpięcie zdarzenia z klasy podrzednej
                 tF.adressChanged += new EventHandler(DevicesAdressChange);
 
-                //dodanie Urzadzenia
                 pr.DevicesList.Add(tF);
                 ((ITreeViewModel)cn).Children.Add(tF);
 
-                //Dodanie drivera
                 ((IDriversMagazine)tF).Children.Add(cn.Idrv);
 
-                //Wyslanie zdarzenia
                 if (addDeviceEv != null)
                     addDeviceEv(pr, new ProjectEventArgs(tF));
 
@@ -1240,39 +988,26 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usuń folder tagow
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="connId"></param>
-        /// <param name="tagFolId"></param>
-        /// <returns></returns>
         public Boolean removeDevice(Guid projId, Guid tagFolId)
         {
             try
             {
-                //Pobierz proejkt
                 Project pr = getProject(projId);
 
-                //Pobierz poloczenie
                 Device cF = pr.DevicesList.Find(x => x.objId.Equals(tagFolId));
 
-                //Connection
                 Connection cn = getConnection(projId, cF.parentId);
 
-                //Usuniecie sierot z projektu
                 var dvs = pr.tagsList.FindAll(x => x.parentId == cF.objId);
                 foreach (Tag tg in dvs)
                     removeTag(pr.objId, tg.objId);
 
-                //Pobierz FolderTagow
                 pr.DevicesList.Remove(cF);
                 ((ITreeViewModel)cn).Children.Remove(cF);
 
                 ((ITableView)cF).Children.Clear();
                 ((IDriversMagazine)cF).Children.Clear();
 
-                //Wyslanie zdarzenia
                 if (removeDeviceEv != null)
                     removeDeviceEv(pr, new ProjectEventArgs(cF));
 
@@ -1285,12 +1020,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobranie folderow tagow
-        /// </summary>
-        /// <param name="proj"></param>
-        /// <param name="tagFolId"></param>
-        /// <returns></returns>
         public Device getDevice(Guid proj, Guid tagFolId)
         {
             try
@@ -1306,12 +1035,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobierz wszystkie tagi z folderu
-        /// </summary>
-        /// <param name="proj"></param>
-        /// <param name="tagFolId"></param>
-        /// <returns></returns>
         public List<Tag> getAllTagsFromDevice(Guid proj, Guid device)
         {
             try
@@ -1356,53 +1079,36 @@ namespace ProjectDataLib
 
         #region Tag
 
-        /// <summary>
-        /// Dodanie Taga
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="connFolId"></param>
-        /// <param name="tg"></param>
-        /// <returns></returns>
         public Boolean addTag(Guid projId, Guid tagFolId, Tag tg)
         {
             try
             {
-                //To musi byc w tym miejscu gdyz tak przy przypisaniu odwoluje sie do proejktu
                 Project pr = getProject(projId);
 
                 tg.PrCon = this;
                 tg.Proj = pr;
 
-                //nowa logika sprawdzające nazwy
                 while (getProject(projId).tagsList.Exists(x => x.tagName == tg.tagName))
                     tg.tagName = tg.tagName + "_Copy";
 
-                //Id foledru połączen
                 tg.parentId = tagFolId;
 
-                //Id poloczenia dla Taga
                 Device dev = getDevice(projId, tagFolId);
                 tg.connId = dev.parentId;
                 tg.deviceAdress = dev.adress;
 
-                //Dodanie sterownika
                 Connection cn = getConnection(projId, tg.connId);
                 tg.idrv = cn.Idrv;
 
-                //Connection
                 ((ITableView)cn).Children.Add(tg);
 
-                //Device
                 ((ITableView)dev).Children.Add(tg);
 
-                //Project
                 pr.tagsList.Add(tg);
                 ((ITreeViewModel)dev).Children.Add(tg);
 
-                //Dodanie z projektu
                 ((ITableView)pr).Children.Add(tg);
 
-                //Wyslanie zdarzenia
                 if (addTagEv != null)
                     addTagEv(pr, new ProjectEventArgs(tg));
 
@@ -1415,39 +1121,26 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usuń taga
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="tagId"></param>
-        /// <returns></returns>
         public Boolean removeTag(Guid projId, Guid tagId)
         {
             try
             {
-                //Pobranie projektu
                 Project pr = getProject(projId);
 
-                //Pobranie Taga
                 Tag tg = pr.tagsList.Find(x => x.objId.Equals(tagId));
                 Device dev = getDevice(projId, tg.parentId);
 
-                //Usuniecie Taga
                 pr.tagsList.Remove(tg);
                 ((ITreeViewModel)dev).Children.Remove(tg);
 
-                //Connection
                 foreach (Connection cn in pr.connectionList)
                     ((ITableView)cn).Children.Remove(tg);
 
-                //Device
                 foreach (Device dev1 in pr.DevicesList)
                     ((ITableView)dev1).Children.Remove(tg);
 
-                //Usuniecie
                 ((ITableView)pr).Children.Remove(tg);
 
-                //Zdarzenia
                 if (removeTagEv != null)
                     removeTagEv(pr, new ProjectEventArgs(tg));
 
@@ -1460,12 +1153,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobierz taga
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="tagId"></param>
-        /// <returns></returns>
         public Tag getTag(Guid projId, Guid tagId)
         {
             try
@@ -1485,12 +1172,6 @@ namespace ProjectDataLib
 
         #region InTag
 
-        /// <summary>
-        /// Dodaj taga wewnetrzebgo
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="tag"></param>
-        /// <returns></returns>
         public Boolean AddIntTag(Guid projId, InTag tag)
         {
             try
@@ -1517,37 +1198,25 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Usun taga
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="tagId"></param>
-        /// <returns></returns>
         public Boolean RemoveIntTag(Guid projId, Guid tagId)
         {
             try
             {
-                //Projekt
                 Project pr = getProject(projId);
 
-                //Chwilowe przetrzymanie zmiennej
                 InTag buff = pr.InTagsList.Find(x => x.objId == tagId);
 
-                //Usuniecie
                 pr.InTagsList.RemoveAll(x => x.objId == tagId);
                 ((ITreeViewModel)pr.InternalTagsDrv).Children.Remove(buff);
 
-                //Connection
                 foreach (Connection cn in pr.connectionList)
                     ((ITableView)cn).Children.Remove(buff);
 
-                //Device
                 foreach (Device dev1 in pr.DevicesList)
                     ((ITableView)dev1).Children.Remove(buff);
 
                 ((ITableView)pr).Children.Remove(buff);
 
-                //Zdarzenia
                 if (removeIntTagEv != null)
                     removeIntTagEv(pr, new ProjectEventArgs(buff));
 
@@ -1560,12 +1229,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobierz InTag
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="objid"></param>
-        /// <returns></returns>
         public InTag GetIntTag(Guid projId, Guid objid)
         {
             try
@@ -1583,21 +1246,14 @@ namespace ProjectDataLib
 
         #region ITag
 
-        /// <summary>
-        /// Fukcja wysyla zdarzenia informujace o zmianie InTag lub Tag
-        /// </summary>
-        /// <param name="ir"></param>
-        /// <returns></returns>
         public void ITagChanged(ITag ir)
         {
             try
             {
-                //Pobranie elementu
                 Object obj = getElementById(ir.Id);
 
                 if (obj.GetType() == typeof(Tag))
                 {
-                    //Wyslanie delegata
                     if (editTagEv != null)
                         editTagEv(((Tag)ir).Proj, new ProjectEventArgs(obj));
                 }
@@ -1613,23 +1269,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobranie wszystkich ITAG przynalezne do pozycji. Nie pobiera ITag z InternalTags
-        /// </summary>
-        /// <param name="Pr_"></param>
-        /// <param name="Obj_"></param>
-        /// <returns></returns>
         public List<ITag> GetAllITags(Guid Pr_, Guid Obj_)
         {
             try
             {
-                //Bufor na tagi
                 List<ITag> ITagList = new List<ITag>();
 
-                //Sprawdz co zostalo wybrane
                 Type SelectedObject = getElementById(Pr_, Obj_).GetType();
 
-                //Pobranie projektu
                 Project Pr = getProject(Pr_);
 
                 if (SelectedObject == typeof(Project))
@@ -1670,23 +1317,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobranie wszystkich ITAG przynalezne do pozycji. Pobiera ITag z InternalTags
-        /// </summary>
-        /// <param name="Pr_"></param>
-        /// <param name="Obj_"></param>
-        /// <returns></returns>
         public List<ITag> GetITagsSel(Guid Pr_, Guid Obj_)
         {
             try
             {
-                //Bufor na tagi
                 List<ITag> ITagList = new List<ITag>();
 
-                //Sprawdz co zostalo wybrane
                 Type SelectedObject = getElementById(Pr_, Obj_).GetType();
 
-                //Pobranie projektu
                 Project Pr = getProject(Pr_);
 
                 if (SelectedObject == typeof(Project))
@@ -1732,72 +1370,49 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Fukncja pobiera wszystkie ITagi z projektu
-        /// </summary>
-        /// <param name="Pr1">Projekt</param>
-        /// <param name="Obj1">Zakres pobierania</param>
-        /// <param name="TabVisble">Uwzglenij widocznosc w Tab</param>
-        /// <param name="GraphVisible">Uwzglednij widoczność w Graph</param>
-        /// <returns>ITags</returns>
         public List<ITag> GetAllITags(Guid Pr1, Guid Obj1, Boolean TabVisble, Boolean GraphVisible)
         {
             try
             {
-                //Bufor na tagi
                 List<ITag> ITagList = new List<ITag>();
 
-                //Sprawdz co zostalo wybrane
                 Type SelectedObject = getElementById(Pr1, Obj1).GetType();
 
-                //Pobranie projektu
                 Project Pr = getProject(Pr1);
 
-                //Projekt
                 if (SelectedObject == typeof(Project))
                 {
                     ITagList.AddRange((from tg in Pr.tagsList select (ITag)tg).ToList());
                     ITagList.AddRange((from tg in Pr.InTagsList select (ITag)tg).ToList());
                 }
 
-                //InernalTags
                 else if (SelectedObject == typeof(InternalTagsDriver))
                     ITagList.AddRange((from tg in Pr.InTagsList select (ITag)tg).ToList());
 
-                //Connection
                 else if (SelectedObject == typeof(Connection))
                     ITagList.AddRange((from tg in getAllTagsFromConnection(Pr1, Obj1) select (ITag)tg).ToList());
 
-                //Device
                 else if (SelectedObject == typeof(Device))
                     ITagList.AddRange((from tg in getAllTagsFromDevice(Pr1, Obj1) select (ITag)tg).ToList());
 
-                //Tag
                 else if (SelectedObject == typeof(Tag))
                     ITagList.Add((ITag)getTag(Pr1, Obj1));
 
-                //ITag
                 else if (SelectedObject == typeof(InTag))
                     ITagList.Add((ITag)GetIntTag(Pr1, Obj1));
 
-                //Exceptions
                 else
                     throw new ApplicationException("Element not exists");
 
-                //Filtorwanie
-                //Widoczne w Tabeli i widoczne Graph
                 if (TabVisble && GraphVisible)
                     return (from t in ITagList where t.GrVisibleTab && t.GrEnable select t).ToList();
 
-                //Wszystkie z Tabeli i widoczne w Graph
                 else if (!TabVisble && GraphVisible)
                     return (from t in ITagList where t.GrEnable select t).ToList();
 
-                //Widoczne tylko i wszystko z Tabrli
                 else if (TabVisble && !GraphVisible)
                     return (from t in ITagList where t.GrVisibleTab select t).ToList();
 
-                //Wszystkie jakie są
                 else
                     return (from t in ITagList select t).ToList();
             }
@@ -1808,23 +1423,14 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Funkcja wyszukuje wszystkie ITags przyporzadkowane do IDriverModel
-        /// </summary>
-        /// <param name="Pr_"></param>
-        /// <param name="Obj_"></param>
-        /// <returns></returns>
         public List<ITag> GetAllITagsForDriver(Guid Pr_, Guid Driver_)
         {
             try
             {
-                //Project
                 Project Pr = getProject(Pr_);
 
-                //Pobranie Tagów
                 if (Driver_ != IntTagsGuid && Driver_ != ScriptGuid)
                 {
-                    //Pobranie wszystkich  TAG's
                     List<Tag> tss = Pr.tagsList.FindAll(x => x.idrv.ObjId == Driver_);
 
                     if (tss.Count > 0) return (from cc in tss select (ITag)cc).ToList();
@@ -1845,10 +1451,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobiera Wsystko
-        /// </summary>
-        /// <returns></returns>
         public List<ITag> GetAllITags()
         {
             try
@@ -1876,20 +1478,14 @@ namespace ProjectDataLib
 
         #region InFile
 
-        /// <summary>
-        /// Dodanie Pliku
-        /// </summary>
-        /// <returns></returns>
         public Boolean AddInFile(Guid projId, InFile file)
         {
             try
             {
-                //
                 Project pr = getProject(projId);
                 ((ITreeViewModel)pr.WebServer1).Children.Add(file);
                 pr.FileList.Add(file);
 
-                //Zdarzenia
                 if (addInFileEv != null)
                     addInFileEv(pr, new ProjectEventArgs(file));
 
@@ -1902,24 +1498,16 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// usuniecie pliku
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public Boolean RemoveInFile(Guid projId, Guid file)
         {
             try
             {
-                //
                 Project pr = getProject(projId);
 
                 ((ITreeViewModel)pr.WebServer1).Children.Remove(GetInFile(projId, file));
 
                 pr.FileList.RemoveAll(x => x.objId == file);
 
-                //Zdarzenia
                 if (removeInFileEv != null)
                     removeInFileEv(pr, new ProjectEventArgs(file));
 
@@ -1932,12 +1520,6 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Pobierz plik
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public InFile GetInFile(Guid projId, Guid file)
         {
             try
@@ -1956,12 +1538,6 @@ namespace ProjectDataLib
 
         #region ScriptFile
 
-        /// <summary>
-        /// Pobierz plik
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public ScriptFile GetScriptFile(Guid projId, Guid file)
         {
             try
@@ -1976,27 +1552,18 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// Dodanie Pliku scryptu
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public Boolean AddScriptFile(Guid projId, ScriptFile file)
         {
             try
             {
-                //
                 Project pr = getProject(projId);
 
-                //Dodanie referencji
                 file.Proj = pr;
                 file.PrCon = pr.PrCon;
 
                 pr.ScriptFileList.Add(file);
                 ((ITreeViewModel)pr.ScriptEng).Children.Add(file);
 
-                //Zdarzenia
                 if (addScriptFileEv != null)
                     addScriptFileEv(pr, new ProjectEventArgs(file));
 
@@ -2009,30 +1576,21 @@ namespace ProjectDataLib
             }
         }
 
-        /// <summary>
-        /// usuniecie pliku
-        /// </summary>
-        /// <param name="projId"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public Boolean RemoveScriptFile(Guid projId, Guid file)
         {
             try
             {
-                //
                 Project pr = getProject(projId);
 
                 ScriptFile sf = GetScriptFile(projId, file);
 
                 if (sf != null)
                 {
-                    //Usuniecie z treeview
                     if (((ITreeViewModel)pr.ScriptEng).Children.ToList().Exists(x => ((ScriptFile)x).objId == file))
                         ((ITreeViewModel)pr.ScriptEng).Children.Remove(sf);
 
                     pr.ScriptFileList.Remove(sf);
 
-                    //Zdarzenia
                     if (removeScriptFileEv != null)
                         removeScriptFileEv(pr, new ProjectEventArgs(file));
                 }
