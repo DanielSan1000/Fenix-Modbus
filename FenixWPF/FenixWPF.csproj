@@ -84,8 +84,8 @@
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="DataGridExtensions, Version=2.5.15.0, Culture=neutral, PublicKeyToken=43de855f87de903a, processorArchitecture=MSIL">
-      <HintPath>..\packages\DataGridExtensions.2.5.15\lib\net452\DataGridExtensions.dll</HintPath>
+    <Reference Include="DataGridExtensions, Version=2.6.0.0, Culture=neutral, PublicKeyToken=43de855f87de903a, processorArchitecture=MSIL">
+      <HintPath>..\packages\DataGridExtensions.2.6.0\lib\net462\DataGridExtensions.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -514,24 +514,30 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <AdditionalFiles Include="libnodave.dll">
+    <ContentWithTargetPath Include="Drivers\libnodave.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AdditionalFiles>
-    <Content Include="libnodave.net.dll">
+      <TargetPath>libnodave.dll</TargetPath>
+    </ContentWithTargetPath>
+      <ContentWithTargetPath Include="Drivers\libnodave.net.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ModbusMasterASCII.dll">
+        <TargetPath>libnodave.net.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Drivers\ModbusMasterASCII.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ModbusMasterRTU.dll">
+       <TargetPath>ModbusMasterASCII.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Drivers\ModbusMasterRTU.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ModbusMasterTCP.dll">
+      <TargetPath>ModbusMasterRTU.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Drivers\ModbusMasterTCP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="S7-300-400 Ethernet.dll">
+      <TargetPath>ModbusMasterTCP.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Drivers\S7-300-400 Ethernet.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+      <TargetPath>S7-300-400 Ethernet.dll</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
