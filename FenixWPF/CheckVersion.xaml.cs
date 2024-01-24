@@ -8,9 +8,6 @@ using System.Xml;
 
 namespace FenixWPF
 {
-    /// <summary>
-    /// Interaction logic for CheckVersion.xaml
-    /// </summary>
     public partial class CheckVersion : MetroWindow, INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
@@ -28,19 +25,10 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Kontener
-        /// </summary>
         private ProjectContainer PrCon;
 
-        /// <summary>
-        /// Delegat1
-        /// </summary>
         private event EventHandler setProgress;
 
-        /// <summary>
-        /// Delagat w
-        /// </summary>
         private event EventHandler setParam;
 
         private string SerVer_;
@@ -94,7 +82,6 @@ namespace FenixWPF
 
         private string Adress { get; set; }
 
-        //Ctor
         public CheckVersion(ProjectContainer prcn)
         {
             InitializeComponent();
@@ -103,11 +90,9 @@ namespace FenixWPF
 
             try
             {
-                //Informacja o progresie
                 setProgress += new EventHandler(frCheckVersion_setProgress);
                 setParam += new EventHandler(frCheckVersion_setParam);
 
-                //Numer Zainstalownej wersji
                 InsVer = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
             catch (Exception Ex)
@@ -116,10 +101,8 @@ namespace FenixWPF
                     PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
             }
 
-            //Update Softwere
             try
             {
-                //Sprawdzanie Wersji
                 Thread update = new Thread(new ParameterizedThreadStart(updateSoftware));
                 update.Start();
             }
@@ -128,31 +111,21 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Ustawienie parametrów do oczytu
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void frCheckVersion_setParam(object sender, EventArgs e)
         {
             EventHandler even = delegate (object sen, EventArgs ev)
             {
-                //Tablica wysłana z podrzednego wątku
                 Object[] data = (Object[])sen;
 
-                //Pokzania wersji na serwerze
                 SerVer = ((Version)data[0]).ToString();
 
-                //Ustawienie URL
                 Adress = (String)data[2];
 
-                //Uaktywnienie buttona
                 Update = (Boolean)data[1];
             };
 
             try
             {
-                //Wywolanie metody
                 Dispatcher?.Invoke(even, sender, e);
             }
             catch (Exception Ex)
@@ -162,17 +135,10 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Ustaw progress
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void frCheckVersion_setProgress(object sender, EventArgs e)
         {
-            //Anonimowy delegat
             EventHandler evetn = delegate (object sen, EventArgs ev)
             {
-                //Przypisanie wartoci
                 Object[] data = (Object[])sen;
                 pBar.Value = (Int32)data[0];
                 Status = (String)data[1];
@@ -180,7 +146,6 @@ namespace FenixWPF
 
             try
             {
-                //Wywolanie
                 pBar?.Dispatcher?.Invoke(evetn, new object[2] { sender, e });
             }
             catch (Exception Ex)
@@ -190,41 +155,30 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Sprawdzenie Wersji oprogramowania
-        /// </summary>
-        /// <param name="obj"></param>
         private void updateSoftware(object obj)
         {
-            //Sprawdzenie czy istnieje poloczenie
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                setProgress(new Object[2] { 0, "No internet connetion." }, new EventArgs());
+                setProgress(new Object[2] { 0, "No internet connection." }, new EventArgs());
                 return;
             }
 
-            //Dokument XML
             Version newVersion = null;
             string url = "";
             XmlTextReader reader = null;
 
-            //Ustalenie progresu 10%
             setProgress(new Object[2] { 10, "Starting..." }, new EventArgs());
 
             try
             {
-                //Strona pliku z wersją
-                string xmlURL = "https://sourceforge.net/projects/fenixmodbus/files/version.xml";
+                string xmlURL = "https://github.com/DanielSan1000/Fenix-Modbus/blob/master/version.xml";
 
-                //Pobranie zawartości
                 reader = new XmlTextReader(xmlURL);
                 reader.MoveToContent();
                 string elementName = "";
 
-                //Ustalenie progresu 50%
                 setProgress(new Object[2] { 50, "Downloading..." }, new EventArgs());
 
-                //Odczyt XML
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Fenix"))
                 {
                     while (reader.Read())
@@ -233,10 +187,8 @@ namespace FenixWPF
                             elementName = reader.Name;
                         else
                         {
-                            // for text nodes...
                             if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
                             {
-                                // we check what the name of the node was
                                 switch (elementName)
                                 {
                                     case "version":
@@ -253,10 +205,8 @@ namespace FenixWPF
                     }
                 }
 
-                //Ustalenie progresu 100%
                 setProgress(new Object[2] { 100, "Checking Version..." }, new EventArgs());
 
-                // compare the versions
                 if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.CompareTo(newVersion) < 0)
                 {
                     Object[] obj1 = new object[3] { newVersion, true, url };
@@ -268,12 +218,10 @@ namespace FenixWPF
                     setParam(obj1, new EventArgs());
                 }
 
-                //Zakonczenie
                 setProgress(new Object[2] { 0, "Finished" }, new EventArgs());
             }
             catch (Exception Ex)
             {
-                //Ustalenie progresu 0%
                 setProgress(new Object[2] { 0, Ex.Message }, new EventArgs());
             }
             finally
@@ -282,7 +230,6 @@ namespace FenixWPF
             }
         }
 
-        //Update
         private void Button_Update_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -296,7 +243,6 @@ namespace FenixWPF
             }
         }
 
-        //Close
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
