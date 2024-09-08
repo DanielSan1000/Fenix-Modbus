@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{724A
 		Scripts\Script.cs = Scripts\Script.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FenixWPF", "FenixWPF\FenixWPF.csproj", "{3294D7E8-08B5-49F7-926F-2B4AC8ACF12F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FenixManager", "FenixWPF\FenixManager.csproj", "{3294D7E8-08B5-49F7-926F-2B4AC8ACF12F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{3076FA66-1BC1-44EA-8E80-2012302FB4BC}"
 	ProjectSection(SolutionItems) = preProject
@@ -98,6 +98,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{74584077-9F6
 		Wiki\lib\s_startComm.png = Wiki\lib\s_startComm.png
 		Wiki\lib\s_Webbrowser.png = Wiki\lib\s_Webbrowser.png
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7-300-400 Ethernet", "S7-300-400 Ethernet\S7-300-400 Ethernet.csproj", "{BA507B12-8562-40EB-9EBB-A3FC4723F175}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -283,6 +285,30 @@ Global
 		{E82917A9-1CA6-4239-923F-22F2C3353B69}.Release|WithNRefactory.Build.0 = Release|Any CPU
 		{E82917A9-1CA6-4239-923F-22F2C3353B69}.Release|x86.ActiveCfg = Release|Any CPU
 		{E82917A9-1CA6-4239-923F-22F2C3353B69}.Release|x86.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Net35.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Net35.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Net40.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|Net40.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|WithNRefactory.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|WithNRefactory.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Net35.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Net35.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Net40.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|Net40.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|WithNRefactory.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|WithNRefactory.Build.0 = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA507B12-8562-40EB-9EBB-A3FC4723F175}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
