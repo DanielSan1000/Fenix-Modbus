@@ -113,7 +113,7 @@ namespace FenixWPF
             else
             {
                 if ((bool)values[0])
-                    return "[Running]";
+                    return "[>]";
                 else
                     return string.Empty;
             }
@@ -146,7 +146,7 @@ namespace FenixWPF
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value)
-                return "[Blocked]";
+                return "[|]";
             else
                 return string.Empty;
         }

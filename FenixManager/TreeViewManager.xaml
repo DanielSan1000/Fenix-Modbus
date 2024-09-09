@@ -23,7 +23,7 @@
                 <Image Source="{Binding Converter={StaticResource ImgConv}}"  Width="20" Height="20" />
                 <Rectangle Width="10" Height="10" Margin="5,0,0,0" Fill="{Binding Path=(PrCon:ITreeViewModel.Clr) , Mode=TwoWay,Converter= {StaticResource Clr1}}" />
                 <TextBlock Text="{Binding Path=(PrCon:ITreeViewModel.Name) , Mode=TwoWay}"  Margin="8,5,5,5" />
-                <TextBlock Margin="8,5,5,5" Foreground="Red">
+                <TextBlock Margin="8,5,5,5" Foreground="Gray">
                     <TextBlock.Text>
                         <MultiBinding Converter="{StaticResource StRunConv}">
                             <Binding Path="(PrCon:ITreeViewModel.IsLive)" />
