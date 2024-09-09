@@ -1,5 +1,6 @@
 ﻿using ProjectDataLib;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,66 +16,81 @@ namespace FenixWPF
     /// </summary>
     public partial class TreeViewManager : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeViewManager"/> class.
+        /// </summary>
         public TreeViewManager()
         {
             InitializeComponent();
-            //Temp = new HierarchicalDataTemplate("Daniel");
             DataContext = this;
         }
     }
 
+
     internal class ImageConverter : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is Project)
-                return new BitmapImage(new Uri("TreeImage/Project.png", UriKind.Relative));
-            else if (value is WebServer)
-                return new BitmapImage(new Uri("TreeImage/HttpServer.ico", UriKind.Relative));
-            else if (value is CusFile)
+        private static readonly Dictionary<Type, string> ImageMappings = new Dictionary<Type, string>()
             {
-                CusFile file = (CusFile)value;
-                if (file.IsFile)
-                {
-                    string ext = io.Path.GetExtension(file.FullName);
+                { typeof(Project), "TreeImage/Project.png" },
+                { typeof(WebServer), "TreeImage/HttpServer.ico" },
+                { typeof(CusFile), "TreeImage/Folder.ico" },
+                { typeof(DatabaseModel), "TreeImage/Database.ico" },
+                { typeof(ScriptsDriver), "TreeImage/Scripts.png" },
+                { typeof(ScriptFile), "TreeImage/CsFile.ico" },
+                { typeof(InternalTagsDriver), "TreeImage/IntTagFol.png" },
+                { typeof(InTag), "TreeImage/IntTag.png" },
+                { typeof(Connection), "TreeImage/Connection.png" },
+                { typeof(Device), "TreeImage/Device.ico" },
+                { typeof(Tag), "TreeImage/Tag.ico" }
+            };
 
-                    if (ext == ".html")
-                        return new BitmapImage(new Uri("TreeImage/HtmlFile.ico", UriKind.Relative));
-                    else if (ext == ".js")
-                        return new BitmapImage(new Uri("TreeImage/JsFile.ico", UriKind.Relative));
-                    else if (ext == ".ico")
-                        return new BitmapImage(new Uri("TreeImage/IcoFile.ico", UriKind.Relative));
-                    else if (ext == ".jpg")
-                        return new BitmapImage(new Uri("TreeImage/JpgFile.ico", UriKind.Relative));
-                    else
-                        return new BitmapImage(new Uri("TreeImage/File.ico", UriKind.Relative));
+        private static readonly Dictionary<string, string> ExtensionMappings = new Dictionary<string, string>()
+            {
+                { ".html", "TreeImage/HtmlFile.ico" },
+                { ".js", "TreeImage/JsFile.ico" },
+                { ".ico", "TreeImage/IcoFile.ico" },
+                { ".jpg", "TreeImage/JpgFile.ico" }
+            };
+
+        /// <summary>
+        /// Converts the specified value to an image.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The converted image.</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CusFile file)
+            {
+                if (file.IsFile && ExtensionMappings.TryGetValue(io.Path.GetExtension(file.FullName), out string extension))
+                {
+                    return new BitmapImage(new Uri(extension, UriKind.Relative));
                 }
                 else
                 {
                     return new BitmapImage(new Uri("TreeImage/Folder.ico", UriKind.Relative));
                 }
             }
-            else if (value is DatabaseModel)
-                return new BitmapImage(new Uri("TreeImage/Database.ico", UriKind.Relative));
-            else if (value is ScriptsDriver)
-                return new BitmapImage(new Uri("TreeImage/Scripts.png", UriKind.Relative));
-            else if (value is ScriptFile)
-                return new BitmapImage(new Uri("TreeImage/CsFile.ico", UriKind.Relative));
-            else if (value is InternalTagsDriver)
-                return new BitmapImage(new Uri("TreeImage/IntTagFol.png", UriKind.Relative));
-            else if (value is InTag)
-                return new BitmapImage(new Uri("TreeImage/IntTag.png", UriKind.Relative));
-            else if (value is Connection)
-                return new BitmapImage(new Uri("TreeImage/Connection.png", UriKind.Relative));
-            else if (value is Device)
-                return new BitmapImage(new Uri("TreeImage/Device.ico", UriKind.Relative));
-            else if (value is Tag)
-                return new BitmapImage(new Uri("TreeImage/Tag.ico", UriKind.Relative));
+
+            if (ImageMappings.TryGetValue(value.GetType(), out string imagePath))
+            {
+                return new BitmapImage(new Uri(imagePath, UriKind.Relative));
+            }
 
             return new BitmapImage(new Uri("TreeImage/File.ico", UriKind.Relative));
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified image back to the original value.
+        /// </summary>
+        /// <param name="value">The image value to convert back.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The original value.</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
         }
@@ -82,7 +98,15 @@ namespace FenixWPF
 
     internal class StateRunConverter : IMultiValueConverter
     {
-        object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified values to a string representing the state.
+        /// </summary>
+        /// <param name="values">The values to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The converted state string.</returns>
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)values[1])
                 return string.Empty;
@@ -95,7 +119,15 @@ namespace FenixWPF
             }
         }
 
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value back to the original values.
+        /// </summary>
+        /// <param name="value">The value to convert back.</param>
+        /// <param name="targetTypes">The types of the target properties.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The original values.</returns>
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
         }
@@ -103,7 +135,15 @@ namespace FenixWPF
 
     internal class StateBlockConverter : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value to a string representing the state.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The converted state string.</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value)
                 return "[Blocked]";
@@ -111,7 +151,15 @@ namespace FenixWPF
                 return string.Empty;
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value back to the original value.
+        /// </summary>
+        /// <param name="value">The value to convert back.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The original value.</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return DependencyProperty.UnsetValue;
         }
@@ -119,12 +167,28 @@ namespace FenixWPF
 
     internal class BoolNegConverter : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value to its negation.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The negated value.</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return !((bool)value);
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value back to its negation.
+        /// </summary>
+        /// <param name="value">The value to convert back.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The negated value.</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return !((bool)value);
         }
@@ -132,12 +196,28 @@ namespace FenixWPF
 
     internal class TemplateItems : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value to itself.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The converted value.</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value back to the original value.
+        /// </summary>
+        /// <param name="value">The value to convert back.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The original value.</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return DependencyProperty.UnsetValue;
         }
@@ -145,13 +225,29 @@ namespace FenixWPF
 
     internal class Clr : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value to a <see cref="SolidColorBrush"/>.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The converted <see cref="SolidColorBrush"/>.</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             System.Drawing.Color cl = (System.Drawing.Color)value;
             return new SolidColorBrush(Color.FromArgb(cl.A, cl.R, cl.G, cl.B));
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <summary>
+        /// Converts the specified value back to the original value.
+        /// </summary>
+        /// <param name="value">The value to convert back.</param>
+        /// <param name="targetType">The type of the target property.</param>
+        /// <param name="parameter">The converter parameter.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>The original value.</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return DependencyProperty.UnsetValue;
         }
