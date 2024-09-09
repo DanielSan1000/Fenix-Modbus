@@ -233,7 +233,7 @@
 
         <ToolBar Grid.Row="1">
             <Button Click="New0_Click" IsEnabled="{Binding mNew}">
-                <Image Source="/Images/New.png" Height="25" Width="20" ToolTip="New">
+                <Image Source="/Images/New.png" ToolTip="New">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -247,7 +247,7 @@
             </Button>
 
             <Button Click="Open0_Click" IsEnabled="{Binding mOpen}">
-                <Image Source="/Images/Open.png" Height="25" Width="20" ToolTip="Open">
+                <Image Source="/Images/Open.png" ToolTip="Open">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -261,7 +261,7 @@
             </Button>
 
             <Button  Click="Save0_Click" IsEnabled="{Binding mSave}">
-                <Image Source="/Images/Save.png" Height="25" Width="20" ToolTip="Save">
+                <Image Source="/Images/Save.png"  ToolTip="Save">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -277,7 +277,7 @@
             <Separator />
 
             <Button  Click="TableView0_Click" IsEnabled="{Binding mTable}">
-                <Image Source="/Images/TableView.png" Height="25" Width="20" ToolTip="TableView">
+                <Image Source="/Images/TableView.png" ToolTip="TableView">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -291,7 +291,7 @@
             </Button>
 
             <Button  Click="ChartView0_Click" IsEnabled="{Binding mChart}">
-                <Image Source="/Images/ChartView.png" Height="25" Width="20" ToolTip="ChartView">
+                <Image Source="/Images/ChartView.png"  ToolTip="ChartView">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -305,11 +305,11 @@
             </Button>
 
             <Button  Click="CommView0_Click" IsEnabled="{Binding mCommView}">
-                <Image Source="/Images/CommView.png" Height="25" Width="20" ToolTip="CommunicationView" />
+                <Image Source="/Images/CommView.png"  ToolTip="CommunicationView" />
             </Button>
 
             <Button  Click="Editor0_Click" IsEnabled="{Binding mEditor}">
-                <Image Source="/Images/Editor.png" Height="25" Width="20" ToolTip="Editor">
+                <Image Source="/Images/Editor.png"  ToolTip="Editor">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -325,7 +325,7 @@
             <Separator />
 
             <Button Click="Start0_Click" IsEnabled="{Binding mStart}">
-                <Image Source="/Images/Start.png" Height="25" Width="20" ToolTip="Start Selected Driver">
+                <Image Source="/Images/Start.png" ToolTip="Start Selected Driver">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -339,7 +339,7 @@
             </Button>
 
             <Button  Click="Stop0_Click" IsEnabled="{Binding mStop}">
-                <Image Source="/Images/Stop.png" Height="25" Width="20" ToolTip="Stop Selected Driver">
+                <Image Source="/Images/Stop.png"  ToolTip="Stop Selected Driver">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -354,7 +354,7 @@
 
             <Separator />
             <Button Click="StartAll_Click" IsEnabled="{Binding mStartAll}">
-                <Image Source="/Images/StartAll.png" Height="25" Width="20" ToolTip="Start All Driver">
+                <Image Source="/Images/StartAll.png"  ToolTip="Start All Driver">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -368,7 +368,7 @@
             </Button>
 
             <Button  Click="StopAll_Click" IsEnabled="{Binding mStopAll}">
-                <Image Source="/Images/StopAll.png" Height="25" Width="20" ToolTip="Stop All Driver">
+                <Image Source="/Images/StopAll.png"  ToolTip="Stop All Driver">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -383,7 +383,7 @@
             <Separator />
 
             <Button  Click="ShHelp0_Click" IsEnabled="{Binding mViewHelp}">
-                <Image Source="/Images/ShowHelp.png" Height="25" Width="20" ToolTip="Help">
+                <Image Source="/Images/ShowHelp.png" ToolTip="Help">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
@@ -397,7 +397,7 @@
             </Button>
 
             <Button  Click="About0_Click" IsEnabled="{Binding mAbout}">
-                <Image Source="/Images/About.png" Height="25" Width="20" ToolTip="About">
+                <Image Source="/Images/About.png"  ToolTip="About">
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
