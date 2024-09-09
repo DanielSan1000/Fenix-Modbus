@@ -21,12 +21,12 @@ namespace FenixWPF
     public partial class CommunicationView : UserControl, INotifyPropertyChanged
     {
         //Field
-        private ProjectContainer PrCon;
+        private ProjectContainer projectContainer;
 
-        public Project Pr { get; set; }
-        private Guid Sel;
-        private ElementKind ElKind;
-        private LayoutAnchorable Win;
+        public Project project { get; set; }
+        private Guid selectedElementId;
+        private ElementKind elementKind;
+        private LayoutAnchorable layoutAnchorableWindow;
         private ObservableCollection<IDriverModel> DriverList = new ObservableCollection<IDriverModel>();
         private ObservableCollection<EventElement> Stack = new ObservableCollection<EventElement>();
 
@@ -58,65 +58,65 @@ namespace FenixWPF
             InitializeComponent();
 
             //zmienne
-            PrCon = prCon;
-            Pr = prCon.projectList.First();
-            Sel = sel;
-            ElKind = elKind;
-            Win = win;
+            projectContainer = prCon;
+            project = prCon.projectList.First();
+            selectedElementId = sel;
+            elementKind = elKind;
+            layoutAnchorableWindow = win;
 
             //dataselection
             if (elKind == ElementKind.Project)
             {
                 //Title
-                Win.Title = Pr.projectName;
+                layoutAnchorableWindow.Title = project.projectName;
 
-                DriverList = ((IDriversMagazine)Pr).Children;
+                DriverList = ((IDriversMagazine)project).Children;
 
                 //Zdarzenia
-                ((INotifyPropertyChanged)Pr).PropertyChanged += CommunicationView_PropertyChanged;
+                ((INotifyPropertyChanged)project).PropertyChanged += CommunicationView_PropertyChanged;
             }
             else if (elKind == ElementKind.Connection)
             {
-                if (Pr.connectionList.Exists(x => x.objId == Sel))
+                if (project.connectionList.Exists(x => x.objId == selectedElementId))
                 {
                     //Typy
-                    Connection cn = PrCon.getConnection(Pr.objId, Sel);
+                    Connection cn = projectContainer.getConnection(project.objId, selectedElementId);
 
                     DriverList = ((IDriversMagazine)cn).Children;
 
                     //Title
-                    Win.Title = Pr.projectName + "." + cn.connectionName;
+                    layoutAnchorableWindow.Title = project.projectName + "." + cn.connectionName;
 
                     //Zmiana tytulu
-                    ((INotifyPropertyChanged)Pr).PropertyChanged += CommunicationView_PropertyChanged;
+                    ((INotifyPropertyChanged)project).PropertyChanged += CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged += CommunicationView_PropertyChanged;
                 }
                 else
                 {
-                    Win.Close();
+                    layoutAnchorableWindow.Close();
                 }
             }
             else if (elKind == ElementKind.Device)
             {
-                if (Pr.DevicesList.Exists(x => x.objId == Sel))
+                if (project.DevicesList.Exists(x => x.objId == selectedElementId))
                 {
                     //Typy bazowe
-                    Device dev = PrCon.getDevice(Pr.objId, Sel);
-                    Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
+                    Device dev = projectContainer.getDevice(project.objId, selectedElementId);
+                    Connection cn = projectContainer.getConnection(project.objId, dev.parentId);
 
                     DriverList = ((IDriversMagazine)dev).Children;
 
                     //Title
-                    Win.Title = Pr.projectName + "." + cn.connectionName + "." + dev.name;
+                    layoutAnchorableWindow.Title = project.projectName + "." + cn.connectionName + "." + dev.name;
 
                     //Zdarzenie
-                    ((INotifyPropertyChanged)Pr).PropertyChanged += CommunicationView_PropertyChanged;
+                    ((INotifyPropertyChanged)project).PropertyChanged += CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged += CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)dev).PropertyChanged += CommunicationView_PropertyChanged;
                 }
                 else
                 {
-                    Win.Close();
+                    layoutAnchorableWindow.Close();
                 }
             }
 
@@ -136,11 +136,11 @@ namespace FenixWPF
             View.ItemsSource = Stack;
 
             //Zdarzenia
-            Win.Closing += Win_Closing;
+            layoutAnchorableWindow.Closing += Win_Closing;
 
             //Dodanie indeksu okna do globalnego buffora informacji o stanie okien
-            index = PrCon.winManagment.Count;
-            PrCon.winManagment.Add(new WindowsStatus(index, true, false));
+            index = projectContainer.winManagment.Count;
+            projectContainer.winManagment.Add(new WindowsStatus(index, true, false));
 
             //zmiana kolkcji
             Stack.CollectionChanged += Stack_CollectionChanged;
@@ -171,7 +171,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -181,31 +181,31 @@ namespace FenixWPF
             try
             {
                 //dataselection
-                if (ElKind == ElementKind.Project)
+                if (elementKind == ElementKind.Project)
                 {
-                    Win.Title = Pr.projectName;
+                    layoutAnchorableWindow.Title = project.projectName;
                 }
-                else if (ElKind == ElementKind.Connection)
+                else if (elementKind == ElementKind.Connection)
                 {
                     //Typy
-                    Connection cn = PrCon.getConnection(Pr.objId, Sel);
+                    Connection cn = projectContainer.getConnection(project.objId, selectedElementId);
 
                     //Title
-                    Win.Title = Pr.projectName + "." + cn.connectionName;
+                    layoutAnchorableWindow.Title = project.projectName + "." + cn.connectionName;
                 }
-                else if (ElKind == ElementKind.Device)
+                else if (elementKind == ElementKind.Device)
                 {
                     //Typy bazowe
-                    Device dev = PrCon.getDevice(Pr.objId, Sel);
-                    Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
+                    Device dev = projectContainer.getDevice(project.objId, selectedElementId);
+                    Connection cn = projectContainer.getConnection(project.objId, dev.parentId);
 
                     //Title
-                    Win.Title = Pr.projectName + "." + cn.connectionName + "." + dev.name;
+                    layoutAnchorableWindow.Title = project.projectName + "." + cn.connectionName + "." + dev.name;
                 }
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -229,29 +229,29 @@ namespace FenixWPF
             try
             {
                 //Zdarzenia
-                Win.Closing -= Win_Closing;
+                layoutAnchorableWindow.Closing -= Win_Closing;
 
-                if (ElKind == ElementKind.Project)
+                if (elementKind == ElementKind.Project)
                 {
-                    ((INotifyPropertyChanged)Pr).PropertyChanged -= CommunicationView_PropertyChanged;
+                    ((INotifyPropertyChanged)project).PropertyChanged -= CommunicationView_PropertyChanged;
                 }
-                else if (ElKind == ElementKind.Connection)
+                else if (elementKind == ElementKind.Connection)
                 {
                     //Typy
-                    Connection cn = PrCon.getConnection(Pr.objId, Sel);
+                    Connection cn = projectContainer.getConnection(project.objId, selectedElementId);
 
                     //Zmiana tytulu
-                    ((INotifyPropertyChanged)Pr).PropertyChanged -= CommunicationView_PropertyChanged;
+                    ((INotifyPropertyChanged)project).PropertyChanged -= CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged -= CommunicationView_PropertyChanged;
                 }
-                else if (ElKind == ElementKind.Device)
+                else if (elementKind == ElementKind.Device)
                 {
                     //Typy bazowe
-                    Device dev = PrCon.getDevice(Pr.objId, Sel);
-                    Connection cn = PrCon.getConnection(Pr.objId, dev.parentId);
+                    Device dev = projectContainer.getDevice(project.objId, selectedElementId);
+                    Connection cn = projectContainer.getConnection(project.objId, dev.parentId);
 
                     //Zdarzenie
-                    ((INotifyPropertyChanged)Pr).PropertyChanged -= CommunicationView_PropertyChanged;
+                    ((INotifyPropertyChanged)project).PropertyChanged -= CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)cn).PropertyChanged -= CommunicationView_PropertyChanged;
                     ((INotifyPropertyChanged)dev).PropertyChanged -= CommunicationView_PropertyChanged;
                 }
@@ -259,11 +259,11 @@ namespace FenixWPF
                 DriverList.CollectionChanged -= DriverList_CollectionChanged;
 
                 //Informacja o stanie okna
-                PrCon.winManagment.RemoveAll(x => x.index == index);
+                projectContainer.winManagment.RemoveAll(x => x.index == index);
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -278,8 +278,8 @@ namespace FenixWPF
 
                 IDriverModel idrv = (IDriverModel)sender;
                 Connection cn = null;
-                if (Pr.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
-                    cn = Pr.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
+                if (project.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
+                    cn = project.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
 
                 //Dane
                 byte[] data = (byte[])ev.element;
@@ -294,7 +294,7 @@ namespace FenixWPF
                 if (Stack.Count > 0)
                     lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr, sender, data, time, description, EventType.OUT, lsEl, cn?.connectionName ?? "No Name"));
+                Stack.Add(new EventElement(project, sender, data, time, description, EventType.OUT, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             try
@@ -304,8 +304,8 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                if (projectContainer.ApplicationError != null)
+                    projectContainer.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -318,8 +318,8 @@ namespace FenixWPF
 
                 IDriverModel idrv = (IDriverModel)sender;
                 Connection cn = null;
-                if (Pr.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
-                    cn = Pr.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
+                if (project.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
+                    cn = project.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
 
                 //Dane
                 byte[] data = (byte[])ev.element;
@@ -334,7 +334,7 @@ namespace FenixWPF
                 if (Stack.Count > 0)
                     lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr, sender, data, time, description, EventType.IN, lsEl, cn?.connectionName ?? "No Name"));
+                Stack.Add(new EventElement(project, sender, data, time, description, EventType.IN, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             try
@@ -343,8 +343,8 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                if (projectContainer.ApplicationError != null)
+                    projectContainer.ApplicationError(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -357,8 +357,8 @@ namespace FenixWPF
 
                 IDriverModel idrv = (IDriverModel)sender;
                 Connection cn = null;
-                if (Pr.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
-                    cn = Pr.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
+                if (project.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
+                    cn = project.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
 
                 //Dane
                 byte[] data = (byte[])ev.element;
@@ -374,7 +374,7 @@ namespace FenixWPF
                     lsEl = Stack.Last();
 
                 //Stack add
-                Stack.Add(new EventElement(Pr, se, data, time, description, EventType.INFO, lsEl, cn?.connectionName ?? "No Name"));
+                Stack.Add(new EventElement(project, se, data, time, description, EventType.INFO, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             View.Dispatcher?.Invoke(lacznik, sender, e);
@@ -389,8 +389,8 @@ namespace FenixWPF
 
                 IDriverModel idrv = (IDriverModel)sender;
                 Connection cn = null;
-                if (Pr.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
-                    cn = Pr.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
+                if (project.connectionList.Exists(x => x.Idrv.ObjId == idrv.ObjId))
+                    cn = project.connectionList.Find(x => x.Idrv.ObjId == idrv.ObjId);
 
                 //Dane
                 byte[] data = (byte[])ev.element;
@@ -405,7 +405,7 @@ namespace FenixWPF
                 if (Stack.Count > 0)
                     lsEl = Stack.Last();
 
-                Stack.Add(new EventElement(Pr, se, data, time, description, EventType.ERROR, lsEl, cn?.connectionName ?? "No Name"));
+                Stack.Add(new EventElement(project, se, data, time, description, EventType.ERROR, lsEl, cn?.connectionName ?? "No Name"));
             };
 
             View.Dispatcher?.Invoke(lacznik, sender, e);
@@ -494,16 +494,19 @@ namespace FenixWPF
         {
             EventElement ev = (EventElement)value;
 
-            if (ev.Type == EventType.ERROR)
-                return new SolidColorBrush(Colors.Red);
-            else if (ev.Type == EventType.INFO)
-                return new SolidColorBrush(Colors.Yellow);
-            else if (ev.Type == EventType.IN)
-                return new SolidColorBrush(Colors.LightGreen);
-            else if (ev.Type == EventType.OUT)
-                return new SolidColorBrush(Colors.LightBlue);
-
-            return new SolidColorBrush(Colors.Gray);
+            switch (ev.Type)
+            {
+                case EventType.ERROR:
+                    return new SolidColorBrush(Colors.Red);
+                case EventType.INFO:
+                    return new SolidColorBrush(Colors.Yellow);
+                case EventType.IN:
+                    return new SolidColorBrush(Colors.LightCyan);
+                case EventType.OUT:
+                    return new SolidColorBrush(Colors.White);
+                default:
+                    return new SolidColorBrush(Colors.White);
+            }
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -5,15 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace nmDriver
 {
     public class Driver : IDriverModel, IDisposable
     {
-
         /// <summary>
         /// Konstruktor
         /// </summary>
@@ -31,38 +28,40 @@ namespace nmDriver
             bWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bWorker_RunWorkerCompleted);
         }
 
-        S7DriverParam DriverParam_;
-        Boolean isLive = false;
-        static libnodave.daveOSserialType fds;
-        static libnodave.daveInterface di;
-        static libnodave.daveConnection dc;
+        private S7DriverParam DriverParam_;
+        private Boolean isLive = false;
+        private static libnodave.daveOSserialType fds;
+        private static libnodave.daveInterface di;
+        private static libnodave.daveConnection dc;
 
-        List<Tag> tagList = new List<Tag>();
-        List<PO> MPoints = new List<PO>();
-        List<PO> IPoints = new List<PO>();
-        List<PO> QPoints = new List<PO>();
-        List<List<PO>> DBPoints = new List<List<PO>>();
+        private List<Tag> tagList = new List<Tag>();
+        private List<PO> MPoints = new List<PO>();
+        private List<PO> IPoints = new List<PO>();
+        private List<PO> QPoints = new List<PO>();
+        private List<List<PO>> DBPoints = new List<List<PO>>();
 
-        static string M = "M";
-        static string DB = "DB";
-        static string I = "I";
-        static string Q = "Q";
+        private static string M = "M";
+        private static string DB = "DB";
+        private static string I = "I";
+        private static string Q = "Q";
 
-        EventHandler sendInfoEv;
-        EventHandler errorSendEv;
+        private EventHandler sendInfoEv;
+        private EventHandler errorSendEv;
 
-        EventHandler refreshedPartial;
-        EventHandler refreshCycleEv;
+        private EventHandler refreshedPartial;
+        private EventHandler refreshCycleEv;
 
-        EventHandler sendLogInfoEv;
-        EventHandler reciveLogInfoEv;
+        private EventHandler sendLogInfoEv;
+        private EventHandler reciveLogInfoEv;
 
         //Beckgroundworker
         [NonSerialized]
+        private
         //Watek wtle
         BackgroundWorker bWorker;
 
-        Guid ObjId_;
+        private Guid ObjId_;
+
         Guid IDriverModel.ObjId
         {
             get { return ObjId_; }
@@ -105,7 +104,6 @@ namespace nmDriver
             this.tagList.Clear();
             this.tagList = (from c in tagsList2 where c is Tag select (Tag)c).ToList();
 
-
             ConfigData(this.tagList);
 
             //Otwarcie danych
@@ -135,7 +133,7 @@ namespace nmDriver
             else
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now,"Couldn't open TCP connaction"));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "Couldn't open TCP connaction"));
 
                 return false;
             }
@@ -150,7 +148,6 @@ namespace nmDriver
         {
             try
             {
-
                 List<Tag> tgs = (from c in tagList select (Tag)c).ToList();
 
                 //Dodanie Tagow
@@ -164,7 +161,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -181,7 +178,7 @@ namespace nmDriver
             {
                 List<Tag> tgs = (from c in tagList2 select (Tag)c).ToList();
 
-                foreach(Tag tn in tgs)
+                foreach (Tag tn in tgs)
                     tagList.Remove(tn);
 
                 //Rekonfiguracja
@@ -193,7 +190,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                   errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -207,7 +204,6 @@ namespace nmDriver
         {
             try
             {
-
                 ConfigData(this.tagList);
 
                 return true;
@@ -215,7 +211,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, Ex.Message, Ex));
 
                 return false;
             }
@@ -246,20 +242,18 @@ namespace nmDriver
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void bWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-
                 #region Area M
+
                 foreach (PO p in MPoints)
                 {
-
                     byte[] data = new byte[((p.Y - p.X) + 1)];
                     sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveFlags }, DateTime.Now, "M.READ.REQUEST"));
                     if (dc.readBytes(libnodave.daveFlags, 0, p.X, ((p.Y - p.X) + 1), data) == 0)
                     {
-
                         BitArray btArr = new BitArray(data);
 
                         reciveLogInfoEv?.Invoke(this, new ProjectEventArgs(data, DateTime.Now, "M.READ.RESPONSE"));
@@ -271,11 +265,11 @@ namespace nmDriver
                         MemoryAreaInfo mInfo = ((IDriverModel)this).MemoryAreaInf.Where(x => x.fctCode == 1).ToArray()[0];
 
                         //Selekcja tagow do przeslania do odswierzenia
-                            var zm = from n in tagList
-                                where  n.areaData == mInfo.Name
-                                && n.bitAdres >= p.X * mInfo.AdresSize
-                                && n.bitAdres + n.coreData.Length <= (p.X + ((p.Y - p.X) + 1)) * mInfo.AdresSize
-                                select n;
+                        var zm = from n in tagList
+                                 where n.areaData == mInfo.Name
+                                 && n.bitAdres >= p.X * mInfo.AdresSize
+                                 && n.bitAdres + n.coreData.Length <= (p.X + ((p.Y - p.X) + 1)) * mInfo.AdresSize
+                                 select n;
 
                         //Lista
                         List<Tag> refDataTag = zm.ToList();
@@ -297,24 +291,25 @@ namespace nmDriver
                             errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "Communication error. Problem with reading M area"));
                     }
                 }
-                #endregion
+
+                #endregion Area M
 
                 #region Area DB
+
                 foreach (List<PO> pp in DBPoints)
                 {
                     foreach (PO p in pp)
                     {
                         byte[] data = new byte[((p.Y - p.X) + 1)];
 
-                        sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveDB}, DateTime.Now, "DB.READ.REQUEST"));
+                        sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveDB }, DateTime.Now, "DB.READ.REQUEST"));
 
                         if (dc.readBytes(libnodave.daveDB, p.BlockNum, p.X, ((p.Y - p.X) + 1), data) == 0)
                         {
-
                             BitArray btArr = new BitArray(data);
 
                             //Zdarzenia
-                            reciveLogInfoEv?.Invoke(this, new ProjectEventArgs(data, DateTime.Now,"DB.READ.RESPONSE"));
+                            reciveLogInfoEv?.Invoke(this, new ProjectEventArgs(data, DateTime.Now, "DB.READ.RESPONSE"));
 
                             Boolean[] bitArray = new Boolean[btArr.Length];
                             btArr.CopyTo(bitArray, 0);
@@ -352,19 +347,18 @@ namespace nmDriver
                     }
                 }
 
-                #endregion
+                #endregion Area DB
 
                 #region Area I
+
                 foreach (PO p in IPoints)
                 {
-
                     byte[] data = new byte[((p.Y - p.X) + 1)];
 
                     sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveInputs }, DateTime.Now, "I.READ.REQUEST"));
 
                     if (dc.readBytes(libnodave.daveInputs, 0, p.X, ((p.Y - p.X) + 1), data) == 0)
                     {
-
                         BitArray btArr = new BitArray(data);
 
                         reciveLogInfoEv?.Invoke(this, new ProjectEventArgs(data, DateTime.Now, "I.READ.RESPONSE"));
@@ -402,19 +396,19 @@ namespace nmDriver
                             errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "Communication error. Problem with reading I area"));
                     }
                 }
-                #endregion
+
+                #endregion Area I
 
                 #region Area Q
+
                 foreach (PO p in QPoints)
                 {
-
                     byte[] data = new byte[((p.Y - p.X) + 1)];
 
                     sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveOutputs }, DateTime.Now, "Q.READ.REQUEST"));
 
                     if (dc.readBytes(libnodave.daveOutputs, 0, p.X, ((p.Y - p.X) + 1), data) == 0)
                     {
-
                         BitArray btArr = new BitArray(data);
 
                         reciveLogInfoEv?.Invoke(this, new ProjectEventArgs(data, DateTime.Now, "Q.READ.RESPONSE"));
@@ -452,9 +446,11 @@ namespace nmDriver
                             errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "Communication error. Problem with reading Q area"));
                     }
                 }
-                #endregion
+
+                #endregion Area Q
 
                 #region Zapisz dane na porcie
+
                 //Tagi z obszaru Coils do zapisu
                 List<Tag> TgWrite = tagList.Where(x => x.setMod).ToList();
                 if (TgWrite.Count > 0)
@@ -506,24 +502,23 @@ namespace nmDriver
                                 dc.writeBytes(libnodave.daveOutputs, 0, tg.startData, tg.coreDataSend.Length / 8, buffByteArr);
                                 tg.setMod = false;
 
-                                sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveOutputs}, DateTime.Now, "Q.WRITE.REQUEST"));
+                                sendLogInfoEv?.Invoke(this, new ProjectEventArgs(new byte[] { (byte)libnodave.daveOutputs }, DateTime.Now, "Q.WRITE.REQUEST"));
                             }
                         }
                     }
                     catch (Exception Ex)
                     {
-
                         if (errorSendEv != null)
                             errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "SiemensS7.bWorker_DoWork.Write :" + Ex.Message));
                     }
                 }
-                #endregion
 
+                #endregion Zapisz dane na porcie
             }
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[]{0}, DateTime.Now, "S7-300/400.bWorker_DoWork :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "S7-300/400.bWorker_DoWork :" + Ex.Message, Ex));
             }
 
             //Opoznienie wątku o dany czas
@@ -535,7 +530,7 @@ namespace nmDriver
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
@@ -553,7 +548,7 @@ namespace nmDriver
             catch (Exception Ex)
             {
                 if (errorSendEv != null)
-                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "S7-300/400.bWorker_RunWorkerCompleted :" + Ex.Message,Ex));
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "S7-300/400.bWorker_RunWorkerCompleted :" + Ex.Message, Ex));
             }
         }
 
@@ -561,26 +556,23 @@ namespace nmDriver
         /// Konfiguracja parmamertów Bufforów dla rejestrow
         /// </summary>
         /// <param name="tagList"></param>
-        void ConfigData(List<Tag> tagList)
+        private void ConfigData(List<Tag> tagList)
         {
             try
             {
-
                 if (tagList == null)
                     return;
 
-                getFrameSizeM(tagList, M, 230*8, 130);
+                getFrameSizeM(tagList, M, 230 * 8, 130);
                 getFrameSizeI(tagList, I, 230 * 8, 130);
                 getFrameSizeQ(tagList, Q, 230 * 8, 130);
                 getFrameSizeDB(tagList, DB, 230 * 8, 130);
-
             }
             catch (Exception Ex)
             {
-               if (errorSendEv != null)
-                   errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "S7-300/400.configSingleDevice.CO :" + Ex.Message,Ex));
+                if (errorSendEv != null)
+                    errorSendEv(this, new ProjectEventArgs(new byte[] { 0 }, DateTime.Now, "S7-300/400.configSingleDevice.CO :" + Ex.Message, Ex));
             }
-
         }
 
         /// <summary>
@@ -591,7 +583,7 @@ namespace nmDriver
         /// <param name="maxFrSize"></param>
         /// <param name="maxSize"></param>
         /// <returns></returns>
-        void getFrameSizeM(List<Tag> tags,string type,int maxFrSize, int maxSize)
+        private void getFrameSizeM(List<Tag> tags, string type, int maxFrSize, int maxSize)
         {
             try
             {
@@ -619,33 +611,29 @@ namespace nmDriver
 
                     if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrSize)
                     {
-
                         //Jestemy w miejscu Taga trzeba podac koniec
                         Tag halfTag = tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList()[0];
                         if (halfTag != null)
                         {
-
                             points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length / 8 - 1;
                             i = points[points.Count - 1].Y + 1;
                             points.Add(new PO(i, 0));
                         }
-
-
                         else
                             points.Add(new PO(i, 0));
-
                     }
 
-                    #endregion
+                    #endregion Zabezpiecznie dlugiej ramki
 
                     #region Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     if (marker == maxSize)
                         points.Add(new PO(i, 0));
 
-                    #endregion
+                    #endregion Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     #region Sprawdzenie czy tagi sa w zakresie
+
                     if (tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList().Count > 0)
                     {
                         //DANIE
@@ -666,9 +654,9 @@ namespace nmDriver
                         //Inkrementuj marker
                         marker++;
                     }
-                    #endregion
-                }
 
+                    #endregion Sprawdzenie czy tagi sa w zakresie
+                }
 
                 MPoints.AddRange(points);
                 return;
@@ -677,7 +665,6 @@ namespace nmDriver
             {
                 throw;
             }
-        
         }
 
         /// <summary>
@@ -688,7 +675,7 @@ namespace nmDriver
         /// <param name="maxFrSize"></param>
         /// <param name="maxSize"></param>
         /// <returns></returns>
-        void getFrameSizeI(List<Tag> tags, string type, int maxFrSize, int maxSize)
+        private void getFrameSizeI(List<Tag> tags, string type, int maxFrSize, int maxSize)
         {
             try
             {
@@ -716,33 +703,29 @@ namespace nmDriver
 
                     if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrSize)
                     {
-
                         //Jestemy w miejscu Taga trzeba podac koniec
                         Tag halfTag = tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList()[0];
                         if (halfTag != null)
                         {
-
                             points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length / 8 - 1;
                             i = points[points.Count - 1].Y + 1;
                             points.Add(new PO(i, 0));
                         }
-
-
                         else
                             points.Add(new PO(i, 0));
-
                     }
 
-                    #endregion
+                    #endregion Zabezpiecznie dlugiej ramki
 
                     #region Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     if (marker == maxSize)
                         points.Add(new PO(i, 0));
 
-                    #endregion
+                    #endregion Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     #region Sprawdzenie czy tagi sa w zakresie
+
                     if (tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList().Count > 0)
                     {
                         //DANIE
@@ -763,9 +746,9 @@ namespace nmDriver
                         //Inkrementuj marker
                         marker++;
                     }
-                    #endregion
-                }
 
+                    #endregion Sprawdzenie czy tagi sa w zakresie
+                }
 
                 IPoints.AddRange(points);
                 return;
@@ -774,7 +757,6 @@ namespace nmDriver
             {
                 throw;
             }
-
         }
 
         /// <summary>
@@ -785,7 +767,7 @@ namespace nmDriver
         /// <param name="maxFrSize"></param>
         /// <param name="maxSize"></param>
         /// <returns></returns>
-        void getFrameSizeQ(List<Tag> tags, string type, int maxFrSize, int maxSize)
+        private void getFrameSizeQ(List<Tag> tags, string type, int maxFrSize, int maxSize)
         {
             try
             {
@@ -813,33 +795,29 @@ namespace nmDriver
 
                     if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrSize)
                     {
-
                         //Jestemy w miejscu Taga trzeba podac koniec
                         Tag halfTag = tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList()[0];
                         if (halfTag != null)
                         {
-
                             points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length / 8 - 1;
                             i = points[points.Count - 1].Y + 1;
                             points.Add(new PO(i, 0));
                         }
-
-
                         else
                             points.Add(new PO(i, 0));
-
                     }
 
-                    #endregion
+                    #endregion Zabezpiecznie dlugiej ramki
 
                     #region Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     if (marker == maxSize)
                         points.Add(new PO(i, 0));
 
-                    #endregion
+                    #endregion Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                     #region Sprawdzenie czy tagi sa w zakresie
+
                     if (tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList().Count > 0)
                     {
                         //DANIE
@@ -860,9 +838,9 @@ namespace nmDriver
                         //Inkrementuj marker
                         marker++;
                     }
-                    #endregion
-                }
 
+                    #endregion Sprawdzenie czy tagi sa w zakresie
+                }
 
                 QPoints.AddRange(points);
                 return;
@@ -871,7 +849,6 @@ namespace nmDriver
             {
                 throw;
             }
-
         }
 
         /// <summary>
@@ -882,13 +859,12 @@ namespace nmDriver
         /// <param name="maxFrSize"></param>
         /// <param name="maxSize"></param>
         /// <returns></returns>
-        void getFrameSizeDB(List<Tag> tags, string type, int maxFrSize, int maxSize)
+        private void getFrameSizeDB(List<Tag> tags, string type, int maxFrSize, int maxSize)
         {
             try
             {
-                
                 IEnumerable<IGrouping<int, Tag>> tagi = tags.Where(x => x.areaData == type).GroupBy(x => x.BlockAdress, x => x).ToList();
-                foreach(IGrouping<int, Tag> xx in tagi)
+                foreach (IGrouping<int, Tag> xx in tagi)
                 {
                     //Pobranie odpowiednich typow tagow
                     var tgs = from t in xx select t;
@@ -909,33 +885,29 @@ namespace nmDriver
 
                         if (points[points.Count - 1].Y - points[points.Count - 1].X >= maxFrSize)
                         {
-
                             //Jestemy w miejscu Taga trzeba podac koniec
                             Tag halfTag = tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList()[0];
                             if (halfTag != null)
                             {
-
                                 points[points.Count - 1].Y = halfTag.startData + halfTag.coreData.Length / 8 - 1;
                                 i = points[points.Count - 1].Y + 1;
                                 points.Add(new PO(i, 0));
                             }
-
-
                             else
                                 points.Add(new PO(i, 0));
-
                         }
 
-                        #endregion
+                        #endregion Zabezpiecznie dlugiej ramki
 
                         #region Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                         if (marker == maxSize)
                             points.Add(new PO(i, 0));
 
-                        #endregion
+                        #endregion Zabezpieczenie przed przekroczeniem wolnego odstepu
 
                         #region Sprawdzenie czy tagi sa w zakresie
+
                         if (tgs.Where(x => x.startData <= i && (x.startData + x.coreData.Length / 8) > i).ToList().Count > 0)
                         {
                             //DANIE
@@ -956,7 +928,8 @@ namespace nmDriver
                             //Inkrementuj marker
                             marker++;
                         }
-                        #endregion
+
+                        #endregion Sprawdzenie czy tagi sa w zakresie
                     }
 
                     DBPoints.Add(points);
@@ -968,7 +941,6 @@ namespace nmDriver
             {
                 throw;
             }
-
         }
 
         /// <summary>
@@ -1032,12 +1004,11 @@ namespace nmDriver
         {
             get
             {
-                return new MemoryAreaInfo[] { 
+                return new MemoryAreaInfo[] {
                     new MemoryAreaInfo(M,8,1),
                     new MemoryAreaInfo(I,8,2),
                     new MemoryAreaInfo(Q,8,3),
                     new MemoryAreaInfo(DB,8,4)
-                
                 };
             }
         }
@@ -1050,13 +1021,12 @@ namespace nmDriver
         /// <returns></returns>
         string IDriverModel.FormatFrameRequest(byte[] frame, System.Globalization.NumberStyles num)
         {
-          
             if (frame == null)
                 return "Empty reponse";
 
             switch (num)
             {
-                case NumberStyles.HexNumber:                
+                case NumberStyles.HexNumber:
                     return frame.Aggregate("", (a, e) => a + e.ToString("X"));
 
                 case NumberStyles.Integer:
@@ -1064,7 +1034,6 @@ namespace nmDriver
 
                 default:
                     return "Internal problem";
-
             }
         }
 
@@ -1101,7 +1070,6 @@ namespace nmDriver
             set
             {
                 isLive = value;
-               
             }
         }
 
@@ -1138,13 +1106,12 @@ namespace nmDriver
         /// </summary>
         bool[] IDriverModel.AuxParam
         {
-            get { return new Boolean[] { false ,true }; }
+            get { return new Boolean[] { false, true }; }
         }
 
-        string getAreaFromFrame(byte[] ask)
+        private string getAreaFromFrame(byte[] ask)
         {
             return "cos";
-            
         }
 
         //Do wyswietlania
@@ -1154,6 +1121,7 @@ namespace nmDriver
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -1187,6 +1155,7 @@ namespace nmDriver
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion IDisposable Support
     }
 }

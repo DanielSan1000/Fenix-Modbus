@@ -15,7 +15,7 @@ namespace ProjectDataLib
         {
             try
             {
-                openData(Application.StartupPath + "\\GlobalConfiguration.xml");
+                OpenData(Application.StartupPath + "\\GlobalConfiguration.xml");
             }
             catch (Exception)
             {
@@ -23,7 +23,7 @@ namespace ProjectDataLib
             }
         }
 
-        private Boolean saveData(string path)
+        private Boolean SaveData(string path)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace ProjectDataLib
             }
         }
 
-        private Boolean openData(string path)
+        private Boolean OpenData(string path)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace ProjectDataLib
             }
         }
 
-        public Boolean checkAssembly(Assembly asm)
+        public Boolean CheckAssembly(Assembly asm)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace ProjectDataLib
             try
             {
                 Assembly asm = Assembly.LoadFile(path);
-                return checkAssembly(asm);
+                return CheckAssembly(asm);
             }
             catch (Exception)
             {
@@ -99,7 +99,7 @@ namespace ProjectDataLib
             {
                 Assembly asm = Assembly.LoadFile(path);
 
-                if (!checkAssembly(asm))
+                if (!CheckAssembly(asm))
                 {
                     MessageBox.Show("Library isn't appropriate!");
                     return;
@@ -107,7 +107,7 @@ namespace ProjectDataLib
                 else
                 {
                     assmemblyPath.Add(path);
-                    saveData("GlobalConfiguration.xml");
+                    SaveData("GlobalConfiguration.xml");
                 }
             }
             else
@@ -121,7 +121,7 @@ namespace ProjectDataLib
             try
             {
                 assmemblyPath.Remove(path);
-                saveData(Application.StartupPath + "\\GlobalConfiguration.xml");
+                SaveData(Application.StartupPath + "\\GlobalConfiguration.xml");
             }
             catch (Exception Ex)
             {
@@ -162,7 +162,7 @@ namespace ProjectDataLib
                     {
                         Assembly asm = Assembly.LoadFile(s);
 
-                        if (!checkAssembly(asm))
+                        if (!CheckAssembly(asm))
                         {
                             MessageBox.Show("Assembly: " + asm.FullName + " Isn't appropriate!");
                             return null;
@@ -193,7 +193,7 @@ namespace ProjectDataLib
                     {
                         Assembly asm = Assembly.LoadFile(s);
 
-                        if (!checkAssembly(asm))
+                        if (!CheckAssembly(asm))
                         {
                             MessageBox.Show("Assembly: " + asm.FullName + " Isn't appropriate!");
                             return null;

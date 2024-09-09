@@ -62,7 +62,7 @@ namespace FenixWPF
                     Assembly asm = Assembly.LoadFile(gConf.assmemblyPath[i]);
 
                     //Sprawdzenie interfejsu czy obsluguje interfejs
-                    if (gConf.checkAssembly(asm))
+                    if (gConf.CheckAssembly(asm))
                     {
                         //Zaladowanie Sterownika
                         Type tp = asm.GetType("nmDriver.Driver");
@@ -97,7 +97,7 @@ namespace FenixWPF
                     {
                         Assembly asm = Assembly.LoadFile(s);
 
-                        if (gConf.checkAssembly(asm))
+                        if (gConf.CheckAssembly(asm))
                         {
                             Type tp = asm.GetType("nmDriver.Driver");
                             IDriverModel idrv = (IDriverModel)asm.CreateInstance(tp.FullName);

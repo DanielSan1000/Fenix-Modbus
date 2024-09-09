@@ -253,15 +253,13 @@ namespace FenixWPF
         private LayoutAnchorable laOutput = new LayoutAnchorable();
         private Output frOutput;
 
-        //Wszystkie Wyjątki
         private ObservableCollection<CustomException> exList = new ObservableCollection<CustomException>();
 
-        //Obserwacja plików Http
         private io.FileSystemWatcher FsWatcher;
 
         #region External Events
 
-        private void addProjectEvent(object sender, ProjectEventArgs ev)
+        private void AddProjectEvent(object sender, ProjectEventArgs ev)
         {
             try
             {
@@ -300,7 +298,6 @@ namespace FenixWPF
             }
         }
 
-        //Zmiana pliku w katalogu Http
         private void FsWatch_Changed(object sender, io.FileSystemEventArgs e)
         {
             try
@@ -427,7 +424,6 @@ namespace FenixWPF
             });
         }
 
-        //Przeszukiwanie TreeView
         public static TreeViewItem FindTviFromObjectRecursive(ItemsControl ic, object o)
         {
             //Search for the object model in first level children (recursively)
@@ -467,19 +463,19 @@ namespace FenixWPF
 
         public FenixMenager()
         {
-            //Tu by połączyć obiekty przed utworzeniem
+
             InitializeComponent();
 
             this.DataContext = this;
 
-            //Ustawienie PropertyGrid
+            //PropertyGrid
 
             laPropGrid.Content = propManag;
             laPropGrid.Title = "Properties";
             laPropGrid.ContentId = "Properties";
             RightPan.Children.Add(laPropGrid);
 
-            //Ustawienie TreeView
+            //TreeView
 
             tvMain.View.SelectedItemChanged += View_SelectedItemChanged;
 
@@ -504,7 +500,7 @@ namespace FenixWPF
             Title = "Fenix Manager " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             //Project
-            PrCon.addProjectEv += new EventHandler<ProjectEventArgs>(addProjectEvent);
+            PrCon.addProjectEv += new EventHandler<ProjectEventArgs>(AddProjectEvent);
 
             //Błędy z rozruch okien
             PrCon.ApplicationError += new EventHandler(Error);
