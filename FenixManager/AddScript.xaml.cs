@@ -13,30 +13,41 @@ namespace FenixWPF
     /// </summary>
     public partial class AddScript : MetroWindow
     {
-        private ProjectContainer PrCon { get; set; }
-        private Project Pr { get; set; }
-        private Guid Sel { get; set; }
-        private ElementKind ElKind { get; set; }
+        private ProjectContainer projectContainer { get; set; }
+        private Project currentProject { get; set; }
+        private Guid selectedId { get; set; }
+        private ElementKind selectedElementKind { get; set; }
 
-        //Ctor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddScript"/> class.
+        /// </summary>
+        /// <param name="pc">The project container.</param>
+        /// <param name="pr">The current project.</param>
+        /// <param name="sel">The selected ID.</param>
+        /// <param name="elKind">The selected element kind.</param>
         public AddScript(ProjectContainer pc, Project pr, Guid sel, ElementKind elKind)
         {
             try
             {
                 InitializeComponent();
 
-                PrCon = pc;
-                Pr = pr;
-                Sel = sel;
-                ElKind = elKind;
+                projectContainer = pc;
+                currentProject = pr;
+                selectedId = sel;
+                selectedElementKind = elKind;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
         //File
+        /// <summary>
+        /// Handles the click event of the File button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_File_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -53,16 +64,20 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
         //OK
+        /// <summary>
+        /// Handles the click event of the OK button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
                     if (string.IsNullOrEmpty(TbNewFile.Text))
@@ -73,26 +88,18 @@ namespace FenixWPF
 
                     foreach (string s in TbNewFile.Text.Split(';'))
                     {
-                        //Nazwa pliku
                         string nName = io.Path.GetFileName(s);
+                        string TarDir = io.Path.GetDirectoryName(currentProject.path) + projectContainer.ScriptsCatalog;
 
-                        //Katalog docelowy
-                        string TarDir = io.Path.GetDirectoryName(Pr.path) + PrCon.ScriptsCatalog;
-
-                        //Jezeli istnieje
                         if (!io.Directory.Exists(TarDir))
                             io.Directory.CreateDirectory(TarDir);
+                        io.File.Copy(System.AppDomain.CurrentDomain.BaseDirectory + "\\" + projectContainer.TemplateCatalog + "\\" + "Script.cs", TarDir + "\\" + nName + ".cs", true);
 
-                        //Kopiowanie pliku do dolferu
-                        io.File.Copy(System.AppDomain.CurrentDomain.BaseDirectory + "\\" + PrCon.TemplateCatalog + "\\" + "Script.cs", TarDir + "\\" + nName + ".cs", true);
-
-                        //Plik InFile
-                        PrCon.AddScriptFile(Pr.objId, new ScriptFile(TarDir + "\\" + nName + ".cs"));
+                        projectContainer.AddScriptFile(currentProject.objId, new ScriptFile(TarDir + "\\" + nName + ".cs"));
                     }
 
                     Close();
                 }
-                //intniejący
                 else
                 {
                     if (string.IsNullOrEmpty(TbAddFile.Text))
@@ -103,21 +110,17 @@ namespace FenixWPF
 
                     foreach (string s in TbAddFile.Text.Split(';'))
                     {
-                        //Nazwa pliku
+
                         string nName = io.Path.GetFileName(s);
 
-                        //Katalog docelowy
-                        string TarDir = io.Path.GetDirectoryName(Pr.path) + PrCon.ScriptsCatalog;
+                        string TarDir = io.Path.GetDirectoryName(currentProject.path) + projectContainer.ScriptsCatalog;
 
-                        //Jezeli istnieje
                         if (!io.Directory.Exists(TarDir))
                             io.Directory.CreateDirectory(TarDir);
 
-                        //Kopiowanie pliku do dolferu
                         io.File.Copy(s, TarDir + "\\" + nName, true);
 
-                        //Plik InFile
-                        PrCon.AddScriptFile(Pr.objId, new ScriptFile(TarDir + "\\" + nName));
+                        projectContainer.AddScriptFile(currentProject.objId, new ScriptFile(TarDir + "\\" + nName));
                     }
 
                     Close();
@@ -125,11 +128,16 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
         //Cancel
+        /// <summary>
+        /// Handles the click event of the Cancel button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -138,7 +146,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }

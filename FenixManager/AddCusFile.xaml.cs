@@ -13,30 +13,40 @@ namespace FenixWPF
     /// </summary>
     public partial class AddCusFile : MetroWindow
     {
-        private ProjectContainer PrCon { get; set; }
-        private Project Pr { get; set; }
-        private String Path { get; set; }
-        private ElementKind ElKind { get; set; }
+        private ProjectContainer projectContainer { get; set; }
+        private Project currentProject { get; set; }
+        private String path { get; set; }
+        private ElementKind currentElementKind { get; set; }
 
-        //Ctor
-        public AddCusFile(ProjectContainer pc, Project pr, string path, ElementKind elKind)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddCusFile"/> class.
+        /// </summary>
+        /// <param name="projectContainer">The project container.</param>
+        /// <param name="currentProject">The current project.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="elementKind">The element kind.</param>
+        public AddCusFile(ProjectContainer projectContainer, Project currentProject, string path, ElementKind elementKind)
         {
             try
             {
                 InitializeComponent();
 
-                PrCon = pc;
-                Pr = pr;
-                Path = path;
-                ElKind = elKind;
+                this.projectContainer = projectContainer;
+                this.currentProject = currentProject;
+                this.path = path;
+                currentElementKind = elementKind;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                this.projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //File
+        /// <summary>
+        /// Handles the Click event of the Button_File control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_File_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -53,16 +63,19 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //OK
+        /// <summary>
+        /// Handles the Click event of the Button_OK control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
                     if (string.IsNullOrEmpty(TbNewFile.Text))
@@ -73,18 +86,17 @@ namespace FenixWPF
 
                     foreach (string s in TbNewFile.Text.Split(';'))
                     {
-                        if (io.File.Exists(Path + "\\" + s))
+                        if (io.File.Exists(path + "\\" + s))
                         {
-                            MessageBox.Show(String.Format("File: [{0}] already exist in this location!", Path + "\\" + s));
+                            MessageBox.Show(String.Format("File: [{0}] already exist in this location!", path + "\\" + s));
                             return;
                         }
                         else
-                            io.File.Create(Path + "\\" + s).Close();
+                            io.File.Create(path + "\\" + s).Close();
                     }
 
                     Close();
                 }
-                //Plik
                 else
                 {
                     if (string.IsNullOrEmpty(TbAddFile.Text))
@@ -95,7 +107,7 @@ namespace FenixWPF
 
                     foreach (string s in TbAddFile.Text.Split(';'))
                     {
-                        if (io.File.Exists(Path + "//" + io.Path.GetFileName(s)))
+                        if (io.File.Exists(path + "//" + io.Path.GetFileName(s)))
                         {
                             MessageBox.Show(string.Format("File: [{0}] exist in target location!", s));
                             return;
@@ -105,13 +117,13 @@ namespace FenixWPF
                             MessageBox.Show(string.Format("File: [{0}] not exist!", s));
                             return;
                         }
-                        else if (Path + "//" + io.Path.GetFileName(s) == s)
+                        else if (path + "//" + io.Path.GetFileName(s) == s)
                         {
-                            MessageBox.Show(string.Format("Yout try copy File1: [{0}] to File2: [{1}]! Not allowed!", s, Path + "//" + io.Path.GetFileName(s)));
+                            MessageBox.Show(string.Format("Yout try copy File1: [{0}] to File2: [{1}]! Not allowed!", s, path + "//" + io.Path.GetFileName(s)));
                             return;
                         }
                         else
-                            io.File.Copy(s, Path + "//" + io.Path.GetFileName(s));
+                            io.File.Copy(s, path + "//" + io.Path.GetFileName(s));
 
                         Close();
                     }
@@ -119,11 +131,15 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Cancel
+        /// <summary>
+        /// Handles the Click event of the Button_Cancel control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -132,7 +148,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }

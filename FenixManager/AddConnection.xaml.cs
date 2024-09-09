@@ -11,61 +11,82 @@ namespace FenixWPF
     /// </summary>
     public partial class AddConnection : MetroWindow
     {
-        private ProjectContainer PrCon;
-        private GlobalConfiguration gConf;
-        private Connection Cn;
-        private Guid PrId;
+        private ProjectContainer projectContainer;
+        private GlobalConfiguration globalConfiguration;
+        private Connection currentConnection;
+        private Guid projectId;
 
-        public AddConnection(ProjectContainer prCon, GlobalConfiguration conf, Guid id)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddConnection"/> class.
+        /// </summary>
+        /// <param name="projectContainerArg">The project container.</param>
+        /// <param name="globalConfig">The global configuration.</param>
+        /// <param name="id">The project ID.</param>
+        public AddConnection(ProjectContainer projectContainerArg, GlobalConfiguration globalConfig, Guid id)
         {
             try
             {
                 InitializeComponent();
-                PrCon = prCon;
-                Cn = new Connection(conf, prCon, "", "", null);
-                gConf = conf;
-                PrId = id;
-                CbDrivers.ItemsSource = gConf.GetDrivers();
+                projectContainer = projectContainerArg;
+                currentConnection = new Connection(globalConfig, projectContainerArg, "", "", null);
+                globalConfiguration = globalConfig;
+                projectId = id;
+                CbDrivers.ItemsSource = globalConfiguration.GetDrivers();
                 CbDrivers.SelectedIndex = 0;
-                DataContext = Cn;
+                DataContext = currentConnection;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
+        /// <summary>
+        /// Handles the selection changed event of the CbDrivers ComboBox.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void CbDrivers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
                 IDriverModel idrv = (IDriverModel)((ComboBox)sender).SelectedItem;
 
-                Cn.Parameters = idrv.setDriverParam;
-                Cn.Idrv = idrv;
-                Cn.DriverName = idrv.driverName;
+                currentConnection.Parameters = idrv.setDriverParam;
+                currentConnection.Idrv = idrv;
+                currentConnection.DriverName = idrv.driverName;
 
-                PgDrvProps.SelectedObject = Cn.Parameters;
+                PgDrvProps.SelectedObject = currentConnection.Parameters;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
+        /// <summary>
+        /// Handles the click event of the Button_Save button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                PrCon.addConnection(PrId, Cn);
+                projectContainer.addConnection(projectId, currentConnection);
                 Close();
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
+        /// <summary>
+        /// Handles the click event of the Button_Close button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -74,7 +95,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }

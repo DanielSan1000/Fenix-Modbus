@@ -26,12 +26,20 @@ namespace FenixWPF
 
         private ObservableCollection<Drv> Drvs_ = new ObservableCollection<Drv>();
 
+        /// <summary>
+        /// Collection of drivers
+        /// </summary>
         public ObservableCollection<Drv> Drvs
         {
             get { return Drvs_; }
             set { Drvs_ = value; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DriverConfigurator"/> class.
+        /// </summary>
+        /// <param name="conf">The global configuration.</param>
+        /// <param name="prcn">The project container.</param>
         public DriverConfigurator(GlobalConfiguration conf, ProjectContainer prcn)
         {
             InitializeComponent();
@@ -67,6 +75,12 @@ namespace FenixWPF
         }
 
         //Add Drivers
+        /// <summary>
+        /// Handles the Click event of the Button_AddDriver control.
+        /// Adds drivers to the collection.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_AddDriver_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -102,6 +116,12 @@ namespace FenixWPF
         }
 
         //RemoveDriver
+        /// <summary>
+        /// Handles the Click event of the Button_RemoveDriver control.
+        /// Removes the selected driver from the collection.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_RemoveDriver_Click(object sender, RoutedEventArgs e)
         {
             Drv dr = (Drv)View.SelectedItem;
@@ -113,6 +133,12 @@ namespace FenixWPF
         }
 
         //Reset
+        /// <summary>
+        /// Handles the Click event of the Button_Reset control.
+        /// Resets the driver configuration.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Reset_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -140,6 +166,9 @@ namespace FenixWPF
         }
     }
 
+    /// <summary>
+    /// Represents a driver.
+    /// </summary>
     public class Drv : INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
@@ -159,6 +188,9 @@ namespace FenixWPF
 
         private int Index_;
 
+        /// <summary>
+        /// Gets or sets the index of the driver.
+        /// </summary>
         public int Index
         {
             get { return Index_; }
@@ -171,6 +203,9 @@ namespace FenixWPF
 
         private string Name_;
 
+        /// <summary>
+        /// Gets or sets the name of the driver.
+        /// </summary>
         public string Name
         {
             get { return Name_; }
@@ -183,6 +218,9 @@ namespace FenixWPF
 
         private string Ver_;
 
+        /// <summary>
+        /// Gets or sets the version of the driver.
+        /// </summary>
         public string Ver
         {
             get { return Ver_; }
@@ -195,6 +233,9 @@ namespace FenixWPF
 
         private string Path_;
 
+        /// <summary>
+        /// Gets or sets the path of the driver.
+        /// </summary>
         public string Path
         {
             get { return Path_; }

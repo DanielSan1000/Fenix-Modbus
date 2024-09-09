@@ -21,9 +21,7 @@ namespace FenixWPF
     /// </summary>
     public partial class Editor : UserControl
     {
-#pragma warning disable CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
         private CompletionWindow completionWindow;
-#pragma warning restore CS0649 // Field 'Editor.completionWindow' is never assigned to, and will always have its default value null
 
         private string currentFileName;
         private FoldingManager foldingManager;

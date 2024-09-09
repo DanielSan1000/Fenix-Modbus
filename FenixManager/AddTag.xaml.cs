@@ -28,18 +28,28 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the range is active.
+        /// </summary>
         public bool RangeAct { get; set; }
+
+        /// <summary>
+        /// Gets or sets the range.
+        /// </summary>
         public int Range { get; set; }
 
         private string TagName_;
 
+        /// <summary>
+        /// Gets or sets the tag name.
+        /// </summary>
         public string TagName
         {
             get { return TagName_; }
             set
             {
                 //Pszeszukanie tagow
-                if (Pr.tagsList.Exists(x => x.tagName == value) || Pr.InTagsList.Exists(x => x.tagName == value))
+                if (project.tagsList.Exists(x => x.tagName == value) || project.InTagsList.Exists(x => x.tagName == value))
                     throw new ArgumentException("Change name of tag becuse is already exists!");
 
                 TagName_ = value;
@@ -49,6 +59,9 @@ namespace FenixWPF
 
         private BytesOrder BtOrder_;
 
+        /// <summary>
+        /// Gets or sets the bytes order.
+        /// </summary>
         public BytesOrder BtOrder
         {
             get { return BtOrder_; }
@@ -61,6 +74,9 @@ namespace FenixWPF
 
         private TypeData TpData_;
 
+        /// <summary>
+        /// Gets or sets the type of data.
+        /// </summary>
         public TypeData TpData
         {
             get { return TpData_; }
@@ -74,6 +90,9 @@ namespace FenixWPF
 
         private MemoryAreaInfo SelArea_;
 
+        /// <summary>
+        /// Gets or sets the selected memory area.
+        /// </summary>
         public MemoryAreaInfo SelArea
         {
             get { return SelArea_; }
@@ -87,6 +106,9 @@ namespace FenixWPF
 
         private bool DbBlockAct_;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the database block is active.
+        /// </summary>
         public bool DbBlockAct
         {
             get { return DbBlockAct_; }
@@ -99,6 +121,9 @@ namespace FenixWPF
 
         private ObservableCollection<MemoryAreaInfo> MemArList_;
 
+        /// <summary>
+        /// Gets or sets the memory area list.
+        /// </summary>
         public ObservableCollection<MemoryAreaInfo> MemArList
         {
             get { return MemArList_; }
@@ -107,6 +132,9 @@ namespace FenixWPF
 
         private int DbAdress_;
 
+        /// <summary>
+        /// Gets or sets the database address.
+        /// </summary>
         public int DbAdress
         {
             get { return DbAdress_; }
@@ -119,6 +147,9 @@ namespace FenixWPF
 
         private int Adress_;
 
+        /// <summary>
+        /// Gets or sets the address.
+        /// </summary>
         public int Adress
         {
             get { return Adress_; }
@@ -131,6 +162,9 @@ namespace FenixWPF
 
         private int SecAdress_;
 
+        /// <summary>
+        /// Gets or sets the secondary address.
+        /// </summary>
         public int SecAdress
         {
             get { return SecAdress_; }
@@ -143,6 +177,9 @@ namespace FenixWPF
 
         private ObservableCollection<int> ScAdrList_ = new ObservableCollection<int>();
 
+        /// <summary>
+        /// Gets or sets the secondary address list.
+        /// </summary>
         public ObservableCollection<int> ScAdreList
         {
             get { return ScAdrList_; }
@@ -151,6 +188,9 @@ namespace FenixWPF
 
         private string Desc_;
 
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
         public string Desc
         {
             get { return Desc_; }
@@ -161,63 +201,41 @@ namespace FenixWPF
             }
         }
 
-        /// <summary>
-        /// Kontener projektowy
-        /// </summary>
-        private ProjectContainer PrCon;
+        private ProjectContainer projectContainer;
+        private Project project;
+        private Guid projectId = Guid.Empty;
+        private Guid deviceId = Guid.Empty;
+        private GlobalConfiguration globalConfig = new GlobalConfiguration();
+        private IDriverModel driverModel;
+        private Connection connection;
 
         /// <summary>
-        /// Project
+        /// Initializes a new instance of the <see cref="AddTag"/> class.
         /// </summary>
-        private Project Pr;
-
-        /// <summary>
-        /// Identyfikator projektu
-        /// </summary>
-        private Guid PrId = Guid.Empty;
-
-        /// <summary>
-        /// Identyfikator folderu taga
-        /// </summary>
-        private Guid DevId = Guid.Empty;
-
-        /// <summary>
-        /// Globalna konfoguracja
-        /// </summary>
-        private GlobalConfiguration gConf = new GlobalConfiguration();
-
-        /// <summary>
-        /// Sterownik
-        /// </summary>
-        private IDriverModel Idrv;
-
-        /// <summary>
-        /// Poloczenia
-        /// </summary>
-        private Connection Con;
-
-        //Ctor
+        /// <param name="prCon">The project container.</param>
+        /// <param name="prId">The project ID.</param>
+        /// <param name="devId">The device ID.</param>
         public AddTag(ref ProjectContainer prCon, Guid prId, Guid devId)
         {
             try
             {
                 DataContext = this;
                 Range = 2;
-                PrCon = prCon;
-                PrId = prId;
-                Pr = prCon.getProject(prId);
-                DevId = devId;
+                projectContainer = prCon;
+                projectId = prId;
+                project = prCon.getProject(prId);
+                deviceId = devId;
                 Device Dev = prCon.getDevice(prId, devId);
-                Con = prCon.getConnection(prId, Dev.parentId);
-                Idrv = Con.Idrv;
+                connection = prCon.getConnection(prId, Dev.parentId);
+                driverModel = connection.Idrv;
 
                 TpData = TypeData.SHORT;
-                MemArList = new ObservableCollection<MemoryAreaInfo>(Idrv.MemoryAreaInf);
-                SelArea = Idrv.MemoryAreaInf.First();
+                MemArList = new ObservableCollection<MemoryAreaInfo>(driverModel.MemoryAreaInf);
+                SelArea = driverModel.MemoryAreaInf.First();
 
                 InitializeComponent();
 
-                if (Idrv.driverName == "S7-300-400 Ethernet")
+                if (driverModel.driverName == "S7-300-400 Ethernet")
                 {
                     DbBlockAct = true;
                     BtOrder = BytesOrder.DCBA;
@@ -231,7 +249,7 @@ namespace FenixWPF
                 string nm = "Tag";
                 for (int x = 0; ; x++)
                 {
-                    if (PrCon.GetAllITags().Exists(k => k.Name == nm))
+                    if (projectContainer.GetAllITags().Exists(k => k.Name == nm))
                         nm = $"{nm}{x}";
                     else
                         break;
@@ -241,11 +259,13 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Refresh Second Adress
+        /// <summary>
+        /// Refreshes the secondary address list based on the selected memory area and type of data.
+        /// </summary>
         private void RefreshSecondAdress()
         {
             try
@@ -255,60 +275,93 @@ namespace FenixWPF
                 if (TpData == TypeData.BIT)
                 {
                     if (SelArea?.AdresSize > 1)
+                    {
                         //Dodanie elementu do wyboru
                         for (int i = 0; i < SelArea.AdresSize; i++)
+                        {
                             ScAdreList.Add(i);
+                        }
+                    }
                 }
                 else if (TpData == TypeData.BYTE || TpData == TypeData.SBYTE)
                 {
                     if (SelArea?.AdresSize > 8)
+                    {
                         for (int i = 0; i < SelArea.AdresSize / 8; i++)
+                        {
                             ScAdreList.Add(i);
+                        }
+                    }
                 }
                 else if (TpData == TypeData.CHAR || TpData == TypeData.SHORT || TpData == TypeData.USHORT)
                 {
                     if (SelArea?.AdresSize > 16)
+                    {
                         for (int i = 0; i < SelArea.AdresSize / 16; i++)
+                        {
                             ScAdreList.Add(i);
+                        }
+                    }
                 }
                 else if (TpData == TypeData.INT || TpData == TypeData.UINT || TpData == TypeData.FLOAT)
                 {
                     if (SelArea?.AdresSize > 32)
+                    {
                         for (int i = 0; i < SelArea.AdresSize / 32; i++)
+                        {
                             ScAdreList.Add(i);
+                        }
+                    }
                 }
                 else if (TpData == TypeData.DOUBLE)
                 {
                     if (SelArea?.AdresSize > 64)
+                    {
                         for (int i = 0; i < SelArea.AdresSize / 64; i++)
+                        {
                             ScAdreList.Add(i);
+                        }
+                    }
                 }
 
                 if (ScAdreList.Count > 0)
                 {
                     if (ScAdreList.ToList().Exists(x => x == buff))
+                    {
                         SecAdress = buff;
+                    }
                     else
+                    {
                         SecAdress = ScAdreList.First();
+                    }
                 }
                 else
+                {
                     SecAdress = 0;
+                }
             }
             catch (Exception Ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                if (projectContainer.ApplicationError != null)
+                {
+                    projectContainer.ApplicationError(this, new ProjectEventArgs(Ex));
+                }
             }
         }
 
-        //Save
+        /// <summary>
+        /// Handles the Click event of the Button_Save control.
+        /// Adds a new tag to the project based on the input values.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
             if (!RangeAct)
             {
-                Tag tg1 = new Tag(TagName, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, Idrv, Con.objId, DbAdress);
+                Tag tg1 = new Tag(TagName, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, driverModel, connection.objId, DbAdress);
                 tg1.BlockAdress = DbAdress;
-                PrCon.addTag(PrId, DevId, tg1);
+                projectContainer.addTag(projectId, deviceId, tg1);
             }
             else
             {
@@ -317,19 +370,18 @@ namespace FenixWPF
                 var colors = ColorsManager.trendColors;
                 for (int i = 0; i < Range; i++)
                 {
-                    //Find right name
                     string nm = $"{TagName}{i}";
                     for (int x = 0; ; x++)
                     {
-                        if (PrCon.GetAllITags().Exists(k => k.Name == nm))
+                        if (projectContainer.GetAllITags().Exists(k => k.Name == nm))
                             nm = $"{TagName}{x}";
                         else
                             break;
                     }
 
-                    if (adressTag == null) // Pierwszy Tag
+                    if (adressTag == null)
                     {
-                        Tag tg = new Tag(nm, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, Idrv, Con.objId, DbAdress);
+                        Tag tg = new Tag(nm, BtOrder, SelArea.Name, Adress, SecAdress, Desc, TpData, driverModel, connection.objId, DbAdress);
                         tg.BlockAdress = DbAdress;
 
                         if (i < colors.Length)
@@ -337,12 +389,12 @@ namespace FenixWPF
                             tg.Clr = System.Drawing.Color.FromArgb(colors[i].Red, colors[i].Green, colors[i].Blue);
                         }
 
-                        PrCon.addTag(PrId, DevId, tg);
+                        projectContainer.addTag(projectId, deviceId, tg);
                         adressTag = tg;
                     }
-                    else // Nastepny Tag
+                    else
                     {
-                        Tag tg = new Tag(nm, BtOrder, SelArea.Name, adressTag.nextAdress().adress, adressTag.nextAdress().secAdress, Desc, TpData, Idrv, Con.objId, DbAdress);
+                        Tag tg = new Tag(nm, BtOrder, SelArea.Name, adressTag.nextAdress().adress, adressTag.nextAdress().secAdress, Desc, TpData, driverModel, connection.objId, DbAdress);
                         tg.BlockAdress = DbAdress;
 
                         if (i < colors.Length)
@@ -350,7 +402,7 @@ namespace FenixWPF
                             tg.Clr = System.Drawing.Color.FromArgb(colors[i].Red, colors[i].Green, colors[i].Blue);
                         }
 
-                        PrCon.addTag(PrId, DevId, tg);
+                        projectContainer.addTag(projectId, deviceId, tg);
                         adressTag = tg;
                     }
                 }
@@ -359,6 +411,12 @@ namespace FenixWPF
             Close();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Button_Close control.
+        /// Closes the AddTag window.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();

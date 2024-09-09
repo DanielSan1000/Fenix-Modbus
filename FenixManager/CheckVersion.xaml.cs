@@ -8,10 +8,14 @@ using System.Xml;
 
 namespace FenixWPF
 {
+    /// <summary>
+    /// Interaction logic for CheckVersion.xaml
+    /// </summary>
     public partial class CheckVersion : MetroWindow, INotifyPropertyChanged
     {
         private PropertyChangedEventHandler propChanged;
 
+        /// <inheritdoc/>
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
             add
@@ -33,6 +37,9 @@ namespace FenixWPF
 
         private string SerVer_;
 
+        /// <summary>
+        /// Gets or sets the server version.
+        /// </summary>
         public string SerVer
         {
             get { return SerVer_; }
@@ -45,6 +52,9 @@ namespace FenixWPF
 
         private string InsVer_;
 
+        /// <summary>
+        /// Gets or sets the installed version.
+        /// </summary>
         public string InsVer
         {
             get { return InsVer_; }
@@ -57,6 +67,9 @@ namespace FenixWPF
 
         private string Status_;
 
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         public string Status
         {
             get { return Status_; }
@@ -70,6 +83,9 @@ namespace FenixWPF
 
         private Boolean Update_;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether an update is available.
+        /// </summary>
         public Boolean Update
         {
             get { return Update_; }
@@ -82,6 +98,10 @@ namespace FenixWPF
 
         private string Adress { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CheckVersion"/> class.
+        /// </summary>
+        /// <param name="prcn">The project container.</param>
         public CheckVersion(ProjectContainer prcn)
         {
             InitializeComponent();
@@ -111,6 +131,11 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Event handler for setting parameters.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void frCheckVersion_setParam(object sender, EventArgs e)
         {
             EventHandler even = delegate (object sen, EventArgs ev)
@@ -135,6 +160,11 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Event handler for setting progress.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void frCheckVersion_setProgress(object sender, EventArgs e)
         {
             EventHandler evetn = delegate (object sen, EventArgs ev)
@@ -155,6 +185,10 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Method for updating the software.
+        /// </summary>
+        /// <param name="obj">The parameter object.</param>
         private void updateSoftware(object obj)
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -230,6 +264,11 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Event handler for the update button click.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Update_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -243,6 +282,11 @@ namespace FenixWPF
             }
         }
 
+        /// <summary>
+        /// Event handler for the close button click.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();

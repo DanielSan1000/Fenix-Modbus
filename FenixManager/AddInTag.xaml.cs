@@ -10,53 +10,65 @@ namespace FenixWPF
     /// </summary>
     public partial class AddInTag : MetroWindow
     {
-        private Project Pr { get; set; }
-        private ProjectContainer PrCon { get; set; }
-        private InTag iTg { get; set; }
+        private Project currentProject { get; set; }
+        private ProjectContainer projectContainer { get; set; }
+        private InTag currentInTag { get; set; }
 
-        //Ctor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddInTag"/> class.
+        /// </summary>
+        /// <param name="projId">The project ID.</param>
+        /// <param name="prCon">The project container.</param>
         public AddInTag(Guid projId, ProjectContainer prCon)
         {
             try
             {
                 InitializeComponent();
 
-                PrCon = prCon;
-                Pr = PrCon.getProject(projId);
+                projectContainer = prCon;
+                currentProject = projectContainer.getProject(projId);
 
                 string nm = "InTag";
                 for (int x = 0; ; x++)
                 {
-                    if (PrCon.GetAllITags().Exists(k => k.Name == nm))
+                    if (projectContainer.GetAllITags().Exists(k => k.Name == nm))
                         nm = $"{nm}{x}";
                     else
                         break;
                 }
 
-                iTg = new InTag(PrCon, Pr, nm, "", TypeData.DOUBLE, "0");
-                DataContext = iTg;
+                currentInTag = new InTag(projectContainer, currentProject, nm, "", TypeData.DOUBLE, "0");
+                DataContext = currentInTag;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Add InTag
+        /// <summary>
+        /// Handles the click event of the Ok button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Ok_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                PrCon.AddIntTag(Pr.objId, iTg);
+                projectContainer.AddIntTag(currentProject.objId, currentInTag);
                 Close();
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Cancel
+        /// <summary>
+        /// Handles the click event of the Cancel button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -65,7 +77,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }

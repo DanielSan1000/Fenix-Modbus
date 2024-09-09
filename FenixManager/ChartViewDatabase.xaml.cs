@@ -65,7 +65,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                //PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                //projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }

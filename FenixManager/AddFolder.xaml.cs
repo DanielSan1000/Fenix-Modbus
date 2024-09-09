@@ -12,30 +12,39 @@ namespace FenixWPF
     /// </summary>
     public partial class AddFolder : MetroWindow
     {
-        private ProjectContainer PrCon { get; set; }
-        private Project Pr { get; set; }
-        private String Path { get; set; }
-        private ElementKind ElKind { get; set; }
+        private ProjectContainer projectContainer { get; set; }
+        private Project currentProject { get; set; }
+        private String path { get; set; }
+        private ElementKind elementKind { get; set; }
 
-        //Ctor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddFolder"/> class.
+        /// </summary>
+        /// <param name="pc">The project container.</param>
+        /// <param name="pr">The current project.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="elKind">The element kind.</param>
         public AddFolder(ProjectContainer pc, Project pr, string path, ElementKind elKind)
         {
             try
             {
                 InitializeComponent();
 
-                PrCon = pc;
-                Pr = pr;
-                Path = path;
-                ElKind = elKind;
+                projectContainer = pc;
+                currentProject = pr;
+                this.path = path;
+                elementKind = elKind;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //File
+        /// <summary>
+        /// Handles the Click event of the Button_File control.
+        /// Opens a folder browser dialog and sets the selected path to the text box.
+        /// </summary>
         private void Button_File_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -50,16 +59,18 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //OK
+        /// <summary>
+        /// Handles the Click event of the Button_OK control.
+        /// Creates a new directory or copies files to the specified directory based on the user's selection.
+        /// </summary>
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //Nowy
                 if ((bool)Ch1.IsChecked)
                 {
                     string s = TbNewFile.Text;
@@ -68,18 +79,16 @@ namespace FenixWPF
                         MessageBox.Show("Please fill Directory name!");
                         return;
                     }
-                    else if (io.Directory.Exists(Path + "\\" + s))
+                    else if (io.Directory.Exists(path + "\\" + s))
                     {
-                        MessageBox.Show(String.Format("Dir: [{0}] already exist in this location!", Path + "\\" + s));
+                        MessageBox.Show(String.Format("Dir: [{0}] already exist in this location!", path + "\\" + s));
                         return;
                     }
                     else
-                        io.Directory.CreateDirectory(Path + "\\" + s);
+                        io.Directory.CreateDirectory(path + "\\" + s);
 
                     Close();
                 }
-
-                //
                 else
                 {
                     string s = TbAddFile.Text;
@@ -91,7 +100,7 @@ namespace FenixWPF
                     else
                     {
                         if (MessageBox.Show("Do you want to overwrite similar files?", "Attention", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                            DirectoryCopy(s, Path, true);
+                            DirectoryCopy(s, path, true);
                     }
 
                     Close();
@@ -99,11 +108,14 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Cancel
+        /// <summary>
+        /// Handles the Click event of the Button_Cancel control.
+        /// Closes the window.
+        /// </summary>
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -112,11 +124,16 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Copy Dir
+        /// <summary>
+        /// Copies a directory and its contents to the specified destination directory.
+        /// </summary>
+        /// <param name="sourceDirName">The source directory name.</param>
+        /// <param name="destDirName">The destination directory name.</param>
+        /// <param name="copySubDirs">A value indicating whether to copy subdirectories.</param>
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.

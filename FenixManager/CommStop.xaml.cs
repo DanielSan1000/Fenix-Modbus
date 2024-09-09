@@ -4,9 +4,6 @@ using System;
 
 namespace FenixWPF
 {
-    /// <summary>
-    /// Interaction logic for CommStop.xaml
-    /// </summary>
     public partial class CommStop : MetroWindow
     {
         public IDriverModel Idrv { get; set; }

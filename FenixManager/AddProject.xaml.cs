@@ -97,15 +97,12 @@ namespace FenixWPF
                 {
                     if (projectContainer.saveProject(currentProject, sfd.FileName))
                     {
-                        //Dodanie projektu
                         currentProject.path = sfd.FileName;
                         projectContainer.addProject(currentProject);
 
-                        //Dodaj pliki szablonowe jesli sfdjest aktywna opcja
                         if ((bool)ChkHttpTemplates.IsChecked)
                             DirectoryCopy(AppDomain.CurrentDomain.BaseDirectory + projectContainer.HttpCatalog, io.Path.GetDirectoryName(currentProject.path) + projectContainer.HttpCatalog, true);
 
-                        //Dodanie wszytkich dzieci plikow
                         io.DirectoryInfo gt = new io.DirectoryInfo(io.Path.GetDirectoryName(currentProject.path) + "\\Http");
                         var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
                         SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
@@ -114,23 +111,16 @@ namespace FenixWPF
                         string[] files1 = io.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + projectContainer.TemplateCatalog);
                         foreach (string f in files1)
                         {
-                            //Nazwa pliku
                             string nName = io.Path.GetFileName(f);
-
-                            //Katalog docelowy
                             string TarDir = io.Path.GetDirectoryName(currentProject.path) + projectContainer.ScriptsCatalog;
 
-                            //Jezeli istnieje
                             if (!io.Directory.Exists(TarDir))
                                 io.Directory.CreateDirectory(TarDir);
 
-                            //Kopiowanie pliku do dolferu
                             io.File.Copy(f, TarDir + "\\" + nName, true);
 
-                            //Utworzenie pliku
                             ScriptFile file = new ScriptFile(TarDir + "\\" + nName);
 
-                            //Dodanie do bufora
                             projectContainer.AddScriptFile(currentProject.objId, file);
                         }
 
