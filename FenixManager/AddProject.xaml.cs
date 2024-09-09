@@ -14,26 +14,35 @@ namespace FenixWPF
     /// </summary>
     public partial class AddProject : MetroWindow
     {
-        private ProjectContainer PrCon;
-        private Project Pr;
+        private ProjectContainer projectContainer;
+        private Project currentProject;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddProject"/> class.
+        /// </summary>
+        /// <param name="prCon">The project container.</param>
         public AddProject(ProjectContainer prCon)
         {
             try
             {
                 InitializeComponent();
 
-                PrCon = prCon;
-                Pr = new Project(PrCon, "Project", Environment.UserName, "Company", "");
-                DataContext = Pr;
+                projectContainer = prCon;
+                currentProject = new Project(projectContainer, "Project", Environment.UserName, "Company", "");
+                DataContext = currentProject;
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
-        //Copy Dir
+        /// <summary>
+        /// Copies a directory and its contents to a new location.
+        /// </summary>
+        /// <param name="sourceDirName">The path of the source directory.</param>
+        /// <param name="destDirName">The path of the destination directory.</param>
+        /// <param name="copySubDirs">A flag indicating whether to copy subdirectories.</param>
         private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
@@ -72,7 +81,11 @@ namespace FenixWPF
             }
         }
 
-        //Save
+        /// <summary>
+        /// Handles the click event of the Save button.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Save_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -82,30 +95,30 @@ namespace FenixWPF
                 sfd.Filter = "Fenix files (*.psx)|*.psx|All files (*.*)|*.*";
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if (PrCon.saveProject(Pr, sfd.FileName))
+                    if (projectContainer.saveProject(currentProject, sfd.FileName))
                     {
                         //Dodanie projektu
-                        Pr.path = sfd.FileName;
-                        PrCon.addProject(Pr);
+                        currentProject.path = sfd.FileName;
+                        projectContainer.addProject(currentProject);
 
                         //Dodaj pliki szablonowe jesli sfdjest aktywna opcja
                         if ((bool)ChkHttpTemplates.IsChecked)
-                            DirectoryCopy(AppDomain.CurrentDomain.BaseDirectory + PrCon.HttpCatalog, io.Path.GetDirectoryName(Pr.path) + PrCon.HttpCatalog, true);
+                            DirectoryCopy(AppDomain.CurrentDomain.BaseDirectory + projectContainer.HttpCatalog, io.Path.GetDirectoryName(currentProject.path) + projectContainer.HttpCatalog, true);
 
                         //Dodanie wszytkich dzieci plikow
-                        io.DirectoryInfo gt = new io.DirectoryInfo(io.Path.GetDirectoryName(Pr.path) + "\\Http");
+                        io.DirectoryInfo gt = new io.DirectoryInfo(io.Path.GetDirectoryName(currentProject.path) + "\\Http");
                         var SubDir = (from x in gt.GetDirectories() select new CusFile(x)).ToList();
                         SubDir.AddRange(from x in gt.GetFiles() select new CusFile(x));
-                        ((ITreeViewModel)Pr.WebServer1).Children = new ObservableCollection<object>(SubDir);
+                        ((ITreeViewModel)currentProject.WebServer1).Children = new ObservableCollection<object>(SubDir);
 
-                        string[] files1 = io.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + PrCon.TemplateCatalog);
+                        string[] files1 = io.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + projectContainer.TemplateCatalog);
                         foreach (string f in files1)
                         {
                             //Nazwa pliku
                             string nName = io.Path.GetFileName(f);
 
                             //Katalog docelowy
-                            string TarDir = io.Path.GetDirectoryName(Pr.path) + PrCon.ScriptsCatalog;
+                            string TarDir = io.Path.GetDirectoryName(currentProject.path) + projectContainer.ScriptsCatalog;
 
                             //Jezeli istnieje
                             if (!io.Directory.Exists(TarDir))
@@ -118,7 +131,7 @@ namespace FenixWPF
                             ScriptFile file = new ScriptFile(TarDir + "\\" + nName);
 
                             //Dodanie do bufora
-                            PrCon.AddScriptFile(Pr.objId, file);
+                            projectContainer.AddScriptFile(currentProject.objId, file);
                         }
 
                         Close();
@@ -127,11 +140,15 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex)); ;
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex)); ;
             }
         }
 
-        //Close
+        /// <summary>
+        /// Handles the click event of the Close button.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -140,7 +157,7 @@ namespace FenixWPF
             }
             catch (Exception Ex)
             {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+                projectContainer.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
     }
