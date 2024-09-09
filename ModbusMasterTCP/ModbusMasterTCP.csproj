@@ -59,7 +59,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Fenix Modbus\ProjectDataLib\ProjectDataLib.csproj">
+    <ProjectReference Include="..\ProjectDataLib\ProjectDataLib.csproj">
       <Project>{1a027e74-bd51-4d28-b5b4-6cd9bfd60d72}</Project>
       <Name>ProjectDataLib</Name>
     </ProjectReference>
