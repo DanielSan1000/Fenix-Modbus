@@ -84,9 +84,6 @@
     <Reference Include="ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.5.0.2\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="DataGridExtensions, Version=2.6.0.0, Culture=neutral, PublicKeyToken=43de855f87de903a, processorArchitecture=MSIL">
-      <HintPath>..\packages\DataGridExtensions.2.6.0\lib\net462\DataGridExtensions.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -213,9 +210,6 @@
     <Compile Include="CommunicationView.xaml.cs">
       <DependentUpon>CommunicationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CommunicationViewFilters\IntFilter.xaml.cs">
-      <DependentUpon>IntFilter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DbExplorer.xaml.cs">
       <DependentUpon>DbExplorer.xaml</DependentUpon>
     </Compile>
@@ -297,10 +291,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CommunicationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CommunicationViewFilters\IntFilter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
