@@ -197,25 +197,9 @@
       <Project>{5bb1d8b8-72f3-494c-a195-92f4042499c6}</Project>
       <Name>Controls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ModbusMasterASCII\ModbusMasterASCII.csproj">
-      <Project>{40036f06-3ef8-47e3-9531-61fc48cbe0c7}</Project>
-      <Name>ModbusMasterASCII</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModbusMasterRTU\ModbusMasterRTU.csproj">
-      <Project>{cbe9feb8-3e68-4c13-ad8f-5fc27320c8f4}</Project>
-      <Name>ModbusMasterRTU</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModbusMasterTCP\ModbusMasterTCP.csproj">
-      <Project>{e82917a9-1ca6-4239-923f-22f2c3353b69}</Project>
-      <Name>ModbusMasterTCP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProjectDataLib\ProjectDataLib.csproj">
       <Project>{1A027E74-BD51-4D28-B5B4-6CD9BFD60D72}</Project>
       <Name>ProjectDataLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\S7-300-400 Ethernet\S7-300-400 Ethernet.csproj">
-      <Project>{ba507b12-8562-40eb-9ebb-a3fc4723f175}</Project>
-      <Name>S7-300-400 Ethernet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
