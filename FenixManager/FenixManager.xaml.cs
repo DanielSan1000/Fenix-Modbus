@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Xceed.Wpf.AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using io = System.IO;
 using wf = System.Windows.Forms;
 
@@ -266,10 +267,91 @@ namespace FenixWPF
                 Project pr = (Project)ev.element;
                 this.Pr = pr;
 
+                #region Sprawdzenie czy istnieje zapisany layout
+
+                if (io.File.Exists(io.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile))
+                {
+                    Project pp = (Project)sender;
+                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
+
+                    serializer.LayoutSerializationCallback += (s, args) =>
+                    {
+                        string[] param = args.Model.ContentId.Split(';');
+                        switch (param[0])
+                        {
+                            case "Properties":
+                                args.Content = propManag;
+                                break;
+
+                            case "Solution":
+                                args.Content = tvMain;
+                                break;
+
+                            case "Output":
+                                args.Content = frOutput;
+                                break;
+
+                            case "Database":
+                                //args.Content = new DbExplorer(null);
+                                break;
+
+                            case "TableView":
+                                LayoutAnchorable laTableView = (LayoutAnchorable)args.Model;
+                                laTableView.CanClose = true;
+                                TableView tbView = new TableView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laTableView);
+                                laTableView.Closed += LaCtrl_Closed;
+                                args.Content = tbView;
+                                break;
+
+                            case "ChartView":
+                                LayoutAnchorable laChartView = (LayoutAnchorable)args.Model;
+                                laChartView.CanClose = true;
+                                ChartView chView = new ChartView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laChartView);
+                                laChartView.Closed += LaCtrl_Closed;
+                                args.Content = chView;
+                                break;
+
+                            case "CommView":
+                                LayoutAnchorable laCommView = (LayoutAnchorable)args.Model;
+                                laCommView.CanClose = true;
+                                CommunicationView comView = new CommunicationView(PrCon, pp.objId, Guid.Parse(param[1]), (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laCommView);
+                                laCommView.Closed += LaCtrl_Closed;
+                                args.Content = comView;
+                                break;
+
+                            case "Editor":
+                                LayoutAnchorable laEditorView = (LayoutAnchorable)args.Model;
+                                laEditorView.CanClose = true;
+
+                                //Zabezpieczenie
+                                if (io.File.Exists(param[1]))
+                                {
+                                    Editor edView = new Editor(PrCon, pp.objId, param[1], (ElementKind)Enum.Parse(typeof(ElementKind), param[2]), laEditorView);
+                                    laEditorView.Closed += LaCtrl_Closed;
+                                    args.Content = edView;
+                                }
+                                else
+                                {
+                                    laEditorView.Close();
+                                }
+
+                                break;
+
+                            default:
+                                args.Content = new System.Windows.Controls.TextBox() { Text = args.Model.ContentId };
+                                break;
+                        }
+                    };
+
+                    string ss = io.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile;
+                    serializer.Deserialize(ss);
+                }
+
+                #endregion Sprawdzenie czy istnieje zapisany layout
+
                 tvMain.View.DataContext = ((ITreeViewModel)PrCon).Children;
                 tvMain.View.ItemsSource = ((ITreeViewModel)PrCon).Children;
 
-                //Zaznaczenie elementu
                 TreeViewItem PrNode = FindTviFromObjectRecursive(tvMain.View, pr);
                 if (PrNode != null) PrNode.IsSelected = true;
 
@@ -283,10 +365,7 @@ namespace FenixWPF
                 FsWatcher.Renamed += FsWatch_Changed;
                 FsWatcher.EnableRaisingEvents = true;
 
-                //Sciazka dostpy
                 lbPathProject.Content = Pr.path;
-
-                //Zapis do rejestru
                 Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
 
                 checkAccess();
@@ -319,7 +398,6 @@ namespace FenixWPF
 
                 else if (e.ChangeType == io.WatcherChangeTypes.Created)
                 {
-                    //Sprawdzamy czy to plik
                     if (io.File.Exists(e.FullPath))
                     {
                         string dir = io.Path.GetDirectoryName(e.FullPath);
@@ -342,7 +420,6 @@ namespace FenixWPF
                             }
                         }
                     }
-                    //Directory
                     else
                     {
                         string rDir = io.Directory.GetParent(e.FullPath).FullName;
@@ -418,7 +495,6 @@ namespace FenixWPF
                 else
                     exList.Add(new CustomException(sender, new Exception(e.element1.ToString())));
 
-                //Pokaz Alert
                 LayoutAnchorable lpAnchor = dockManager.Layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.Title == "Output").First();
                 lpAnchor.IsActive = true;
             });
@@ -463,7 +539,6 @@ namespace FenixWPF
 
         public FenixMenager()
         {
-
             InitializeComponent();
 
             this.DataContext = this;
@@ -484,7 +559,7 @@ namespace FenixWPF
             laTvMain.ContentId = "Solution";
             LeftPan.Children.Add(laTvMain);
 
-            //Wyjątki
+            //Exceptions
             frOutput = new Output(PrCon, exList);
             laOutput.Title = "Output";
             laOutput.Content = frOutput;
@@ -496,16 +571,12 @@ namespace FenixWPF
             frOutput.View.DataContext = exList;
             frOutput.View.ItemsSource = exList;
 
-            //Etykieta
             Title = "Fenix Manager " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            //Project
             PrCon.addProjectEv += new EventHandler<ProjectEventArgs>(AddProjectEvent);
 
-            //Błędy z rozruch okien
             PrCon.ApplicationError += new EventHandler(Error);
 
-            //Sprawdzenie czy jest admin
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
             if (identity != null)
             {
@@ -514,10 +585,8 @@ namespace FenixWPF
                     Title = Title + " (Administrator)";
             }
 
-            //Ustawianie dostępności Menu
             checkAccess();
 
-            //Otwarcie pliku
             string[] s = Environment.GetCommandLineArgs();
             if (s.Length > 1)
             {
@@ -1410,12 +1479,10 @@ namespace FenixWPF
         [Obsolete("Trzeba to zmienić")]
         private void updateSoftware(object sender)
         {
-            //Zmienne
             Version newVersion = null;
             string url = "";
             XmlTextReader reader = null;
 
-            //Sprawdzenie czy istnieje poloczenie
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 this.Dispatcher.Invoke(new Action(() =>
@@ -1426,7 +1493,6 @@ namespace FenixWPF
                 return;
             }
 
-            //Wyświetlenie informacji o aktualizacji
             this.Dispatcher.Invoke(new Action(() =>
             {
                 lbInfo.Content = "Checking update for software...";
@@ -1464,7 +1530,6 @@ namespace FenixWPF
                     }
                 }
 
-                //Wyświetlenie informacji o aktualizacji
                 this.Dispatcher.Invoke(new Action(() =>
                 {
                     lbInfo.Content = "Completed";
@@ -1499,7 +1564,7 @@ namespace FenixWPF
                     // browser to our app
                     // homepage (the url
                     // comes from the xml content)
-                    System.Diagnostics.Process.Start(url);
+                    Process.Start(url);
                 }
             }
             else
@@ -1540,7 +1605,6 @@ namespace FenixWPF
                     return;
                 }
 
-                //Sprawdzenie rejestru czy istnieje poprzednie otwzrcie
                 string startupPath = io.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
                 string strp = (string)Registry.GetValue(PrCon.RegUserRoot, PrCon.LastPathKey, startupPath + "\\Project.psf");
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -1563,10 +1627,7 @@ namespace FenixWPF
         {
             try
             {
-                //Otwarcie okna
                 AddConnection addConnection_ = new AddConnection(PrCon, PrCon.gConf, Pr.objId);
-
-                //Reakcja usera
                 addConnection_.ShowDialog();
             }
             catch (Exception Ex)
@@ -1580,7 +1641,7 @@ namespace FenixWPF
         {
             try
             {
-                FenixWPF.AddDevice addTagFolder_ = new FenixWPF.AddDevice(PrCon, Pr.objId, SelGuid);
+                AddDevice addTagFolder_ = new FenixWPF.AddDevice(PrCon, Pr.objId, SelGuid);
                 addTagFolder_.ShowDialog();
             }
             catch (Exception Ex)
@@ -1594,8 +1655,8 @@ namespace FenixWPF
         {
             try
             {
-                //Pobranie TreeNoda odpowiedzialnego za Taga
-                FenixWPF.AddTag addTag_ = new FenixWPF.AddTag(ref PrCon, Pr.objId, SelGuid);
+
+                AddTag addTag_ = new FenixWPF.AddTag(ref PrCon, Pr.objId, SelGuid);
 
                 //reakcja USERA
                 addTag_.ShowDialog();
@@ -1708,6 +1769,13 @@ namespace FenixWPF
         {
             try
             {
+                //Zapisanie layoutu
+                if (Pr != null)
+                {
+                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
+                    serializer.Serialize(System.IO.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
+                }
+
                 //Zamkniecie edytorow
                 var docs = dockManager.Layout.Descendents()
                     .OfType<LayoutAnchorable>()
@@ -1781,7 +1849,6 @@ namespace FenixWPF
 
                 if (SelObj is IDriverModel)
                 {
-                    //Zabezpiecznie przed podwojnymi delegatami
                     ((IDriverModel)SelObj).error -= Error;
                     ((IDriverModel)SelObj).information -= Error;
 
@@ -1849,7 +1916,6 @@ namespace FenixWPF
             {
                 foreach (IDriverModel id in ((IDriversMagazine)Pr).Children)
                 {
-                    //Zabezpiecznie
                     id.information -= Error;
                     id.error -= Error;
 
@@ -1861,7 +1927,6 @@ namespace FenixWPF
                     id.activateCycle(tagsList);
                 }
 
-                //Sprawdzmy co  wystartowało
                 List<object> lista1 = new List<object>();
                 lista1.AddRange(Pr.connectionList.ToArray());
                 lista1.Add(Pr.InternalTagsDrv);
@@ -1903,7 +1968,6 @@ namespace FenixWPF
                     }
                 }
 
-                //Sprawdzmy co  wystartowało
                 List<object> lista1 = new List<object>();
                 lista1.AddRange(Pr.connectionList.ToArray());
                 lista1.Add(Pr.InternalTagsDrv);
@@ -1932,7 +1996,6 @@ namespace FenixWPF
         {
             try
             {
-                //Process
                 ProcessStartInfo pInfo = new ProcessStartInfo();
                 pInfo.FileName = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + @"\\FenixServer.exe";
                 pInfo.UseShellExecute = true;
@@ -2010,13 +2073,12 @@ namespace FenixWPF
         {
             try
             {
-                //Elementy normalne systemu
+
                 if (PrCon.SrcType != ElementKind.InFile)
                 {
                     PrCon.pasteElement(Pr.objId, SelGuid);
                     checkAccess();
                 }
-                //pliki Http
                 else
                 {
                     if (PrCon.cutMarks)
@@ -2391,6 +2453,12 @@ namespace FenixWPF
         {
             try
             {
+                if (Pr != null)
+                {
+                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
+                    serializer.Serialize(io.Path.GetDirectoryName(PrCon.projectList.First().path) + "\\" + PrCon.LayoutFile);
+                }
+
                 lbPathProject.Content = string.Empty;
                 Pr = null;
             }
@@ -2405,7 +2473,6 @@ namespace FenixWPF
         {
             try
             {
-                //Sprawdzanie Wersji
                 Thread update = new Thread(new ParameterizedThreadStart(updateSoftware));
                 update.Start(false);
 
