@@ -1,12 +1,13 @@
 # Welcome
 
-The Fenix is a software that has been designed to communicate with the industry devices. Currently Fenix supports the following drivers and features:
+The Fenix is a software that has been designed to communicate with the devices by diffrent protocols. 
+Currently Fenix supports the following drivers and features:
 
 * Modbus Master RTU
 * Modbus Master ASCII
-* Modbus Master TCP / IP
+* Modbus Master TCP/IP
 * Siemens S7300/400
-* WWW Server (HTML / JSON)
+* WWW Server (HTML/JSON)
 
 # Links
 
