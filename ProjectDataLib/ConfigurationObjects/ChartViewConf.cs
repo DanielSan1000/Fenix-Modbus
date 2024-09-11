@@ -125,7 +125,7 @@ namespace ProjectDataLib
             set
             {
                 TrackSpan_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TrackSpan"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TrackSpan)));
             }
         }
 
@@ -138,7 +138,7 @@ namespace ProjectDataLib
             set
             {
                 From_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("From"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(From)));
             }
         }
 
@@ -151,7 +151,7 @@ namespace ProjectDataLib
             set
             {
                 To_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("To"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(To)));
             }
         }
 
@@ -165,7 +165,7 @@ namespace ProjectDataLib
             set
             {
                 histData_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("histData"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(histData)));
             }
         }
 
@@ -178,7 +178,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol1_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol1"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol1)));
             }
         }
 
@@ -191,7 +191,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol2_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol2"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol2)));
             }
         }
 
@@ -204,7 +204,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol3_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol3"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol3)));
             }
         }
 
@@ -217,7 +217,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol4_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol4"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol4)));
             }
         }
 
@@ -230,7 +230,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol5_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol5"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol5)));
             }
         }
 
@@ -243,7 +243,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol6_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol6"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol6)));
             }
         }
 
@@ -256,7 +256,7 @@ namespace ProjectDataLib
             set
             {
                 CvCol7_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("CvCol7"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CvCol7)));
             }
         }
 
@@ -269,7 +269,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol1_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol1"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol1)));
             }
         }
 
@@ -282,7 +282,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol2_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol2"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol2)));
             }
         }
 
@@ -295,7 +295,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol3_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol3"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol3)));
             }
         }
 
@@ -308,7 +308,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol4_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol4"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol4)));
             }
         }
 
@@ -321,7 +321,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol5_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol5"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol5)));
             }
         }
 
@@ -334,7 +334,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol6_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol6"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol6)));
             }
         }
 
@@ -347,7 +347,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol7_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol7"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol7)));
             }
         }
 
@@ -360,7 +360,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol8_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol8"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol8)));
             }
         }
 
@@ -373,7 +373,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol9_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol9"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol9)));
             }
         }
 
@@ -386,7 +386,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol10_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol10"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol10)));
             }
         }
 
@@ -399,7 +399,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol11_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol11"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol11)));
             }
         }
 
@@ -412,7 +412,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol12_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol12"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol12)));
             }
         }
 
@@ -425,7 +425,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol13_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol13"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol13)));
             }
         }
 
@@ -438,7 +438,7 @@ namespace ProjectDataLib
             set
             {
                 TvCol14_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs("TvCol14"));
+                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TvCol14)));
             }
         }
 
