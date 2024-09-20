@@ -3,11 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:local="clr-namespace:FenixWPF"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <oxy:PlotView  DockPanel.Dock="Bottom" x:Name="View" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5">
+            <TextBlock Text="From:" VerticalAlignment="Center" Margin="5" Width="50" />
+            <xctk:DateTimePicker x:Name="FromDateCtrl" Margin="5" Value="{Binding FromDate, Mode=TwoWay}" Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss" Width="150" />
+            <TextBlock Text="To:" VerticalAlignment="Center" Margin="5" Width="30" />
+            <xctk:DateTimePicker x:Name="ToDateCtrl" Margin="5" Value="{Binding ToDate, Mode=TwoWay}" Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss" Width="150" />
+            <TextBlock Text="Last:" VerticalAlignment="Center" Margin="5" Width="40" />
+            <ComboBox x:Name="TimeIntervalComboBox" Margin="5" ItemsSource="{Binding TimeIntervals}" SelectedItem="{Binding SelectedInterval, Mode=TwoWay}" Width="80" />
+            <Button Content="Show All" Margin="5" Width="80" Click="ShowAllButton_Click" />
+        </StackPanel>
+
+        <oxy:PlotView Grid.Row="1" x:Name="View" Controller="{Binding PlotController}" />
+
+        <TextBlock Grid.Row="2" Margin="5" Text="{Binding InteractionDescription}" />
     </Grid>
 </UserControl>

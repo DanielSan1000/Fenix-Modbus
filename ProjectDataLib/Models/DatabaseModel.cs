@@ -357,5 +357,30 @@ namespace ProjectDataLib
             foreach (ITag tg in ((ITableView)Pr).Children)
                 ((INotifyPropertyChanged)tg).PropertyChanged += ITag_PropertyChanged;
         }
+
+        public ObservableCollection<TagDTO> GetDataByStamp(DateTime from, DateTime to, bool descending = true)
+        {
+            ObservableCollection<TagDTO> observableCollection = new ObservableCollection<TagDTO>();
+            string order = descending ? "DESC" : "ASC";
+            string sql = $"SELECT * FROM tags WHERE stamp BETWEEN @from AND @to ORDER BY stamp {order}";
+            SQLiteCommand command = new SQLiteCommand(sql, DbConnection);
+            command.Parameters.AddWithValue("@from", from.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            command.Parameters.AddWithValue("@to", to.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                TagDTO tag = new TagDTO()
+                {
+                    Name = reader["name"].ToString(),
+                    Stamp = DateTime.Parse(reader["stamp"].ToString()),
+                    Value = double.Parse(reader["value"].ToString())
+                };
+
+                observableCollection.Add(tag);
+            }
+
+            return observableCollection;
+        }
     }
 }

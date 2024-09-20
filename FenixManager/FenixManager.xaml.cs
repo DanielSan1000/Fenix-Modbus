@@ -1430,12 +1430,12 @@ namespace FenixWPF
                     //mSimulate = false;
                     mDrivers = false;
 
-                    mDatabase = false;
-                    mDbShowFile = false;
+                    mDatabase = true;
+                    mDbShowFile = true;
                     mDbReset = false;
-                    mShowDb = false;
-                    mShowTrendDb = false;
-                    mSaveCSV = false;
+                    mShowDb = true;
+                    mShowTrendDb = true;
+                    mSaveCSV = true;
 
                     mHelp = true;
                     mAbout = true;
@@ -2711,11 +2711,10 @@ namespace FenixWPF
         {
             try
             {
-                var tb = Pr.Db.GetAllObservableCollection();
                 LayoutAnchorable laTableView = new LayoutAnchorable();
                 laTableView.CanClose = true;
                 laTableView.ContentId = "Database";
-                DbExplorer db = new DbExplorer(tb);
+                DbExplorer db = new DbExplorer(Pr);
                 laTableView.Closed += LaCtrl_Closed;
                 laTableView.Content = db;
 
