@@ -22,8 +22,6 @@ Fenix 3.3.2
 - Saving layouts is back
 - Added drivers to github
 - Update external libraries
-- Add database chart inteface 
-- Add database table interface
 
 Fenix 3.3.1
 - Code refactor
