@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -65,18 +66,7 @@ namespace FenixWPF
 
         private PropertyChangedEventHandler propChanged_;
 
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                propChanged_ += value;
-            }
-
-            remove
-            {
-                propChanged_ -= value;
-            }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PlotModel plotModel { get; private set; }
 
@@ -238,10 +228,28 @@ namespace FenixWPF
 
                 //Konteksty
                 DataContext = this;
+
+                // Set interaction descriptions
+                InteractionDescription = "Left Click + Drag: Pan | Ctrl + Right Click + Drag: Zoom Rectangle | Mouse Wheel: Zoom | C: Copy to Clipboard";
+
             }
             catch (Exception Ex)
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        private string _interactionDescription;
+        public string InteractionDescription
+        {
+            get => _interactionDescription;
+            set
+            {
+                if (_interactionDescription != value)
+                {
+                    _interactionDescription = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -663,84 +671,6 @@ namespace FenixWPF
             }
         }
 
-        private void Button_SetFrom_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Pr.ChartConf.From = DateTime.Now;
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        private void Button_SetTo_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Pr.ChartConf.To = DateTime.Now;
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        private void Button_Y1_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (Y1.Value.HasValue)
-                {
-                    if (Double.IsNaN(AxY1.Minimum))
-                    {
-                        AxY1.Maximum = (double)Y1.Value;
-                    }
-                    else
-                    {
-                        if (Y1.Value > AxY1.Minimum)
-                            AxY1.Maximum = (double)Y1.Value;
-                        else
-                            throw new Exception("Maximum must be grather then minumum!");
-                    }
-
-                    plotModel.InvalidatePlot(true);
-                }
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        private void Button_Y0_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (Y0.Value.HasValue)
-                {
-                    if (Double.IsNaN(AxY1.Maximum))
-                    {
-                        AxY1.Minimum = (double)Y0.Value;
-                    }
-                    else
-                    {
-                        if (Y0.Value < AxY1.Maximum)
-                            AxY1.Minimum = (double)Y0.Value;
-                        else
-                            throw new Exception("Minimum must be lower then maximum!");
-                    }
-
-                    plotModel.InvalidatePlot(true);
-                }
-            }
-            catch (Exception Ex)
-            {
-                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
-            }
-        }
-
         private void Win_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
@@ -850,6 +780,65 @@ namespace FenixWPF
             {
                 PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
+        }
+
+        private void Y0_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                if (Y0.Value.HasValue)
+                {
+                    if (Double.IsNaN(AxY1.Maximum) || Double.IsNaN((double)Y0.Value))
+                    {
+                        AxY1.Minimum = (double)Y0.Value;
+                    }
+                    else
+                    {
+                        if (Y0.Value <= AxY1.Maximum)
+                            AxY1.Minimum = (double)Y0.Value;
+                        else
+                            throw new Exception("Minimum must be lower then maximum!");
+                    }
+
+                    plotModel.InvalidatePlot(true);
+                }
+            }
+            catch (Exception Ex)
+            {
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        private void Y1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                if (Y1.Value.HasValue)
+                {
+                    if (Double.IsNaN(AxY1.Minimum) || Double.IsNaN((double)Y1.Value))
+                    {
+                        AxY1.Maximum = (double)Y1.Value;
+                    }
+                    else
+                    {
+                        if (Y1.Value > AxY1.Minimum)
+                            AxY1.Maximum = (double)Y1.Value;
+                        else
+                            throw new Exception("Maximum must be grather then minumum!");
+                    }
+
+                    plotModel.InvalidatePlot(true);
+                }
+            }
+            catch (Exception Ex)
+            {
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

@@ -1398,7 +1398,7 @@ namespace FenixWPF
                     mFolder = true;
                     mInFile = !((ITreeViewModel)SelObj).IsLive;
                     mClosePr = false;
-                    mSave = false;
+                    mSave = true;
                     mSaveAs = false;
                     mExit = true;
 

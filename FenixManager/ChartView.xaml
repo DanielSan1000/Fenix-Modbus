@@ -1,25 +1,39 @@
-﻿<UserControl   x:Class="FenixWPF.ChartView"
-               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-               xmlns:oxy="http://oxyplot.org/wpf"
-               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-               xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-               xmlns:local="clr-namespace:FenixWPF"
-               mc:Ignorable="d"
+﻿<UserControl x:Class="FenixWPF.ChartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:FenixWPF"
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="800" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1">
 
     <UserControl.Resources>
         <local:BoolNegConverter x:Key="BoolNeg" />
     </UserControl.Resources>
 
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <StackPanel Height="25" Margin="5" Orientation="Horizontal" DockPanel.Dock="Top">
+        <Grid Margin="5" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Margin="0,0,10,0" Text="Show Last [DD:HH:MM:SS]" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="0" Margin="0,0,10,0" Text="Show Last [DD:HH:MM:SS]" VerticalAlignment="Center" />
 
-            <xctk:TimeSpanUpDown Margin="0,0,15,0" IsEnabled="{Binding Path=Pr.ChartConf.histData, Mode=TwoWay, Converter={StaticResource BoolNeg}}">
+            <xctk:TimeSpanUpDown Grid.Column="1" Margin="0,0,15,0" IsEnabled="{Binding Path=Pr.ChartConf.histData, Converter={StaticResource BoolNeg}}" ToolTip="Set the time span to display data">
                 <xctk:TimeSpanUpDown.Value>
                     <Binding Path="Pr.ChartConf.TrackSpan" Mode="TwoWay">
                         <Binding.ValidationRules>
@@ -29,18 +43,23 @@
                 </xctk:TimeSpanUpDown.Value>
             </xctk:TimeSpanUpDown>
 
-            <TextBlock Text="Y0:" VerticalAlignment="Center" />
-            <xctk:DoubleUpDown Value="{Binding Path=Pr.ChartConf.minimumY}" Name="Y0" FormatString="F" />
-            <Button Content="S" Click="Button_Y0_Click" />
+            <TextBlock Grid.Column="2" Text="Y0:" VerticalAlignment="Center" />
 
-            <TextBlock Text="Y1:" VerticalAlignment="Center" />
-            <xctk:DoubleUpDown Value="{Binding Path=Pr.ChartConf.maximumY}" Name="Y1" FormatString="F" />
-            <Button Content="S" Click="Button_Y1_Click" Margin="0,0,15,0" />
+            <xctk:DoubleUpDown Grid.Column="3" Value="{Binding Path=Pr.ChartConf.minimumY}" Name="Y0" FormatString="F" ToolTip="Set the minimum Y value" ValueChanged="Y0_ValueChanged" Margin="0,0,15,0"/>
 
-            <Button Content="Reset View" Click="Button_Reset_Click" />
-            <Button Content="Clear" Click="Button_Clear_Click" />
-        </StackPanel>
+            <TextBlock Grid.Column="4" Text="Y1:" VerticalAlignment="Center" />
 
-        <oxy:PlotView  DockPanel.Dock="Bottom" x:Name="View" />
-    </DockPanel>
+            <xctk:DoubleUpDown Grid.Column="5" Value="{Binding Path=Pr.ChartConf.maximumY}" Name="Y1" FormatString="F" ToolTip="Set the maximum Y value" ValueChanged="Y1_ValueChanged" />
+
+            <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+                <Button Content="Reset View" Click="Button_Reset_Click" Margin="0,0,5,0" ToolTip="Reset the graph view" />
+                <Button Content="Clear" Click="Button_Clear_Click" ToolTip="Clear the graph data" />
+            </StackPanel>
+        </Grid>
+
+        <oxy:PlotView x:Name="View" Grid.Row="1" />
+
+        <TextBlock Margin="5" Grid.Row="2" Text="{Binding InteractionDescription}" />
+        
+    </Grid>
 </UserControl>

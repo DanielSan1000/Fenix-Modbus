@@ -8,7 +8,10 @@ using System.Linq;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Windows.Data;
 
 namespace FenixWPF
 {
@@ -21,14 +24,20 @@ namespace FenixWPF
         private DateTime _toDate;
         private string _selectedInterval;
         private string _interactionDescription;
+        private double _yAxisMinimum;
+        private double _yAxisMaximum;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public PlotModel PlotModel { get; private set; }
+
         public PlotController PlotController { get; private set; }
 
         public LinearAxis AxY1 { get; set; }
+
         public DateTimeAxis AxX1 { get; set; }
+
+        private Project _project;
 
         public ObservableCollection<string> TimeIntervals { get; }
 
@@ -41,7 +50,6 @@ namespace FenixWPF
                 {
                     _fromDate = value;
                     OnPropertyChanged();
-                    UpdatePlotAxes();
                 }
             }
         }
@@ -55,11 +63,9 @@ namespace FenixWPF
                 {
                     _toDate = value;
                     OnPropertyChanged();
-                    UpdatePlotAxes();
                 }
             }
         }
-
         public string SelectedInterval
         {
             get => _selectedInterval;
@@ -69,7 +75,35 @@ namespace FenixWPF
                 {
                     _selectedInterval = value;
                     OnPropertyChanged();
-                    UpdateDateRange();
+                    UpdateDateXRangeBasedOnInterval();
+                }
+            }
+        }
+
+        public double YAxisMinimum
+        {
+            get => _yAxisMinimum;
+            set
+            {
+                if (_yAxisMinimum != value)
+                {
+                    _yAxisMinimum = value;
+                    OnPropertyChanged();
+                    UpdatePlotYAxes();
+                }
+            }
+        }
+
+        public double YAxisMaximum
+        {
+            get => _yAxisMaximum;
+            set
+            {
+                if (_yAxisMaximum != value)
+                {
+                    _yAxisMaximum = value;
+                    OnPropertyChanged();
+                    UpdatePlotYAxes();
                 }
             }
         }
@@ -87,20 +121,30 @@ namespace FenixWPF
             }
         }
 
+        private bool _isLoading;
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public ChartViewDatabase(Project project)
         {
             InitializeComponent();
             DataContext = this;
+            _project = project;
 
             // Initialize PlotController
             PlotController = new PlotController();
-            PlotController.BindMouseDown(OxyMouseButton.Left, PlotCommands.PanAt);
-            PlotController.BindMouseDown(OxyMouseButton.Right, PlotCommands.ZoomRectangle);
-            PlotController.BindMouseWheel(PlotCommands.ZoomWheel);
-            PlotController.BindKeyDown(OxyKey.R, PlotCommands.Reset);
 
             // Set interaction descriptions
-            InteractionDescription = "Left Click + Drag: Pan | Right Click + Drag: Zoom Rectangle | Mouse Wheel: Zoom | R: Reset | C: Copy to Clipboard";
+            InteractionDescription = "Left Click + Drag: Pan | Ctrl + Right Click + Drag: Zoom Rectangle | Mouse Wheel: Zoom | C: Copy to Clipboard";
 
             // Axes
             AxY1 = new LinearAxis { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Dash };
@@ -112,25 +156,49 @@ namespace FenixWPF
             PlotModel.Axes.Add(AxY1);
             View.Model = PlotModel;
 
-            LoadData(project);
-
+            IsLoading = true;
+            var data = LoadDataFromDatabase(DateTime.Now.AddHours(-1), DateTime.Now,false);
+            if (data.Count != 0)
+            {
+                _yAxisMinimum = Math.Floor(data.Min(x => x.Value));
+                _yAxisMaximum = Math.Floor(data.Max(x => x.Value));
+            }
+            else
+            {
+                _yAxisMinimum = 0;
+                _yAxisMaximum = 100;
+            }   
             // Initialize default values
             TimeIntervals = new ObservableCollection<string> { "1h", "3h", "6h", "12h", "24h" };
             SelectedInterval = TimeIntervals.First();
-            UpdateDateRange();
+            IsLoading = false;
         }
 
-        private void LoadData(Project project)
+        private List<TagDTO> LoadDataFromDatabase(DateTime from, DateTime to, bool blockFilters)
         {
             try
-            {
-                foreach (var group in project.Db.GetAllObservableCollection().GroupBy(x => x.Name))
+            {         
+                ObservableCollection<TagDTO> data = null;
+                if (blockFilters)
                 {
-                    ITag tag = project.GetITag(group.Key);
+                    data = _project.Db.GetAllObservableCollection() ?? [];
+                }
+                else
+                {
+                    data = _project.Db.GetDataByStamp(from, to) ?? [];
+                }
+
+                PlotModel.Series.Clear();
+                foreach (var group in data?.GroupBy(x => x.Name))
+                {
+                    ITag tag = _project.GetITag(group.Key);
+
+                    if (tag is null) continue;
+
                     var series = new LineSeries
                     {
                         Title = group.Key,
-                        TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:" + project.longDT + "}",
+                        TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:" + _project.longDT + "}",
                         Color = OxyColor.FromRgb(tag.Clr.R, tag.Clr.G, tag.Clr.B),
                         StrokeThickness = tag.Width,
                         IsVisible = true
@@ -145,14 +213,17 @@ namespace FenixWPF
                 }
 
                 PlotModel.InvalidatePlot(true);
+                PlotModel.ResetAllAxes();
+
+                return data?.ToList();
             }
-            catch (Exception ex)
+            catch
             {
-                // Handle exception (e.g., log it)
+                return [];
             }
         }
 
-        private void UpdateDateRange()
+        private void UpdateDateXRangeBasedOnInterval()
         {
             DateTime now = DateTime.Now;
             FromDate = SelectedInterval switch
@@ -167,39 +238,56 @@ namespace FenixWPF
             ToDate = now;
         }
 
-        private void UpdatePlotAxes()
+        private void UpdatePlotYAxes()
         {
-            if (AxX1 != null)
+            if (AxY1 != null)
             {
-                AxX1.Minimum = DateTimeAxis.ToDouble(FromDate);
-                AxX1.Maximum = DateTimeAxis.ToDouble(ToDate);
-                PlotModel.InvalidatePlot(false);
+                AxY1.Minimum = YAxisMinimum;
+                AxY1.Maximum = YAxisMaximum;
             }
+
+            PlotModel.InvalidatePlot(false);
         }
 
         private void ShowAllButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (PlotModel.Series.Count > 0)
+            IsLoading = true;
+            if (DisableFormCheckBox.IsChecked is true)
             {
-                var allDataPoints = PlotModel.Series
-                    .OfType<LineSeries>()
-                    .SelectMany(series => series.Points)
-                    .ToList();
-
-                if (allDataPoints.Any())
-                {
-                    FromDate = DateTimeAxis.ToDateTime(allDataPoints.Min(point => point.X));
-                    ToDate = DateTimeAxis.ToDateTime(allDataPoints.Max(point => point.X));
-                }
+                LoadDataFromDatabase(FromDate, ToDate, true);
             }
-
-            PlotModel.ResetAllAxes();
-            PlotModel.InvalidatePlot(true);
+            else
+            {
+                LoadDataFromDatabase(FromDate, ToDate, false);
+            }
+            IsLoading = false;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+    }
+
+    public class InverseBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolean)
+            {
+                return !boolean;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolean)
+            {
+                return !boolean;
+            }
+            return false;
         }
     }
 }
