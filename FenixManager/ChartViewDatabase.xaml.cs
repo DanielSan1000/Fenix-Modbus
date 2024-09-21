@@ -12,6 +12,8 @@ using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Markup;
+using System.Threading.Tasks;
 
 namespace FenixWPF
 {
@@ -39,7 +41,7 @@ namespace FenixWPF
 
         private Project _project;
 
-        public ObservableCollection<string> TimeIntervals { get; }
+        public ObservableCollection<string> TimeIntervals { get; set; }
 
         public DateTime FromDate
         {
@@ -66,6 +68,7 @@ namespace FenixWPF
                 }
             }
         }
+
         public string SelectedInterval
         {
             get => _selectedInterval;
@@ -133,8 +136,7 @@ namespace FenixWPF
             }
         }
 
-
-        public ChartViewDatabase(Project project)
+        public async Task InitializeAsync(Project project)
         {
             InitializeComponent();
             DataContext = this;
@@ -156,71 +158,90 @@ namespace FenixWPF
             PlotModel.Axes.Add(AxY1);
             View.Model = PlotModel;
 
-            IsLoading = true;
-            var data = LoadDataFromDatabase(DateTime.Now.AddHours(-1), DateTime.Now,false);
+            var data = await LoadDataFromDatabase(DateTime.Now.AddHours(-1), DateTime.Now, false);
+            await CreateSeriesAsync(data).ContinueWith(task => AddSeries(task.Result));
             if (data.Count != 0)
             {
-                _yAxisMinimum = Math.Floor(data.Min(x => x.Value));
-                _yAxisMaximum = Math.Floor(data.Max(x => x.Value));
+                YAxisMinimum = Math.Floor(data.Min(x => x.Value));
+                YAxisMaximum = Math.Floor(data.Max(x => x.Value));
             }
             else
             {
-                _yAxisMinimum = 0;
-                _yAxisMaximum = 100;
-            }   
+                YAxisMinimum = 0;
+                YAxisMaximum = 100;
+            }
+        }
+
+        public ChartViewDatabase(Project project)
+        {
+            InitializeAsync(project);
+
             // Initialize default values
             TimeIntervals = new ObservableCollection<string> { "1h", "3h", "6h", "12h", "24h" };
             SelectedInterval = TimeIntervals.First();
-            IsLoading = false;
+            UpdatePlotYAxes();
         }
 
-        private List<TagDTO> LoadDataFromDatabase(DateTime from, DateTime to, bool blockFilters)
+        private async Task<List<TagDTO>> LoadDataFromDatabase(DateTime from, DateTime to, bool blockFilters)
         {
-            try
-            {         
-                ObservableCollection<TagDTO> data = null;
+            return await Task.Run(() =>
+            {
+                ObservableCollection<TagDTO> data = new ObservableCollection<TagDTO>();
                 if (blockFilters)
                 {
-                    data = _project.Db.GetAllObservableCollection() ?? [];
+                    data = _project.Db.GetAllObservableCollection() ?? new ObservableCollection<TagDTO>();
                 }
                 else
                 {
-                    data = _project.Db.GetDataByStamp(from, to) ?? [];
+                    data = _project.Db.GetDataByStamp(from, to) ?? new ObservableCollection<TagDTO>();
                 }
+                return data.ToList();
+            });
+        }
 
-                PlotModel.Series.Clear();
-                foreach (var group in data?.GroupBy(x => x.Name))
+        private async Task<List<LineSeries>> CreateSeriesAsync(List<TagDTO> tagGroups)
+        {
+            List<LineSeries> series = new List<LineSeries>();
+            foreach (var group in tagGroups.GroupBy(x=>x.Name))
+            {
+                ITag tag = _project.GetITag(group.Key);
+                if (tag is null) continue;
+
+                var serie = new LineSeries
                 {
-                    ITag tag = _project.GetITag(group.Key);
+                    Title = group.Key,
+                    TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:" + _project.longDT + "}",
+                    Color = OxyColor.FromRgb(tag.Clr.R, tag.Clr.G, tag.Clr.B),
+                    StrokeThickness = tag.Width,
+                    IsVisible = true
+                };
 
-                    if (tag is null) continue;
-
-                    var series = new LineSeries
-                    {
-                        Title = group.Key,
-                        TrackerFormatString = "{0}" + Environment.NewLine + "Y: {4:0.000}" + Environment.NewLine + "X: {2:" + _project.longDT + "}",
-                        Color = OxyColor.FromRgb(tag.Clr.R, tag.Clr.G, tag.Clr.B),
-                        StrokeThickness = tag.Width,
-                        IsVisible = true
-                    };
-
+                await Task.Run(() =>
+                {
                     foreach (var point in group)
                     {
-                        series.Points.Add(new DataPoint(point.Stamp.ToOADate(), point.Value));
+                        serie.Points.Add(new DataPoint(point.Stamp.ToOADate(), point.Value));
                     }
+                });
 
-                    PlotModel.Series.Add(series);
-                }
-
-                PlotModel.InvalidatePlot(true);
-                PlotModel.ResetAllAxes();
-
-                return data?.ToList();
+                series.Add(serie);
             }
-            catch
+
+            return series;
+        }
+
+        private void AddSeries(List<LineSeries> series)
+        {
+            PlotModel.Series.Clear();
+
+            foreach (var serie in series)
             {
-                return [];
+                PlotModel.Series.Add(serie);
             }
+
+            PlotModel.InvalidatePlot(true);
+
+            PlotModel.ResetAllAxes();
         }
 
         private void UpdateDateXRangeBasedOnInterval()
@@ -249,16 +270,18 @@ namespace FenixWPF
             PlotModel.InvalidatePlot(false);
         }
 
-        private void ShowAllButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void ShowAllButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IsLoading = true;
             if (DisableFormCheckBox.IsChecked is true)
-            {
-                LoadDataFromDatabase(FromDate, ToDate, true);
+            {             
+                var data = await LoadDataFromDatabase(FromDate, ToDate, true);
+                await CreateSeriesAsync(data).ContinueWith(task => AddSeries(task.Result));
             }
             else
             {
-                LoadDataFromDatabase(FromDate, ToDate, false);
+                var data = await LoadDataFromDatabase(FromDate, ToDate, false);
+                await CreateSeriesAsync(data).ContinueWith(task => AddSeries(task.Result));
             }
             IsLoading = false;
         }
@@ -267,7 +290,6 @@ namespace FenixWPF
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 
     public class InverseBooleanConverter : IValueConverter
