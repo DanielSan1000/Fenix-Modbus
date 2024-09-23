@@ -4,28 +4,72 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:FenixWPF"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
+    <UserControl.Resources>
+        <local:BooleanNegationConverter x:Key="BooleanNegationConverter" />
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5">
-            <TextBlock Text="From:" VerticalAlignment="Center" Margin="5" Width="50" />
-            <xctk:DateTimePicker x:Name="FromDateCtrl" Margin="5" Value="{Binding FromDate, Mode=TwoWay}" Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss" Width="150" />
-            <TextBlock Text="To:" VerticalAlignment="Center" Margin="5" Width="30" />
-            <xctk:DateTimePicker x:Name="ToDateCtrl" Margin="5" Value="{Binding ToDate, Mode=TwoWay}" Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss" Width="150" />
-            <TextBlock Text="Last:" VerticalAlignment="Center" Margin="5" Width="40" />
-            <ComboBox x:Name="TimeIntervalComboBox" Margin="5" ItemsSource="{Binding TimeIntervals}" SelectedItem="{Binding SelectedInterval, Mode=TwoWay}" Width="80" />
-            <TextBlock Text="Order:" VerticalAlignment="Center" Margin="5" Width="50" />
-            <ComboBox x:Name="OrderComboBox" Margin="5" ItemsSource="{Binding OrderOptions}" SelectedItem="{Binding SelectedOrder, Mode=TwoWay}" Width="100" />
-            <Button Content="Show All" Margin="5" Width="80" Click="ResetButton_Click" />
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <DataGrid x:Name="myDataGrid" Grid.Row="1" Margin="0,15,0,0" AutoGenerateColumns="False" HorizontalAlignment="Stretch" ItemsSource="{Binding YourDataCollection}">
+        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Height="45">
+            <StackPanel Orientation="Horizontal" >
+                <CheckBox x:Name="BlockTimeFiltersCheckBox" Content="Block Time Filters" VerticalAlignment="Center" Margin="0,0,15,0" />
+
+                <TextBlock Text="From:" VerticalAlignment="Center" Width="50" />
+                <xctk:DateTimePicker x:Name="FromDateCtrl" Margin="-15,0,15,0" Width="150"
+                                     Value="{Binding FromDate, Mode=TwoWay}" 
+                                     Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss"                                       
+                                     IsEnabled="{Binding IsChecked, ElementName=BlockTimeFiltersCheckBox, Converter={StaticResource BooleanNegationConverter}}" />
+
+                <TextBlock Text="To:" VerticalAlignment="Center" Width="30" />
+                <xctk:DateTimePicker x:Name="ToDateCtrl" Margin="-15,0,15,0" Width="150"
+                                     Value="{Binding ToDate, Mode=TwoWay}" 
+                                     Format="Custom" FormatString="MM/dd/yyyy HH:mm:ss"                              
+                                     IsEnabled="{Binding IsChecked, ElementName=BlockTimeFiltersCheckBox, Converter={StaticResource BooleanNegationConverter}}" />
+
+                <TextBlock Text="Last:" VerticalAlignment="Center" Width="40" />
+                <ComboBox x:Name="TimeIntervalComboBox" Margin="-15,0,15,0" 
+                          ItemsSource="{Binding TimeIntervals}" 
+                          SelectedItem="{Binding SelectedInterval, Mode=TwoWay}" Width="80" 
+                          IsEnabled="{Binding IsChecked, ElementName=BlockTimeFiltersCheckBox, Converter={StaticResource BooleanNegationConverter}}" />
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="0" Grid.Column="1" Margin="5,5,5,5" Height="45">
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Order:" VerticalAlignment="Center" Width="50" />
+                <ComboBox x:Name="OrderComboBox" Margin="-15,0,15,0" Width="100" 
+                          ItemsSource="{Binding OrderOptions}" 
+                          SelectedItem="{Binding SelectedOrder, Mode=TwoWay}" />
+                <Button Content="Refresh" Width="80" Click="ResetButton_Click" />
+
+            </StackPanel>
+        </GroupBox>
+
+        <DataGrid x:Name="myDataGrid" 
+                  Grid.Row="1"
+                  Grid.ColumnSpan="2"
+                  Margin="0,15,0,0" 
+                  AutoGenerateColumns="False" 
+                  HorizontalAlignment="Stretch" 
+                  ItemsSource="{Binding YourDataCollection}"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -51,5 +95,22 @@
                 <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
+
+        <!-- Waiting Spinner -->
+        <Grid x:Name="LoadingSpinner" Grid.Row="1" Grid.ColumnSpan="2" 
+              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Background="#80000000" Panel.ZIndex="1">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Loading..." Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Footer with element count -->
+        <StatusBar Grid.Row="2" Margin="0,5,0,0" Grid.ColumnSpan="2">
+            <StatusBarItem>
+                <TextBlock Text="{Binding ElementName=myDataGrid, Path=Items.Count, StringFormat=Total Items: {0}}" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </UserControl>

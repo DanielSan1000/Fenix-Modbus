@@ -11,6 +11,9 @@ using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Data.Common;
 
 namespace ProjectDataLib
 {
@@ -231,6 +234,8 @@ namespace ProjectDataLib
             return observableCollection;
         }
 
+
+
         public DatabaseValues GetRange(ITag tg, DateTime from, DateTime to)
         {
             string sql = String.Format("select * from tags where stamp between '{0}' and '{1}' and name='{2}'", from.ToString("yyyy-MM-dd HH:mm:ss.fff"), to.ToString("yyyy-MM-dd HH:mm:ss.fff"), tg.Name);
@@ -378,6 +383,57 @@ namespace ProjectDataLib
                 };
 
                 observableCollection.Add(tag);
+            }
+
+            return observableCollection;
+        }
+
+        public async Task<List<TagDTO>> GetAllTagsAsync(bool descending = true)
+        {
+            List<TagDTO> tagList = new List<TagDTO>();
+            string order = descending ? "DESC" : "ASC";
+            string sql = $"SELECT * FROM tags ORDER BY stamp {order}";
+            SQLiteCommand command = new SQLiteCommand(sql, DbConnection);
+
+            using (DbDataReader reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    TagDTO tag = new TagDTO()
+                    {
+                        Name = reader["name"].ToString(),
+                        Stamp = DateTime.Parse(reader["stamp"].ToString()),
+                        Value = double.Parse(reader["value"].ToString())
+                    };
+
+                    tagList.Add(tag);
+                }
+            }
+
+            return tagList;
+        }
+        public async Task<ObservableCollection<TagDTO>> GetDataByStampAsync(DateTime from, DateTime to, bool descending = true)
+        {
+            ObservableCollection<TagDTO> observableCollection = new ObservableCollection<TagDTO>();
+            string order = descending ? "DESC" : "ASC";
+            string sql = $"SELECT * FROM tags WHERE stamp BETWEEN @from AND @to ORDER BY stamp {order}";
+            SQLiteCommand command = new SQLiteCommand(sql, DbConnection);
+            command.Parameters.AddWithValue("@from", from.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            command.Parameters.AddWithValue("@to", to.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
+            using (DbDataReader reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    TagDTO tag = new TagDTO()
+                    {
+                        Name = reader["name"].ToString(),
+                        Stamp = DateTime.Parse(reader["stamp"].ToString()),
+                        Value = double.Parse(reader["value"].ToString())
+                    };
+
+                    observableCollection.Add(tag);
+                }
             }
 
             return observableCollection;

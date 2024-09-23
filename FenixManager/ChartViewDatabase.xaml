@@ -25,7 +25,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Grid.Row="0" Margin="25,0,10,0" Height="45">
+        <GroupBox Grid.Row="0" Margin="35,0,27,0" Height="45">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Y-Axis Min:" VerticalAlignment="Center" Margin="15,0,0,0" Width="80" />
                 <xctk:DoubleUpDown Value="{Binding YAxisMinimum, Mode=TwoWay}"  Increment="0.1" Width="100" Margin="-10,0,0,0"  />

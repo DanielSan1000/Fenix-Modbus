@@ -7,6 +7,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows;
+using System.Threading.Tasks;
 
 namespace FenixWPF
 {
@@ -16,13 +20,26 @@ namespace FenixWPF
         private DateTime _toDate;
         private string _selectedInterval;
         private string _selectedOrder;
+        private bool _isLoading;
+        private readonly Project _project;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly Project _project;
-
         public ObservableCollection<string> TimeIntervals { get; }
         public ObservableCollection<string> OrderOptions { get; }
+
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                if (_isLoading != value)
+                {
+                    _isLoading = value;
+                    OnPropertyChanged(nameof(IsLoading));
+                }
+            }
+        }
 
         public DateTime FromDate
         {
@@ -33,7 +50,6 @@ namespace FenixWPF
                 {
                     _fromDate = value;
                     OnPropertyChanged();
-                    FilterData();
                 }
             }
         }
@@ -47,7 +63,6 @@ namespace FenixWPF
                 {
                     _toDate = value;
                     OnPropertyChanged();
-                    FilterData();
                 }
             }
         }
@@ -75,7 +90,6 @@ namespace FenixWPF
                 {
                     _selectedOrder = value;
                     OnPropertyChanged();
-                    FilterData();
                 }
             }
         }
@@ -87,13 +101,13 @@ namespace FenixWPF
             _project = project;
 
             // Initialize default values
-            TimeIntervals = new ObservableCollection<string> { "1h", "3h", "6h", "12h", "24h" };
-            OrderOptions = new ObservableCollection<string> { "Descending", "Ascending" };
+            TimeIntervals = ["1h", "3h", "6h", "12h", "24h"];
+            OrderOptions = ["Descending", "Ascending"];
             SelectedInterval = TimeIntervals.First();
             SelectedOrder = OrderOptions.First();
 
             UpdateDateRange();
-            FilterData();
+            GetDataFormDatabase();
         }
 
         private void UpdateDateRange()
@@ -111,22 +125,73 @@ namespace FenixWPF
             ToDate = now;
         }
 
-        private void FilterData()
+        private async Task GetDataFormDatabase()
         {
             if (SelectedOrder == null || OrderOptions == null) return;
 
             bool descending = SelectedOrder == OrderOptions[0];
-            myDataGrid.ItemsSource = _project.Db.GetDataByStamp(FromDate, ToDate, descending);
+            if (BlockTimeFiltersCheckBox.IsChecked is true)
+            {
+                myDataGrid.ItemsSource = await _project.Db.GetAllTagsAsync(descending);
+            }
+            else
+            {
+                myDataGrid.ItemsSource = await _project.Db.GetDataByStampAsync(FromDate, ToDate, descending);
+            }                
         }
 
-        private void ResetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void ResetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            myDataGrid.ItemsSource = _project.Db.GetAllObservableCollection();
+            IsLoading = true;
+            await GetDataFormDatabase();
+            IsLoading = false;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class BooleanNegationConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return !boolValue;
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return !boolValue;
+            }
+            return value;
+        }
+    }
+
+    public class BooleanToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return boolValue ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Visibility visibility)
+            {
+                return visibility == Visibility.Visible;
+            }
+            return false;
         }
     }
 }
