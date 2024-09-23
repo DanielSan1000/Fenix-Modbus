@@ -46,59 +46,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusMasterRTU", "ModbusMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusMasterTCP", "ModbusMasterTCP\ModbusMasterTCP.csproj", "{E82917A9-1CA6-4239-923F-22F2C3353B69}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wiki", "Wiki", "{C9A218E2-EA3F-4A77-9D72-06C2B6EC43F7}"
-	ProjectSection(SolutionItems) = preProject
-		Wiki\Editors.md = Wiki\Editors.md
-		Wiki\FenixManager.md = Wiki\FenixManager.md
-		Wiki\FenixServer.md = Wiki\FenixServer.md
-		Wiki\Home.md = Wiki\Home.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{74584077-9F67-4E61-8930-0C7533BBB114}"
-	ProjectSection(SolutionItems) = preProject
-		Wiki\lib\m_AddConnection.png = Wiki\lib\m_AddConnection.png
-		Wiki\lib\m_AddDevice.png = Wiki\lib\m_AddDevice.png
-		Wiki\lib\m_AddIntTags.png = Wiki\lib\m_AddIntTags.png
-		Wiki\lib\m_AddIntTagScript.png = Wiki\lib\m_AddIntTagScript.png
-		Wiki\lib\m_AddProject.png = Wiki\lib\m_AddProject.png
-		Wiki\lib\m_AddTags.png = Wiki\lib\m_AddTags.png
-		Wiki\lib\m_AddTimerToScript.png = Wiki\lib\m_AddTimerToScript.png
-		Wiki\lib\m_CEditScriot.png = Wiki\lib\m_CEditScriot.png
-		Wiki\lib\m_CTimers.png = Wiki\lib\m_CTimers.png
-		Wiki\lib\m_CTimerSelect.png = Wiki\lib\m_CTimerSelect.png
-		Wiki\lib\m_ProjectProp.png = Wiki\lib\m_ProjectProp.png
-		Wiki\lib\m_ScriptViz.png = Wiki\lib\m_ScriptViz.png
-		Wiki\lib\m_TagsChangeNames.png = Wiki\lib\m_TagsChangeNames.png
-		Wiki\lib\NewItem1.png = Wiki\lib\NewItem1.png
-		Wiki\lib\NewItem10.png = Wiki\lib\NewItem10.png
-		Wiki\lib\NewItem11.png = Wiki\lib\NewItem11.png
-		Wiki\lib\NewItem12.png = Wiki\lib\NewItem12.png
-		Wiki\lib\NewItem13.png = Wiki\lib\NewItem13.png
-		Wiki\lib\NewItem14.png = Wiki\lib\NewItem14.png
-		Wiki\lib\NewItem2.png = Wiki\lib\NewItem2.png
-		Wiki\lib\NewItem29.png = Wiki\lib\NewItem29.png
-		Wiki\lib\NewItem30.png = Wiki\lib\NewItem30.png
-		Wiki\lib\NewItem31.png = Wiki\lib\NewItem31.png
-		Wiki\lib\NewItem32.png = Wiki\lib\NewItem32.png
-		Wiki\lib\NewItem36.png = Wiki\lib\NewItem36.png
-		Wiki\lib\NewItem37.png = Wiki\lib\NewItem37.png
-		Wiki\lib\NewItem38.png = Wiki\lib\NewItem38.png
-		Wiki\lib\NewItem39.png = Wiki\lib\NewItem39.png
-		Wiki\lib\NewItem40.png = Wiki\lib\NewItem40.png
-		Wiki\lib\NewItem41.png = Wiki\lib\NewItem41.png
-		Wiki\lib\NewItem42.png = Wiki\lib\NewItem42.png
-		Wiki\lib\NewItem44.png = Wiki\lib\NewItem44.png
-		Wiki\lib\NewItem45.png = Wiki\lib\NewItem45.png
-		Wiki\lib\NewItem7.png = Wiki\lib\NewItem7.png
-		Wiki\lib\NewItem8.png = Wiki\lib\NewItem8.png
-		Wiki\lib\s_AddUser.png = Wiki\lib\s_AddUser.png
-		Wiki\lib\s_BtStart.png = Wiki\lib\s_BtStart.png
-		Wiki\lib\s_LoadedProject.png = Wiki\lib\s_LoadedProject.png
-		Wiki\lib\s_MainWindow.png = Wiki\lib\s_MainWindow.png
-		Wiki\lib\s_startComm.png = Wiki\lib\s_startComm.png
-		Wiki\lib\s_Webbrowser.png = Wiki\lib\s_Webbrowser.png
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7-300-400 Ethernet", "S7-300-400 Ethernet\S7-300-400 Ethernet.csproj", "{BA507B12-8562-40EB-9EBB-A3FC4723F175}"
 EndProject
 Global
@@ -312,9 +259,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{74584077-9F67-4E61-8930-0C7533BBB114} = {C9A218E2-EA3F-4A77-9D72-06C2B6EC43F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6A2EE61-CE0E-41D3-86B0-E4BCB9D87D0F}
