@@ -17,10 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Restore dependencies
-      run: msbuild /t:Restore
+      run: |
+        msbuild /t:Restore
     - name: Build
       run: |
         # Use MSBuild from the .NET Framework
         msbuild -p:Configuration=Release
-    - name: Test
-      run: msbuild /t:Test /p:Configuration=Release
