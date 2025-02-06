@@ -16,12 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-  
+
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1
 
     - name: Restore NuGet packages
-      run: nuget restore
+      run: nuget restore -verbosity detailed
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
@@ -30,4 +30,4 @@ jobs:
       run: msbuild /t:Restore
 
     - name: Build app for release
-      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Release
+      run: msbuild -t:rebuild -verbosity:minimal -property:Configuration=Release
