@@ -16,19 +16,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+  
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1
+
     - name: Restore NuGet packages
       run: nuget restore
+
     - name: Find MSBuild
       id: msbuild
       run: |
-        echo "::set-output name=path::$(vswhere -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe)"
+        msbuild_path=$(vswhere -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe)
+        echo "MSBUILD_PATH=$msbuild_path" >> $GITHUB_ENV
+
     - name: Restore dependencies
       run: |
-        $msbuild = "${{ steps.msbuild.outputs.path }}"
-        & "$msbuild" /t:Restore
+        & "$env:MSBUILD_PATH" /t:Restore
+
     - name: Build
       run: |
-        $msbuild = "${{ steps.msbuild.outputs.path }}"
-        & "$msbuild" -p:Configuration=Release
+        & "$env:MSBUILD_PATH" -p:Configuration=Release
