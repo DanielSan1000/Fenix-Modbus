@@ -16,9 +16,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Find MSBuild
+      id: msbuild
+      run: |
+        echo "::set-output name=path::$(vswhere -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe)"
     - name: Restore dependencies
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /t:Restore
+        $msbuild = "${{ steps.msbuild.outputs.path }}"
+        & $msbuild /t:Restore
     - name: Build
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" -p:Configuration=Release
+        $msbuild = "${{ steps.msbuild.outputs.path }}"
+        & $msbuild -p:Configuration=Release
