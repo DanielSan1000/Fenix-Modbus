@@ -35,7 +35,7 @@ jobs:
       run: msbuild /t:Restore
 
     - name: Build app for release
-      run: msbuild -t:rebuild -verbosity=minimal -property:Configuration=Release
+      run: msbuild -t:rebuild -verbosity:minimal -property:Configuration=Release
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
