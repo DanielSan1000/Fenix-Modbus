@@ -37,11 +37,11 @@ jobs:
     - name: Build app for release
       run: msbuild /t:rebuild /verbosity:minimal /property:Configuration=Release
 
-    - name: List build directory
-      run: dir
+    - name: List project directory
+      run: dir D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: my-artifacts
-        path: bin/Release/
+        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\bin\Release\
