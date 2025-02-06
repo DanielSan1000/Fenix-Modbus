@@ -23,16 +23,11 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore
 
-    - name: Find MSBuild
-      id: msbuild
-      run: |
-        msbuild_path=$(vswhere -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe)
-        echo "MSBUILD_PATH=$msbuild_path" >> $GITHUB_ENV
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
 
     - name: Restore dependencies
-      run: |
-        & "$env:MSBUILD_PATH" /t:Restore
+      run: msbuild /t:Restore
 
-    - name: Build
-      run: |
-        & "$env:MSBUILD_PATH" -p:Configuration=Release
+    - name: Build app for release
+      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Release
