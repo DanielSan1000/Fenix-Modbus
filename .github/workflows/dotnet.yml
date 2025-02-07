@@ -36,17 +36,19 @@ jobs:
 
     - name: Disable Out of Proc Build
       run: |
-        "C:\Program Files (x86)\Microsoft Visual Studio\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+        "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
 
-    - name: Locate devenv.com
-      id: locate-devenv
-      run: |
-        $vsPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\devenv.com
-        echo "::set-output name=devenv-path::$vsPath"
+    # here:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com
+    # - name: Locate devenv.com
+    #   id: locate-devenv
+    #   run: |
+    #     $vsPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\devenv.com
+    #     echo "::set-output name=devenv-path::$vsPath"
 
     - name: Build Visual Studio Installer project
       run: |
-        $devenvPath="${{ steps.locate-devenv.outputs.devenv-path }}"
+        #$devenvPath="${{ steps.locate-devenv.outputs.devenv-path }}"
+        $devenvPath="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
         &"$devenvPath" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
 
     - name: Upload installer artifacts
