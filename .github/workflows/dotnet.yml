@@ -36,7 +36,9 @@ jobs:
 
     # Without not going -> workaround
     - name: Disable Out of Proc Build
-      run: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\Common7\\IDE\\CommonExtensions\\Microsoft\\VSI\\DisableOutOfProcBuild\\DisableOutOfProcBuild.exe"
+      run: |
+        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+
 
     # here:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com
     # - name: Locate devenv.com
