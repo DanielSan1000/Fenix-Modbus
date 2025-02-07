@@ -14,19 +14,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1
+    # - name: Setup NuGet
+    #   uses: NuGet/setup-nuget@v1
 
-    - name: Cache NuGet packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+    # - name: Cache NuGet packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget-
 
-    - name: Restore NuGet packages
-      run: nuget restore -verbosity detailed
+    # - name: Restore NuGet packages
+    #   run: nuget restore -verbosity detailed
 
     - name: Set up .NET Framework 4.8 Developer Pack
       run: choco install netfx-4.8-devpack
@@ -35,20 +35,12 @@ jobs:
       run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     # Without not going -> workaround
-    - name: Disable Out of Proc Build
-      run: |
-       & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe" || exit 0
-
-    # here:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com
-    # - name: Locate devenv.com
-    #   id: locate-devenv
+    # - name: Disable Out of Proc Build
     #   run: |
-    #     $vsPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\devenv.com
-    #     echo "::set-output name=devenv-path::$vsPath"
+    #    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe" || exit 0
 
     - name: Build Visual Studio Installer project
       run: |
-        #$devenvPath="${{ steps.locate-devenv.outputs.devenv-path }}"
         $devenvPath="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
         &"$devenvPath" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
 
