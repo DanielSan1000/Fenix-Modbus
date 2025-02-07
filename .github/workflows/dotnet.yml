@@ -50,10 +50,10 @@ jobs:
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     - name: Build Visual Studio Installer project
-      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.com" FenixSetupMSI\FenixSetupMSI.vdproj /Build "Release|Any CPU"'
+      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.com" FenixInstall\FenixInstall.vdproj /Build "Release|Any CPU"'
 
     - name: Upload installer artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Fenix-Modbus-Installer
-        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetupMSI\bin\Release\
+        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\bin\Release\
