@@ -35,10 +35,16 @@ jobs:
       run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     # Without not going -> workaround
+    #- name: Disable Out of Proc Build
+    #  run: |
+    #    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+
     - name: Disable Out of Proc Build
       run: |
-        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
-
+        $vsVersion = "17.0"  # Update this to your Visual Studio version
+        $vsInstanceId = "206b3be1"  # Update this to your Visual Studio instance ID
+        $regPath = "HKCU:\SOFTWARE\Microsoft\VisualStudio\$vsVersion_$vsInstanceId_Config\MSBuild"
+        Set-ItemProperty -Path $regPath -Name "EnableOutOfProcBuild" -Value 0 -Type DWord
 
     # here:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com
     # - name: Locate devenv.com
