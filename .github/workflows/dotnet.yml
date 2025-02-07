@@ -34,14 +34,14 @@ jobs:
     - name: Restore dependencies
       run: msbuild /t:Restore
 
-    - name: Build app for release
-      run: msbuild /t:rebuild /verbosity:minimal /property:Configuration=Release
+    # - name: Build app for release
+    #   run: msbuild /t:rebuild /verbosity:minimal /property:Configuration=Release
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: Fenix-Modbus
-        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixManager\bin\Release\
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: Fenix-Modbus
+    #     path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixManager\bin\Release\
 
     - name: Set up .NET Framework 4.8 Developer Pack
       run: choco install netfx-4.8-devpack
@@ -49,5 +49,11 @@ jobs:
     - name: Install Visual Studio 2019 Build Tools
       run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
-    - name: Build solution using Devenv
-      run: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.com /build Release'
+    - name: Build Visual Studio Installer project
+      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.com" FenixSetupMSI\FenixSetupMSI.vdproj /Build "Release|Any CPU"'
+
+    - name: Upload installer artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Fenix-Modbus-Installer
+        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetupMSI\bin\Release\
