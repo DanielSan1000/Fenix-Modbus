@@ -396,3 +396,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# SQLite Interop DLL
+SQLite/x64/SQLite.Interop.dll
+SQLite/x86/SQLite.Interop.dll
