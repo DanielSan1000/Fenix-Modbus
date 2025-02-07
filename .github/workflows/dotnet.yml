@@ -46,12 +46,12 @@ jobs:
     - name: Set up .NET Framework 4.8 Developer Pack
       run: choco install netfx-4.8-devpack
 
-    - name: Install Visual Studio 2019 Build Tools
-      run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
+    - name: Install Visual Studio 2022 Build Tools
+      run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     - name: Build Visual Studio Installer project
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\devenv.com" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
+        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\devenv.com" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
 
     - name: Upload installer artifacts
       uses: actions/upload-artifact@v4
