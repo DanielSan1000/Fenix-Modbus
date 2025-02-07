@@ -14,19 +14,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1
+    # - name: Setup NuGet
+    #   uses: NuGet/setup-nuget@v1
 
-    - name: Cache NuGet packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+    # - name: Cache NuGet packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget-
 
-    - name: Restore NuGet packages
-      run: nuget restore -verbosity detailed
+    # - name: Restore NuGet packages
+    #   run: nuget restore -verbosity detailed
 
     - name: Set up .NET Framework 4.8 Developer Pack
       run: choco install netfx-4.8-devpack
@@ -34,9 +34,9 @@ jobs:
     - name: Install Visual Studio 2022 Build Tools
       run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
+    # Without not going -> workaround
     - name: Disable Out of Proc Build
-      run: |
-        "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+      run: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild
 
     # here:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com
     # - name: Locate devenv.com
