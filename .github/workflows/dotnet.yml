@@ -32,7 +32,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build with MSBuild
-      run: msbuild /p:Configuration=Release
+      run: msbuild Fenix.sln /p:Configuration=Release
 
     - name: Build Advanced Installer project
       uses: caphyon/advinst-github-action@v2.0
