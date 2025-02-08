@@ -32,77 +32,35 @@ jobs:
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\Fenix.sln -p:Configuration=Release
 
+      - name: Get software version
+        run: |
+          cd ${{ github.workspace }}
+          dotnet run --project FenixManager\FenixManager.csproj
+          echo "##[set-output name=version;]$(cat version.txt)"
+
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
         with:
             name: Fenix-Modbus-Installer
             path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup\FenixSetup-SetupFiles\FenixSetup.msi
 
-      - name: ShowFiles
-        run: dir D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          release_name: Release v${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
 
-# jobs:
-#   build:
-
-#     runs-on: windows-2022
-
-#     steps:
-#     - uses: actions/checkout@v4
-
-#     - name: Setup NuGet
-#       uses: NuGet/setup-nuget@v1
-
-#     - name: Cache NuGet packages
-#       uses: actions/cache@v3
-#       with:
-#         path: ~/.nuget/packages
-#         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-#         restore-keys: |
-#           ${{ runner.os }}-nuget-
-
-#     - name: Restore NuGet packages
-#       run: nuget restore -verbosity detailed
-
-#     - name: Setup MSBuild
-#       uses: microsoft/setup-msbuild@v1.0.2
-
-#     - name: Install Advanced Installer
-#       run: choco install advanced-installer --version=18.6
-
-#     - name: Build with MSBuild
-#       run: msbuild Fenix.sln /p:Configuration=Release
-
-    # - name: Build Advanced Installer project
-    #   uses: caphyon/advinst-github-action@v2.0
-    #   with:
-    #     aip-build-name: FenixSetup
-    #     aip-path: FenixSetup/FenixSetup.aip
-    #     aip-output-dir: FenixSetup-SetupFiles
-
-    # - name: Set up .NET Framework 4.8 Developer Pack
-    #   run: choco install netfx-4.8-devpack
-
-    # - name: Install Visual Studio 2022 Build Tools
-    #   run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
-
-    # Without not going -> workaround
-    # - name: Disable Out of Proc Build
-    #   run: |
-    #    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
-
-    # - name: Build Visual Studio Installer project
-    #   run: |
-    #     $devenvPath="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
-    #     &"$devenvPath" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
-
-    # - name: Upload installer artifacts
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: Fenix-Modbus-Installer
-    #     path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\bin\Release\
-
-    # - name: Upload installer artifacts
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: Fenix-Modbus-Installer
-    #     path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup-SetupFiles\FenixSetup.msi
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup\FenixSetup-SetupFiles\FenixSetup.msi
+          asset_name: FenixSetup.msi
+          asset_content_type: application/octet-stream
