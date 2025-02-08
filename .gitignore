@@ -400,3 +400,6 @@ FodyWeavers.xsd
 # SQLite Interop DLL
 SQLite/x64/SQLite.Interop.dll
 SQLite/x86/SQLite.Interop.dll
+
+FenixSetup/FenixSetup-cache
+FenixSetup/FenixSetup-SetupFiles

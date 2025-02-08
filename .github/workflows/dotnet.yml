@@ -14,38 +14,50 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Setup NuGet
-    #   uses: NuGet/setup-nuget@v1
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
 
-    # - name: Cache NuGet packages
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ~/.nuget/packages
-    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-nuget-
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
-    # - name: Restore NuGet packages
-    #   run: nuget restore -verbosity detailed
+    - name: Restore NuGet packages
+      run: nuget restore -verbosity detailed
 
-    - name: Set up .NET Framework 4.8 Developer Pack
-      run: choco install netfx-4.8-devpack
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Install Visual Studio 2022 Build Tools
-      run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
+    - name: Build with MSBuild
+      run: msbuild /p:Configuration=Release
+
+    # - name: Set up .NET Framework 4.8 Developer Pack
+    #   run: choco install netfx-4.8-devpack
+
+    # - name: Install Visual Studio 2022 Build Tools
+    #   run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     # Without not going -> workaround
-    - name: Disable Out of Proc Build
-      run: |
-       & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+    # - name: Disable Out of Proc Build
+    #   run: |
+    #    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
 
-    - name: Build Visual Studio Installer project
-      run: |
-        $devenvPath="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
-        &"$devenvPath" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
+    # - name: Build Visual Studio Installer project
+    #   run: |
+    #     $devenvPath="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
+    #     &"$devenvPath" "FenixInstall\FenixInstall.vdproj" /Build "Release|Any CPU"
+
+    # - name: Upload installer artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: Fenix-Modbus-Installer
+    #     path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\bin\Release\
 
     - name: Upload installer artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Fenix-Modbus-Installer
-        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixInstall\bin\Release\
+        path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup-SetupFiles\FenixSetup.msi
