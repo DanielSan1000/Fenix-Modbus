@@ -13,13 +13,22 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      - name: Restore NuGet packages
+        run: nuget restore -verbosity detailed
+
       - name: Deploy Advinst
         uses: caphyon/advinst-github-action@main
         with:
           advinst-version: '20.3.2'
           # advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
+
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\Fenix.sln
 
