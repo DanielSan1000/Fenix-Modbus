@@ -30,7 +30,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Build app for release
-        run: msbuild ${{ github.workspace }}\Fenix.sln
+        run: msbuild ${{ github.workspace }}\Fenix.sln -p:Configuration=Release
 
 # jobs:
 #   build:
