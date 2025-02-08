@@ -33,10 +33,12 @@ jobs:
         run: msbuild ${{ github.workspace }}\Fenix.sln -p:Configuration=Release
 
       - name: Get software version
+        id: get_version
         run: |
           cd ${{ github.workspace }}
-          dotnet run --project FenixManager\FenixManager.csproj
-          echo "##[set-output name=version;]$(cat version.txt)"
+          msbuild /t:GetAssemblyVersion /p:OutputFile=version.txt
+          version=$(cat version.txt)
+          echo "version=$version" >> $GITHUB_ENV
 
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
@@ -50,8 +52,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release v${{ steps.get_version.outputs.version }}
+          tag_name: v${{ env.version }}
+          release_name: Release v${{ env.version }}
           draft: false
           prerelease: false
 
