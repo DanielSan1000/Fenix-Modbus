@@ -34,6 +34,12 @@ jobs:
     - name: Build with MSBuild
       run: msbuild /p:Configuration=Release
 
+    - name: Build Advanced Installer project
+      uses: AdvancedInstaller/advancedinstaller-action@v1
+      with:
+        project-path: FenixSetup/FenixSetup.aip
+        output-path: FenixSetup-SetupFiles
+
     # - name: Set up .NET Framework 4.8 Developer Pack
     #   run: choco install netfx-4.8-devpack
 

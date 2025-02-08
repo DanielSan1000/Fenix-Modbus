@@ -2,71 +2,71 @@
 <DOCUMENT Type="Advanced Installer" CreateVersion="22.4" version="22.4" Modules="simple" RootPath="." Language="en" Id="{18B9E293-60CC-4D60-B764-2966A559A180}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_CSScriptLibrary.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_CSScriptLibrary.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Controls.dll_1" Value="..\Controls\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Controls.dll_6" Value="..\Controls\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_CSScriptLibrary.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_CSScriptLibrary.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Controls.dll_1" Value="..\Controls\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Controls.dll_6" Value="..\Controls\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ControlzEx.dll" Value="..\packages\ControlzEx.5.0.2\lib\net462"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EntityFramework.SqlServer.dll" Value="..\packages\EntityFramework.6.5.1\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EntityFramework.SqlServer.dll_2" Value="..\packages\EntityFramework.6.5.1\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EntityFramework.dll" Value="..\packages\EntityFramework.6.5.1\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EntityFramework.dll_2" Value="..\packages\EntityFramework.6.5.1\lib\net45"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixServer.exe" Value="..\FenixServer\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixServer.exe.config" Value="..\FenixServer\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixWPF.exe" Value="..\FenixManager\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixWPF.exe.config" Value="..\FenixManager\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixServer.exe" Value="..\FenixServer\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixServer.exe.config" Value="..\FenixServer\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixWPF.exe" Value="..\FenixManager\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_FenixWPF.exe.config" Value="..\FenixManager\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ICSharpCode.AvalonEdit.dll" Value="..\packages\AvalonEdit.6.3.0.90\lib\net462"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_MahApps.Metro.dll" Value="..\packages\MahApps.Metro.2.4.10\lib\net47"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.Scri_5_pting.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.Scripting.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.Scripting.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.Scripting.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll_5" Value="..\ProjectDataLib\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.Scri_5_pting.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.Scripting.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.CSharp.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.Scripting.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.Scripting.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Expression.Interactions.dll" Value="..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Win32.TaskScheduler.dll" Value="..\packages\TaskScheduler.2.11.0\lib\net48"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Xaml.Behaviors.dll" Value="..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll" Value="..\ModbusMasterASCII\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll_2" Value="..\ModbusMasterASCII\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterRTU.dll" Value="..\ModbusMasterRTU\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterRTU.dll_2" Value="..\ModbusMasterRTU\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterTCP.dll" Value="..\ModbusMasterTCP\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterTCP.dll_2" Value="..\ModbusMasterTCP\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Mono.CSharp.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Mono.CSharp.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Newtonsoft.Json.dll" Value="..\ProjectDataLib\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll" Value="..\ModbusMasterASCII\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll_2" Value="..\ModbusMasterASCII\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterRTU.dll" Value="..\ModbusMasterRTU\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterRTU.dll_2" Value="..\ModbusMasterRTU\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterTCP.dll" Value="..\ModbusMasterTCP\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterTCP.dll_2" Value="..\ModbusMasterTCP\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Mono.CSharp.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Mono.CSharp.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Newtonsoft.Json.dll" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Newtonsoft.Json.dll_5" Value="..\packages\Newtonsoft.Json.13.0.3\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_OxyPlot.Wpf.Shared.dll" Value="..\packages\OxyPlot.Wpf.Shared.2.2.0\lib\net462"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_OxyPlot.Wpf.dll" Value="..\packages\OxyPlot.Wpf.2.2.0\lib\net462"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_OxyPlot.dll" Value="..\packages\OxyPlot.Core.2.2.0\lib\net462"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ProjectDataLib.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ProjectDataLib.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_S7300400Ethernet.dll" Value="..\S7-300-400 Ethernet\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_S7300400Ethernet.dll_2" Value="..\S7-300-400 Ethernet\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Buffers.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Buffers.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Collections.Immutable.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Collections.Immutable.dll_5" Value="..\ProjectDataLib\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ProjectDataLib.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ProjectDataLib.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_S7300400Ethernet.dll" Value="..\S7-300-400 Ethernet\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_S7300400Ethernet.dll_2" Value="..\S7-300-400 Ethernet\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Buffers.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Buffers.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Collections.Immutable.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Collections.Immutable.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.EF6.dll" Value="..\packages\System.Data.SQLite.EF6.1.0.119.0\lib\net46"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.EF6.dll_2" Value="..\packages\System.Data.SQLite.EF6.1.0.119.0\lib\net46"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.Linq.dll" Value="..\packages\System.Data.SQLite.Linq.1.0.119.0\lib\net46"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.Linq.dll_2" Value="..\packages\System.Data.SQLite.Linq.1.0.119.0\lib\net46"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.dll" Value="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\lib\net46"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Data.SQLite.dll_5" Value="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\lib\net46"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Memory.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Memory.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Numerics.Vectors.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Numerics.Vectors.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Reflection.Metadata.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Reflection.Metadata.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Runtime.CompilerServices.Un_5_safe.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Runtime.CompilerServices.Unsafe.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Text.Encoding.CodePages.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Text.Encoding.CodePages.dll_5" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Threading.Tasks.Extensions.dll" Value="..\ProjectDataLib\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Threading.Tasks.Extensions.dll_5" Value="..\ProjectDataLib\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Memory.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Memory.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Numerics.Vectors.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Numerics.Vectors.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Reflection.Metadata.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Reflection.Metadata.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Runtime.CompilerServices.Un_5_safe.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Runtime.CompilerServices.Unsafe.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Text.Encoding.CodePages.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Text.Encoding.CodePages.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Threading.Tasks.Extensions.dll" Value="..\ProjectDataLib\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Threading.Tasks.Extensions.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" Value="..\packages\DockPanelSuite.ThemeVS2015.3.1.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_WeifenLuo.WinFormsUI.Docking.dll" Value="..\packages\DockPanelSuite.3.1.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.Aero.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
@@ -74,8 +74,8 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.Toolkit.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.dll" Value="..\FenixManager\bin\Release"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.net.dll" Value="..\S7-300-400 Ethernet\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.dll" Value="..\FenixManager\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.net.dll" Value="..\S7-300-400 Ethernet\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.net.dll_2" Value="..\libnodave-0.8.5\Dot.NET"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_CSScriptLibrary.dll" Value="CSScriptLibrary.dll"/>
     <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_CSScriptLibrary.dll_5" Value="CSScriptLibrary.dll"/>
