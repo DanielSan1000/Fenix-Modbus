@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v4
@@ -35,9 +35,9 @@ jobs:
       run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     # Without not going -> workaround
-    # - name: Disable Out of Proc Build
-    #   run: |
-    #    & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe" || exit 0
+    - name: Disable Out of Proc Build
+      run: |
+       & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
 
     - name: Build Visual Studio Installer project
       run: |
