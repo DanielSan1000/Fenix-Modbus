@@ -37,8 +37,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           msbuild /t:GetAssemblyVersion /p:OutputFile=version.txt
-          version=$(cat version.txt)
-          echo "version=$version" >> $GITHUB_ENV
+          $version = Get-Content version.txt
+          echo "version=$version" >> $env:GITHUB_ENV
 
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
