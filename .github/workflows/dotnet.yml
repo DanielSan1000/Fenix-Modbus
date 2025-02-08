@@ -39,7 +39,7 @@ jobs:
             path: D:\a\Fenix-Modbus\Fenix-Modbus\FenixSetup-SetupFiles\FenixSetup.msi
 
       - name: ShowFiles
-        run: dir Fenix-Modbus\Fenix-Modbus\
+        run: dir "Fenix-Modbus\Fenix-Modbus\"
 
 # jobs:
 #   build:
