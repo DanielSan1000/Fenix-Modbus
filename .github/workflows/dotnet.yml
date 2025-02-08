@@ -23,7 +23,7 @@ jobs:
       - name: Deploy Advinst
         uses: caphyon/advinst-github-action@main
         with:
-          advinst-version: '20.3.2'
+          advinst-version: '20'
           # advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
 
       - name: Add msbuild to PATH
