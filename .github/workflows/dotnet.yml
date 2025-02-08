@@ -37,6 +37,7 @@ jobs:
     - name: Build Advanced Installer project
       uses: caphyon/advinst-github-action@v2.0
       with:
+        aip-build-name: FenixSetup
         aip-path: FenixSetup/FenixSetup.aip
         aip-output-dir: FenixSetup-SetupFiles
 
