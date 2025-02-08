@@ -32,12 +32,11 @@ jobs:
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\Fenix.sln -p:Configuration=Release
 
-      - name: Get software version
+      - name: Get software version from XML
         id: get_version
         run: |
-          cd ${{ github.workspace }}
-          msbuild FenixManager/FenixManager.csproj /t:GetAssemblyVersion /p:OutputFile=version.txt
-          $version = Get-Content version.txt
+          [xml]$xml = Get-Content ${{ github.workspace }}\version.xml
+          $version = $xml.Fenix.version
           echo "version=$version" >> $env:GITHUB_ENV
 
       - name: Upload installer artifacts
