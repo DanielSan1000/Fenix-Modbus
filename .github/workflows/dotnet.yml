@@ -9,6 +9,8 @@ on:
 jobs:
   aiproj-demo:
     runs-on: windows-2022
+    if: github.ref == 'refs/heads/master'
+
     name: Build Visual Studio Project (aiproj)
     steps:
       - name: Check out repository code
