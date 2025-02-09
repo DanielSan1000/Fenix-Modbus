@@ -47,16 +47,14 @@ namespace FenixServer
             {
                 using (TaskService ts = new TaskService())
                 {
-                    if (ts.GetTask(PrCon.TaskName) == null)
-                        return false;
-                    else return true;
+                    return ts.GetTask(PrCon.TaskName) != null;
                 }
             }
             set
             {
-                if (value)
+                using (TaskService ts = new TaskService())
                 {
-                    using (TaskService ts = new TaskService())
+                    if (value)
                     {
                         if (ts.GetTask(PrCon.TaskName) == null)
                         {
@@ -66,9 +64,10 @@ namespace FenixServer
                             td.Principal.RunLevel = TaskRunLevel.Highest;
 
                             // Create a trigger that will fire the task at this time every other day
-                            LogonTrigger lgTr = new LogonTrigger();
-                            //lgTr.Delay = TimeSpan.FromMilliseconds(15);
-                            lgTr.UserId = Environment.UserName;
+                            LogonTrigger lgTr = new LogonTrigger
+                            {
+                                UserId = Environment.UserName
+                            };
                             td.Triggers.Add(lgTr);
 
                             // Create an action that will launch Notepad whenever the trigger fires
@@ -78,10 +77,7 @@ namespace FenixServer
                             ts.RootFolder.RegisterTaskDefinition(PrCon.TaskName, td);
                         }
                     }
-                }
-                else
-                {
-                    using (TaskService ts = new TaskService())
+                    else
                     {
                         if (ts.GetTask(PrCon.TaskName) != null)
                         {

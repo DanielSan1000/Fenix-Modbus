@@ -7,11 +7,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
@@ -1476,103 +1480,55 @@ namespace FenixWPF
             }
         }
 
-        [Obsolete("Trzeba to zmienić")]
-        private void updateSoftware(object sender)
+        private async Task VerifySoftwareUpdate(object sender)
         {
-            Version newVersion = null;
-            string url = "";
-            XmlTextReader reader = null;
-
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                this.Dispatcher.Invoke(new Action(() =>
-                {
-                    lbInfo.Content = "No Internet connection.";
-                }));
-
+                Dispatcher.Invoke(() => lbInfo.Content = "No Internet connection.");
                 return;
             }
 
-            this.Dispatcher.Invoke(new Action(() =>
-            {
-                lbInfo.Content = "Checking update for software...";
-            }));
+            Dispatcher.Invoke(() => lbInfo.Content = "Checking update for software...");
 
             try
             {
-                string xmlURL = "https://sourceforge.net/projects/fenixmodbus/files/version.xml";
-                reader = new XmlTextReader(xmlURL);
-                reader.MoveToContent();
-                string elementName = "";
-
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Fenix"))
+                string result = await ProjectContainer.GetVersionFromGitHub();
+                if (result != null)
                 {
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Element)
-                            elementName = reader.Name;
-                        else
-                        {
-                            if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
-                            {
-                                switch (elementName)
-                                {
-                                    case "version":
-                                        newVersion = new Version(reader.Value);
-                                        break;
+                    var newVer = ProjectContainer.ParseVersionFromContent(result);
+                    var url = ProjectContainer.ParseUrlFromContent(result);
 
-                                    case "url":
-                                        url = reader.Value;
-                                        break;
-                                }
-                            }
-                        }
-                    }
+                    CheckVersion(newVer, url, (bool)sender);
+                    Dispatcher.Invoke(() => lbInfo.Content = "Completed");
                 }
-
-                this.Dispatcher.Invoke(new Action(() =>
-                {
-                    lbInfo.Content = "Completed";
-                }));
-                checkVersion(newVersion, url, (Boolean)sender);
             }
             catch (Exception)
             {
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
+                // Handle exceptions if necessary
             }
         }
 
-        private void checkVersion(Version newVersion, string url, bool automatic)
+        private void CheckVersion(Version newVersion, string url, bool automatic)
         {
-            // get the running version
-            Version curVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            // Get the running version
+            Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
-            // compare the versions
-            if (curVersion.CompareTo(newVersion) < 0)
+            // Compare the versions
+            if (curVersion < newVersion)
             {
-                // ask the user if he would like
-                // to download the new version
+                // Ask the user if they would like to download the new version
                 string title = "New version detected.";
-                string question = "Download the new version Fenix " + newVersion.ToString() + " ?";
+                string question = $"Download the new version Fenix {newVersion}?";
 
-                if (wf.DialogResult.Yes == wf.MessageBox.Show(question, title, wf.MessageBoxButtons.YesNo, wf.MessageBoxIcon.Question))
+                if (wf.MessageBox.Show(question, title, wf.MessageBoxButtons.YesNo, wf.MessageBoxIcon.Question) == wf.DialogResult.Yes)
                 {
-                    // navigate the default web
-                    // browser to our app
-                    // homepage (the url
-                    // comes from the xml content)
-                    Process.Start(url);
+                    // Navigate the default web browser to the app homepage (the URL comes from the XML content)
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
                 }
             }
-            else
+            else if (automatic)
             {
-                if (automatic)
-                {
-                    MessageBox.Show("Your version is actual");
-                }
+                MessageBox.Show("Your version is up to date.");
             }
         }
 
@@ -2469,12 +2425,11 @@ namespace FenixWPF
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
-            {
-                Thread update = new Thread(new ParameterizedThreadStart(updateSoftware));
-                update.Start(false);
+            {                   
+                await VerifySoftwareUpdate(false);
 
                 if (!String.IsNullOrEmpty(pathRun))
                 {

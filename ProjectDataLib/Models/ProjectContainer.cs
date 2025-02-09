@@ -7,8 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.Net.Http;
+using System.Diagnostics;
+using System.Reflection;
+using System.Xml;
 
 namespace ProjectDataLib
 {
@@ -1605,6 +1610,59 @@ namespace ProjectDataLib
         }
 
         #endregion ScriptFile
+
+        #region GitHub
+
+        public static async Task<string> GetVersionFromGitHub()
+        {
+            string fileUrl = "https://raw.githubusercontent.com/DanielSan1000/Fenix-Modbus/master/version.xml";
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string content = await client.GetStringAsync(fileUrl);
+                    return content;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public static Version ParseVersionFromContent(string content)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(content);
+                XmlNode node = doc.DocumentElement.SelectSingleNode("/Fenix/version");
+                string version = node.InnerText;
+                return new Version(version);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static string ParseUrlFromContent(string content)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(content);
+                XmlNode node = doc.DocumentElement.SelectSingleNode("/Fenix/url");
+                return node.InnerText;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        #endregion
 
         public override string ToString()
         {
