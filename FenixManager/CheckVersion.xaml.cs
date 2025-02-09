@@ -3,6 +3,7 @@ using ProjectDataLib;
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 
@@ -15,281 +16,137 @@ namespace FenixWPF
     {
         private PropertyChangedEventHandler propChanged;
 
-        /// <inheritdoc/>
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {
-            add
-            {
-                propChanged += value;
-            }
-
-            remove
-            {
-                propChanged -= value;
-            }
+            add { propChanged += value; }
+            remove { propChanged -= value; }
         }
 
         private ProjectContainer PrCon;
 
-        private event EventHandler setProgress;
-
-        private event EventHandler setParam;
-
-        private string SerVer_;
-
-        /// <summary>
-        /// Gets or sets the server version.
-        /// </summary>
-        public string SerVer
+        private Version serVer;
+        public Version SerVer
         {
-            get { return SerVer_; }
+            get => serVer;
             set
             {
-                SerVer_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SerVer)));
+                serVer = value;
+                OnPropertyChanged(nameof(SerVer));
             }
         }
 
-        private string InsVer_;
-
-        /// <summary>
-        /// Gets or sets the installed version.
-        /// </summary>
-        public string InsVer
+        private Version insVer;
+        public Version InsVer
         {
-            get { return InsVer_; }
+            get => insVer;
             set
             {
-                InsVer_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InsVer)));
+                insVer = value;
+                OnPropertyChanged(nameof(InsVer));
             }
         }
 
-        private string Status_;
-
-        /// <summary>
-        /// Gets or sets the status.
-        /// </summary>
+        private string status;
         public string Status
         {
-            get { return Status_; }
-
+            get => status;
             set
             {
-                Status_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
+                status = value;
+                OnPropertyChanged(nameof(Status));
             }
         }
 
-        private Boolean Update_;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether an update is available.
-        /// </summary>
-        public Boolean Update
+        private bool update;
+        public bool Update
         {
-            get { return Update_; }
+            get => update;
             set
             {
-                Update_ = value;
-                propChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Update)));
+                update = value;
+                OnPropertyChanged(nameof(Update));
             }
         }
 
-        private string Adress { get; set; }
+        private int progressValue;
+        public int ProgressValue
+        {
+            get => progressValue;
+            set
+            {
+                progressValue = value;
+                OnPropertyChanged(nameof(ProgressValue));
+            }
+        }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CheckVersion"/> class.
-        /// </summary>
-        /// <param name="prcn">The project container.</param>
+        private string Address { get; set; }
+
         public CheckVersion(ProjectContainer prcn)
         {
             InitializeComponent();
-            this.PrCon = prcn;
+            PrCon = prcn;
             DataContext = this;
-
-            try
-            {
-                setProgress += new EventHandler(frCheckVersion_setProgress);
-                setParam += new EventHandler(frCheckVersion_setParam);
-
-                InsVer = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-            catch (Exception Ex)
-            {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
-            }
-
-            try
-            {
-                Thread update = new Thread(new ParameterizedThreadStart(updateSoftware));
-                update.Start();
-            }
-            catch (Exception)
-            {
-            }
+            Loaded += CheckVersion_OnLoaded;
+            InsVer = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
 
-        /// <summary>
-        /// Event handler for setting parameters.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void frCheckVersion_setParam(object sender, EventArgs e)
+        private async void CheckVersion_OnLoaded(object sender, RoutedEventArgs e)
         {
-            EventHandler even = delegate (object sen, EventArgs ev)
-            {
-                Object[] data = (Object[])sen;
-
-                SerVer = ((Version)data[0]).ToString();
-
-                Adress = (String)data[2];
-
-                Update = (Boolean)data[1];
-            };
-
-            try
-            {
-                Dispatcher?.Invoke(even, sender, e);
-            }
-            catch (Exception Ex)
-            {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
-            }
+           await Task.Run(async () => await CheckForUpdates());
         }
 
-        /// <summary>
-        /// Event handler for setting progress.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
-        private void frCheckVersion_setProgress(object sender, EventArgs e)
-        {
-            EventHandler evetn = delegate (object sen, EventArgs ev)
-            {
-                Object[] data = (Object[])sen;
-                pBar.Value = (Int32)data[0];
-                Status = (String)data[1];
-            };
-
-            try
-            {
-                pBar?.Dispatcher?.Invoke(evetn, new object[2] { sender, e });
-            }
-            catch (Exception Ex)
-            {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
-            }
-        }
-
-        /// <summary>
-        /// Method for updating the software.
-        /// </summary>
-        /// <param name="obj">The parameter object.</param>
-        private void updateSoftware(object obj)
+        private async Task CheckForUpdates()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                setProgress(new Object[2] { 0, "No internet connection." }, new EventArgs());
+                UpdateStatus("No internet connection.", 0);
                 return;
             }
 
-            Version newVersion = null;
-            string url = "";
-            XmlTextReader reader = null;
+            UpdateStatus("Starting...", 10);
+            UpdateStatus("Downloading...", 50);
+            var versionContent = await ProjectContainer.GetVersionFromGitHub();
+            UpdateStatus("Checking Version...", 100);
 
-            setProgress(new Object[2] { 10, "Starting..." }, new EventArgs());
+            var newVersion = ProjectContainer.ParseVersionFromContent(versionContent);
+            var url = ProjectContainer.ParseUrlFromContent(versionContent);
 
-            try
-            {
-                string xmlURL = "https://github.com/DanielSan1000/Fenix-Modbus/blob/master/version.xml";
+            SerVer = newVersion;
+            Address = url;
+            Update = newVersion > InsVer;
 
-                reader = new XmlTextReader(xmlURL);
-                reader.MoveToContent();
-                string elementName = "";
-
-                setProgress(new Object[2] { 50, "Downloading..." }, new EventArgs());
-
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Fenix"))
-                {
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Element)
-                            elementName = reader.Name;
-                        else
-                        {
-                            if ((reader.NodeType == XmlNodeType.Text) && (reader.HasValue))
-                            {
-                                switch (elementName)
-                                {
-                                    case "version":
-                                        newVersion = new Version(reader.Value);
-
-                                        break;
-
-                                    case "url":
-                                        url = reader.Value;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                setProgress(new Object[2] { 100, "Checking Version..." }, new EventArgs());
-
-                if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.CompareTo(newVersion) < 0)
-                {
-                    Object[] obj1 = new object[3] { newVersion, true, url };
-                    setParam(obj1, new EventArgs());
-                }
-                else
-                {
-                    Object[] obj1 = new object[3] { newVersion, false, url };
-                    setParam(obj1, new EventArgs());
-                }
-
-                setProgress(new Object[2] { 0, "Finished" }, new EventArgs());
-            }
-            catch (Exception Ex)
-            {
-                setProgress(new Object[2] { 0, Ex.Message }, new EventArgs());
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
-            }
+            UpdateStatus("Finished", 0);
         }
 
-        /// <summary>
-        /// Event handler for the update button click.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
+        private void UpdateStatus(string status, int progress)
+        {
+            Status = status;
+            ProgressValue = progress;
+        }
+
         private void Button_Update_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                System.Diagnostics.Process.Start(Adress);
+                if (Address != null)
+                {
+                    System.Diagnostics.Process.Start(Address);
+                }
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(ex));
             }
         }
 
-        /// <summary>
-        /// Event handler for the close button click.
-        /// </summary>
-        /// <param name="sender">The sender object.</param>
-        /// <param name="e">The event arguments.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            propChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
