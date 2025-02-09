@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -40,6 +42,16 @@ namespace FenixWPF
                 Directory.CreateDirectory(Environment.CurrentDirectory + "\\Logs");
 
             File.WriteAllText(Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToString("MM_dd_yy_H_mm_ss") + ".txt", e.StackTrace);
+
+            if (e.Source == "Xceed.Wpf.AvalonDock")
+            {
+                string strp = (string)Registry.GetValue("HKEY_CURRENT_USER\\Software\\Fenix", "LastPath", "");
+                var layoutPath = Path.GetDirectoryName(strp) + "\\Layout_.xml";
+                if(File.Exists(layoutPath))
+                {
+                    File.Delete(layoutPath);
+                }
+            }
         }
     }
 }

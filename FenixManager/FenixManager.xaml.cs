@@ -9,16 +9,12 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Xml;
 using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using io = System.IO;
@@ -372,7 +368,7 @@ namespace FenixWPF
                 lbPathProject.Content = Pr.path;
                 Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -589,7 +585,7 @@ namespace FenixWPF
                     Title = Title + " (Administrator)";
             }
 
-            checkAccess();
+            CheckAccessForNodes();
 
             string[] s = Environment.GetCommandLineArgs();
             if (s.Length > 1)
@@ -607,7 +603,7 @@ namespace FenixWPF
 
         #region Internal Commands
 
-        private void checkAccess()
+        private void CheckAccessForNodes()
         {
             try
             {
@@ -1759,7 +1755,7 @@ namespace FenixWPF
                 Pr = null;
 
                 //Sprawdzenie i ustawienie menu
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -1821,7 +1817,7 @@ namespace FenixWPF
                             obj2.IsLive = ((IDriverModel)SelObj).isAlive;
                     }
 
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
             catch (Exception Ex)
@@ -1857,7 +1853,7 @@ namespace FenixWPF
                         fr.ShowDialog();
                     }
 
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
             catch (Exception Ex)
@@ -1899,7 +1895,7 @@ namespace FenixWPF
                     }
                 }
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -1940,7 +1936,7 @@ namespace FenixWPF
                     }
                 }
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -1987,7 +1983,7 @@ namespace FenixWPF
                     SelSrcPath = string.Empty;
                 }
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2016,7 +2012,7 @@ namespace FenixWPF
                     SelSrcPath = string.Empty;
                 }
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2033,7 +2029,7 @@ namespace FenixWPF
                 if (PrCon.SrcType != ElementKind.InFile)
                 {
                     PrCon.pasteElement(Pr.objId, SelGuid);
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
                 else
                 {
@@ -2103,7 +2099,7 @@ namespace FenixWPF
                     }
 
                     SelSrcPath = string.Empty;
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
             catch (Exception Ex)
@@ -2130,13 +2126,13 @@ namespace FenixWPF
                         else
                             io.Directory.Delete(f.FullName, true);
 
-                        checkAccess();
+                        CheckAccessForNodes();
                     }
                 }
                 else
                 {
                     DeleteElementMethod(Pr.objId, SelGuid, actualKindElement);
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
             catch (Exception Ex)
@@ -2194,24 +2190,32 @@ namespace FenixWPF
                 if (Pr == null)
                     return;
 
-                LayoutAnchorable laTableView = new LayoutAnchorable();
-                laTableView.CanClose = true;
-                laTableView.ContentId = "TableView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                TableView tbView = new TableView(PrCon, Pr.objId, SelGuid, actualKindElement, laTableView);
-                laTableView.Closed += LaCtrl_Closed;
-                laTableView.Content = tbView;
+                var laTableViewAnchorable = new LayoutAnchorable
+                {
+                    CanClose = true,
+                    ContentId = $"TableView;{SelGuid};{actualKindElement}"
+                };
 
-                var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
+                var tbView = new TableView(PrCon, Pr.objId, SelGuid, actualKindElement, laTableViewAnchorable);
+                laTableViewAnchorable.Closed += LaCtrl_Closed;
+                laTableViewAnchorable.Content = tbView;
 
-                MiddlePan1.Children.Add(laTableView);
-                laTableView.IsActive = true;
+                var middlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+                if (middlePan1 != null)
+                {
+                    middlePan1.Children.Add(laTableViewAnchorable);
+                }
+                else
+                {
+                    dockManager.Layout.RootPanel.Children.Add(new LayoutDocumentPane(laTableViewAnchorable));
+                }
 
-                checkAccess();
+                laTableViewAnchorable.IsActive = true;
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -2219,23 +2223,32 @@ namespace FenixWPF
         {
             try
             {
-                LayoutAnchorable laChartView = new LayoutAnchorable();
-                laChartView.CanClose = true;
-                laChartView.ContentId = "ChartView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                ChartView chartView = new ChartView(PrCon, Pr.objId, SelGuid, actualKindElement, laChartView);
+                var laChartView = new LayoutAnchorable
+                {
+                    CanClose = true,
+                    ContentId = $"ChartView;{SelGuid};{actualKindElement}"
+                };
+
+                var chartView = new ChartView(PrCon, Pr.objId, SelGuid, actualKindElement, laChartView);
                 laChartView.Closed += LaCtrl_Closed;
-
                 laChartView.Content = chartView;
-                var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
-                MiddlePan1.Children.Add(laChartView);
-                laChartView.IsActive = true;
 
-                checkAccess();
+                var middlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+                if (middlePan1 != null)
+                {
+                    middlePan1.Children.Add(laChartView);
+                }
+                else
+                {
+                    dockManager.Layout.RootPanel.Children.Add(new LayoutDocumentPane(laChartView));
+                }
+
+                laChartView.IsActive = true;
+                CheckAccessForNodes();
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(ex));
             }
         }
 
@@ -2243,23 +2256,32 @@ namespace FenixWPF
         {
             try
             {
-                LayoutAnchorable laCommView = new LayoutAnchorable();
-                laCommView.CanClose = true;
-                laCommView.ContentId = "CommView;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                CommunicationView commView = new CommunicationView(PrCon, Pr.objId, SelGuid, actualKindElement, laCommView);
+                var laCommunicationView = new LayoutAnchorable
+                {
+                    CanClose = true,
+                    ContentId = $"CommView;{SelGuid};{actualKindElement}"
+                };
 
-                laCommView.Closed += LaCtrl_Closed;
+                var commView = new CommunicationView(PrCon, Pr.objId, SelGuid, actualKindElement, laCommunicationView);
+                laCommunicationView.Closed += LaCtrl_Closed;
+                laCommunicationView.Content = commView;
 
-                laCommView.Content = commView;
-                var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
-                MiddlePan1.Children.Add(laCommView);
-                laCommView.IsActive = true;
-                checkAccess();
+                var middlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+                if (middlePan1 != null)
+                {
+                    middlePan1.Children.Add(laCommunicationView);
+                }
+                else
+                {
+                    dockManager.Layout.RootPanel.Children.Add(new LayoutDocumentPane(laCommunicationView));
+                }
+
+                laCommunicationView.IsActive = true;
+                CheckAccessForNodes();
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(ex));
             }
         }
 
@@ -2267,43 +2289,51 @@ namespace FenixWPF
         {
             try
             {
+                LayoutAnchorable laEdit = new LayoutAnchorable
+                {
+                    CanClose = true,
+                    ContentId = actualKindElement == ElementKind.InFile
+                        ? $"Editor;{((CusFile)tvMain.View.SelectedItem).FullName};{actualKindElement}"
+                        : $"Editor;{SelGuid};{actualKindElement}"
+                };
+
+                Editor edit;
                 if (actualKindElement == ElementKind.InFile)
                 {
-                    LayoutAnchorable laEdit = new LayoutAnchorable();
-                    laEdit.CanClose = true;
-                    laEdit.ContentId = "Editor;" + ((CusFile)tvMain.View.SelectedItem).FullName + ";" + actualKindElement.ToString();
-                    Editor edit = new Editor(PrCon, Pr.objId, ((CusFile)tvMain.View.SelectedItem).FullName, actualKindElement, laEdit);
-                    laEdit.Closed += LaCtrl_Closed; ;
-                    laEdit.Title = System.IO.Path.GetFileName(((CusFile)tvMain.View.SelectedItem).FullName);
-
-                    laEdit.Content = edit;
-                    var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
-                    MiddlePan1.Children.Add(laEdit);
-                    laEdit.IsActive = true;
-                    checkAccess();
+                    var selectedFile = (CusFile)tvMain.View.SelectedItem;
+                    edit = new Editor(PrCon, Pr.objId, selectedFile.FullName, actualKindElement, laEdit);
+                    laEdit.Title = Path.GetFileName(selectedFile.FullName);
                 }
-
-                if (actualKindElement == ElementKind.ScriptFile)
+                else if (actualKindElement == ElementKind.ScriptFile)
                 {
-                    LayoutAnchorable laEdit = new LayoutAnchorable();
-                    laEdit.CanClose = true;
-                    laEdit.ContentId = "Editor;" + SelGuid.ToString() + ";" + actualKindElement.ToString();
-                    ScriptFile file = PrCon.GetScriptFile(Pr.objId, SelGuid);
-                    Editor edit = new Editor(PrCon, Pr.objId, file.FilePath, actualKindElement, laEdit);
-
-                    laEdit.Closed += LaCtrl_Closed;
+                    var file = PrCon.GetScriptFile(Pr.objId, SelGuid);
+                    edit = new Editor(PrCon, Pr.objId, file.FilePath, actualKindElement, laEdit);
                     laEdit.Title = file.Name;
-
-                    laEdit.Content = edit;
-                    var MiddlePan1 = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().First();
-                    MiddlePan1.Children.Add(laEdit);
-                    laEdit.IsActive = true;
                 }
+                else
+                {
+                    return;
+                }
+
+                laEdit.Closed += LaCtrl_Closed;
+                laEdit.Content = edit;
+
+                var middlePane = dockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+                if (middlePane != null)
+                {
+                    middlePane.Children.Add(laEdit);
+                }
+                else
+                {
+                    dockManager.Layout.RootPanel.Children.Add(new LayoutDocumentPane(laEdit));
+                }
+
+                laEdit.IsActive = true;
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
-                if (PrCon.ApplicationError != null)
-                    PrCon.ApplicationError(this, new ProjectEventArgs(Ex));
+                PrCon.ApplicationError?.Invoke(this, new ProjectEventArgs(Ex));
             }
         }
 
@@ -2343,7 +2373,7 @@ namespace FenixWPF
                 }
 
                 win = null;
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2428,7 +2458,7 @@ namespace FenixWPF
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
-            {                   
+            {
                 await VerifySoftwareUpdate(false);
 
                 if (!String.IsNullOrEmpty(pathRun))
@@ -2438,7 +2468,7 @@ namespace FenixWPF
                     Pr = PrCon.projectList[0];
                     Registry.SetValue(PrCon.RegUserRoot, PrCon.LastPathKey, Pr.path);
 
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
             catch (Exception Ex)
@@ -2466,7 +2496,7 @@ namespace FenixWPF
                 if (!((ITreeViewModel)SelObj).IsBlocked)
                 {
                     ((ITreeViewModel)SelObj).IsBlocked = true;
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
         }
@@ -2478,7 +2508,7 @@ namespace FenixWPF
                 if (((ITreeViewModel)SelObj).IsBlocked)
                 {
                     ((ITreeViewModel)SelObj).IsBlocked = false;
-                    checkAccess();
+                    CheckAccessForNodes();
                 }
             }
         }
@@ -2627,7 +2657,7 @@ namespace FenixWPF
                         ((INotifyPropertyChanged)e.NewValue).PropertyChanged += FenixMenager_PropertyChanged;
                 }
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2679,7 +2709,7 @@ namespace FenixWPF
                 laTableView.IsActive = true;
                 laTableView.Title = "Database";
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2705,7 +2735,7 @@ namespace FenixWPF
                 laTableView.IsActive = true;
                 laTableView.Title = "Chart Database";
 
-                checkAccess();
+                CheckAccessForNodes();
             }
             catch (Exception Ex)
             {
@@ -2749,5 +2779,6 @@ namespace FenixWPF
         }
 
         #endregion Internal Events
+
     }
 }
