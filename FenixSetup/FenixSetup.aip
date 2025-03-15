@@ -25,7 +25,7 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.Scripting.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.CodeAnalysis.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Win32.TaskScheduler.dll" Value="..\packages\TaskScheduler.2.11.0\lib\net48"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Win32.TaskScheduler.dll" Value="..\packages\TaskScheduler.2.12.1\lib\net48"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.Xaml.Behaviors.dll" Value="..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll" Value="..\ModbusMasterASCII\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ModbusMasterASCII.dll_2" Value="..\ModbusMasterASCII\bin\Debug"/>
@@ -68,11 +68,11 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_System.Threading.Tasks.Extensions.dll_5" Value="..\ProjectDataLib\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" Value="..\packages\DockPanelSuite.ThemeVS2015.3.1.1\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_WeifenLuo.WinFormsUI.Docking.dll" Value="..\packages\DockPanelSuite.3.1.1\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.Aero.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.Metro.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.Toolkit.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25103.5738\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.Aero.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25104.5739\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.Metro.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25104.5739\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25104.5739\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.AvalonDock.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25104.5739\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Xceed.Wpf.Toolkit.dll" Value="..\packages\Extended.Wpf.Toolkit.4.7.25104.5739\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.dll" Value="..\FenixManager\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.net.dll" Value="..\S7-300-400 Ethernet\bin\Debug"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_libnodave.net.dll_2" Value="..\libnodave-0.8.5\Dot.NET"/>
@@ -154,10 +154,10 @@
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPPRODUCTICON" Value="soft.exe" Type="8"/>
     <ROW Property="Manufacturer" Value="DGSoft"/>
-    <ROW Property="ProductCode" Value="1033:{C2582F45-4F94-4CE4-B64E-78AB08260309} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{61BB552B-B75A-417B-9B41-4450F82736B9} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="FenixModbusS7"/>
-    <ROW Property="ProductVersion" Value="3.3.3" Options="32"/>
+    <ROW Property="ProductVersion" Value="3.3.4" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{288A4594-D6A7-4215-BB19-EB4A8DB3AA54}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
